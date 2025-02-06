@@ -1,0 +1,212 @@
+[
+    {
+        "level": "1",
+        "shards": "0",
+        "totalShards": "0",
+        "gold": "0",
+        "totalGold": "0"
+    },
+    {
+        "level": "2",
+        "shards": "5",
+        "totalShards": "5",
+        "gold": "50",
+        "totalGold": "50"
+    },
+    {
+        "level": "3",
+        "shards": "13",
+        "totalShards": "18",
+        "gold": "125",
+        "totalGold": "175"
+    },
+    {
+        "level": "4",
+        "shards": "23",
+        "totalShards": "41",
+        "gold": "225",
+        "totalGold": "400"
+    },
+    {
+        "level": "5",
+        "shards": "36",
+        "totalShards": "77",
+        "gold": "350",
+        "totalGold": "750"
+    },
+    {
+        "level": "6",
+        "shards": "51",
+        "totalShards": "128",
+        "gold": "500",
+        "totalGold": "1,250"
+    },
+    {
+        "level": "7",
+        "shards": "69",
+        "totalShards": "197",
+        "gold": "675",
+        "totalGold": "1,925"
+    },
+    {
+        "level": "8",
+        "shards": "89",
+        "totalShards": "286",
+        "gold": "875",
+        "totalGold": "2,800"
+    },
+    {
+        "level": "9",
+        "shards": "107",
+        "totalShards": "393",
+        "gold": "1,050",
+        "totalGold": "3,850"
+    },
+    {
+        "level": "10",
+        "shards": "122",
+        "totalShards": "515",
+        "gold": "1,200",
+        "totalGold": "5,050"
+    },
+    {
+        "level": "11",
+        "shards": "132",
+        "totalShards": "647",
+        "gold": "1,300",
+        "totalGold": "6,350"
+    },
+    {
+        "level": "12",
+        "shards": "140",
+        "totalShards": "787",
+        "gold": "1,375",
+        "totalGold": "7,725"
+    },
+    {
+        "level": "13",
+        "shards": "145",
+        "totalShards": "932",
+        "gold": "1,425",
+        "totalGold": "9,150"
+    },
+    {
+        "level": "14",
+        "shards": "150",
+        "totalShards": "1,082",
+        "gold": "1,475",
+        "totalGold": "10,625"
+    },
+    {
+        "level": "15",
+        "shards": "155",
+        "totalShards": "1,237",
+        "gold": "1,525",
+        "totalGold": "12,150"
+    },
+    {
+        "level": "16",
+        "shards": "160",
+        "totalShards": "1,397",
+        "gold": "1,575",
+        "totalGold": "13,725"
+    },
+    {
+        "level": "17",
+        "shards": "165",
+        "totalShards": "1,562",
+        "gold": "1,625",
+        "totalGold": "15,350"
+    },
+    {
+        "level": "18",
+        "shards": "170",
+        "totalShards": "1,732",
+        "gold": "1,675",
+        "totalGold": "17,025"
+    },
+    {
+        "level": "19",
+        "shards": "175",
+        "totalShards": "1,907",
+        "gold": "1,725",
+        "totalGold": "18,750"
+    },
+    {
+        "level": "20",
+        "shards": "180",
+        "totalShards": "2,087",
+        "gold": "1,775",
+        "totalGold": "20,525"
+    },
+    {
+        "level": "21",
+        "shards": "185",
+        "totalShards": "2,272",
+        "gold": "1,825",
+        "totalGold": "22,350"
+    },
+    {
+        "level": "22",
+        "shards": "190",
+        "totalShards": "2,462",
+        "gold": "1,875",
+        "totalGold": "24,225"
+    },
+    {
+        "level": "23",
+        "shards": "195",
+        "totalShards": "2,657",
+        "gold": "1,925",
+        "totalGold": "26,150"
+    },
+    {
+        "level": "24",
+        "shards": "200",
+        "totalShards": "2,857",
+        "gold": "1,975",
+        "totalGold": "28,125"
+    },
+    {
+        "level": "25",
+        "shards": "205",
+        "totalShards": "3,062",
+        "gold": "2,025",
+        "totalGold": "30,150"
+    },
+    {
+        "level": "26",
+        "shards": "210",
+        "totalShards": "3,272",
+        "gold": "2,075",
+        "totalGold": "32,225"
+    },
+    {
+        "level": "27",
+        "shards": "215",
+        "totalShards": "3,487",
+        "gold": "2,125",
+        "totalGold": "34,350"
+    },
+    {
+        "level": "28",
+        "shards": "220",
+        "totalShards": "3,707",
+        "gold": "2,175",
+        "totalGold": "36,525"
+    },
+    {
+        "level": "29",
+        "shards": "225",
+        "totalShards": "3,932",
+        "gold": "2,225",
+        "totalGold": "38,750"
+    },
+    {
+        "level": "30",
+        "shards": "230",
+        "totalShards": "4,162",
+        "gold": "2,275",
+        "totalGold": "41,025"
+    }
+]
