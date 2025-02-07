@@ -1,0 +1,57 @@
+{
+    "hola": {
+        "description": "Hola",
+        "command_response": "Hola como andan? :3",
+        "console_log": "!hola command called"
+    },
+    "cherry": {
+        "description": "Cherry",
+        "command_response": "El Sr. Cherry es mi papá",
+        "console_log": "!cherry command called"
+    },
+    "time": {
+        "description": "Tells the current UTC time.",
+        "command_response": "The current UTC time is: %currentTime%",
+        "console_log": "!time command called"
+    },
+    "gracias": {
+        "description": "Says de nada to a gracias",
+        "command_response": "de nada >.<",
+        "console_log": "!gracias command called"
+    },
+    "lp": {
+        "description": "Shares a link to youtube video to lp in katana",
+        "command_response": "https://www.youtube.com/watch?v=62WgqpDW4Uc para todos los que les interese armar LP con WF",
+        "console_log": "!lp command called"
+    },
+    "kaidro": {
+        "description": "dextool to kdr",
+        "command_response": "https://www.dextools.io/app/en/ronin/pair-explorer/0xbfeff123c4bba882b77a514be8e139c5165a6c89?t=1734546086631",
+        "console_log": "!kdr command called"
+    },
+    "perks": {
+        "description": "Google spreadsheet for wf perks",
+        "command_response": "https://docs.google.com/spreadsheets/d/15ghNgEvDBeHHpITPd0_XB1ZwOmvt9KGE2iPqVsavyqk/edit?usp=sharing",
+        "console_log": "!perks command called"
+    },
+    "runimap": {
+        "description": "Runiverse lands map",
+        "command_response": "https://marketplace.forgottenrunes.com/map",
+        "console_log": "!runimap command called"
+    },
+    "impuestito" : {
+        "description": "calculadora de impuestos",
+        "command_response": "https://www.impuestito.org/",
+        "console_log": "!impuestito command called"  
+    },
+    "impuesto" : {
+        "description": "calculadora de impuestos",
+        "command_response": "https://www.impuestito.org/",
+        "console_log": "!impuestito command called"  
+    },
+    "rupi" : {
+        "description": "Rupi",
+        "command_response": "https://www.dextools.io/app/en/ronin/pair-explorer/0xe1fd3f4729f9b9b1a53b0721a49680ff9a166149?t=1735584677909",
+        "console_log": "!rupi command called"  
+    }
+}
