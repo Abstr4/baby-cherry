@@ -70,7 +70,7 @@ client.once('ready', async () => {
     const channelId = '1221395301433081916'; // Replace with your channel ID
     const roleId = '1307759931016871987'; // Replace with @pha's role ID
 
-    cron.schedule('59 11,23 * * *', async () => {
+    cron.schedule('50 11,23 * * *', async () => {
         try {
             const channel = await client.channels.fetch(channelId);
             if (channel) {
