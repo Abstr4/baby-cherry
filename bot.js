@@ -8,10 +8,36 @@ const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord
 const express = require("express");
 const fs = require("fs");
 const path = require('path');
+const mysql = require('mysql2');
+require('dotenv').config();
+
+const connection = mysql.createPool({
+    host: process.env.MYSQLHOST || process.env.MYSQL_HOST, 
+    user: process.env.MYSQLUSER || process.env.MYSQL_USER,
+    password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE,
+    port: process.env.MYSQLPORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
 const TOKEN = process.env.BOT_TOKEN;
 const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
+
+// Test connection
+connection.getConnection((err, conn) => {
+    if (err) {
+        console.error("❌ Database connection failed:", err.message);
+    } else {
+        console.log("✅ Connected to MySQL database!");
+        conn.release();
+    }
+});
+
+module.exports = connection;
+
 
 // Path to the static commands JSON file
 const staticCommandsPath = path.join(__dirname, './commands/exclamation/static.json');
