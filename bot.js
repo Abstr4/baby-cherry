@@ -38,7 +38,6 @@ connection.getConnection((err, conn) => {
 
 module.exports = connection;
 
-
 // Path to the static commands JSON file
 const staticCommandsPath = path.join(__dirname, './commands/exclamation/static.json');
 
