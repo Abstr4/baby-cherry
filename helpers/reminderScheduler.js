@@ -1,10 +1,11 @@
 module.exports = (client) => {
     const cron = require("node-cron");
-    const { database } = require("../database");
+    const { database } = require("../database.js");
 
     // Function to send the reminder
     async function sendReminder(message, channelId) {
         try {
+            console.log("Trying to send reminder to channel:", channelId);
             const channel = await client.channels.fetch(channelId);
             if (channel) {
                 await channel.send(`🔔 Reminder: ${message}`);
@@ -20,7 +21,7 @@ module.exports = (client) => {
     // Schedule reminders to run every minute
     cron.schedule("* * * * *", () => {
         console.log("⏳ Checking for reminders...");
-        database.query("SELECT * FROM Reminders WHERE Date <= NOW()", (err, results) => {
+        database.query("SELECT * FROM Reminders WHERE RemindAt <= NOW()", (err, results) => {
             if (err) {
                 console.error("❌ Database error:", err);
                 return;
@@ -29,9 +30,9 @@ module.exports = (client) => {
             results.forEach(reminder => {
                 sendReminder(reminder.Message, reminder.ChannelId);
                 // Optionally, delete the reminder after sending it
-                database.query("DELETE FROM Reminders WHERE id = ?", [reminder.id], (deleteErr) => {
+                database.query("DELETE FROM Reminders WHERE ID = ?", [reminder.ID], (deleteErr) => {
                     if (deleteErr) console.error("❌ Error deleting reminder:", deleteErr);
-                    else console.log(`🗑 Reminder ID ${reminder.id} deleted.`);
+                    else console.log(`🗑 Reminder ID ${reminder.ID} deleted.`);
                 });
             });
         });
