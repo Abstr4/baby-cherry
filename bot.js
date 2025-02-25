@@ -9,21 +9,7 @@ const mysql = require('mysql2');
 
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 
-console.log('MYSQLHOST:', process.env.MYSQLHOST);
-console.log('MYSQLUSER:', process.env.MYSQLUSER);
-console.log('MYSQLDATABASE:', process.env.MYSQLDATABASE);
-console.log('MYSQLPORT:', process.env.MYSQLPORT);
-
-const connection = mysql.createPool({
-    host: process.env.MYSQLHOST || process.env.MYSQL_HOST, 
-    user: process.env.MYSQLUSER || process.env.MYSQL_USER,
-    password: process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE,
-    port: process.env.MYSQLPORT || 3306,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+const connection = mysql.createPool(process.env.MYSQL);
 
 const TOKEN = process.env.BOT_TOKEN;
 const clientId = process.env.CLIENT_ID;
