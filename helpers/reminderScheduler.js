@@ -1,6 +1,7 @@
 module.exports = (client) => {
     const cron = require("node-cron");
-    const { database } = require("../database.js");  // ✅ Correct import
+    const database = require("../database.js"); // ✅ Import it directly
+
 
     async function sendReminder(message, channelId) {
         try {

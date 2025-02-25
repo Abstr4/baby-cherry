@@ -1,10 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { calculateResources } = require('../wildForest/calculateResources.js'); // Export the function
-const { database } = require('../database.js');
+const { calculateResources } = require('../wildForest/calculateResources.js');
 const moment = require('moment');
-
-const date = moment().format('YYYY-MM-DD HH:mm:ss'); 
-console.log("Current date and time:", date);
+const database = require("../database.js"); // ✅ Import it directly
 
 
 // Allowed User IDs
@@ -150,35 +147,34 @@ module.exports = [
                 .setRequired(false)),
 
         async execute(interaction) {
+            const dateStr = interaction.options.getString("date");
+            const message = interaction.options.getString("message");
+            const channel = interaction.options.getChannel("channel") || interaction.channel;
+            const channelId = channel.id;
+        
+            // Validate date format
+            const remindAt = moment.utc(dateStr, "YYYY-MM-DD HH:mm", true);
+            if (!remindAt.isValid()) {
+                return interaction.reply({
+                    content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
+                    ephemeral: true // ✅ Use `ephemeral: true` instead of `flags: 64`
+                });
+            }
+        
             try {
-                const dateStr = interaction.options.getString("date");
-                const message = interaction.options.getString("message");
-                const channel = interaction.options.getChannel("channel") || interaction.channel;
-                const channelId = channel.id;
-
-                // Validate date format
-                const remindAt = moment.utc(dateStr, "YYYY-MM-DD HH:mm", true);
-                if (!remindAt.isValid()) {
-                    return interaction.reply({
-                        content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
-                        ephemeral: true
-                    });
-                }
-
-                // Store in database
-                await database.promise().query(
+                // ✅ Use `await db.execute()` since `pool` supports promises
+                await database.execute(
                     "INSERT INTO Reminders (Message, RemindAt, ChannelId) VALUES (?, ?, ?)",
                     [message, remindAt.format("YYYY-MM-DD HH:mm:ss"), channelId]
                 );
-
+        
                 await interaction.reply({
                     content: `✅ Reminder set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>.`,
                     ephemeral: true
                 });
-
             } catch (err) {
                 console.error("❌ Database error:", err);
-                await interaction.reply({ content: "❌ Failed to save reminder.", ephemeral: true });
+                return interaction.reply({ content: "❌ Failed to save reminder.", ephemeral: true });
             }
         }
     }

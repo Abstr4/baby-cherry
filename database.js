@@ -14,4 +14,4 @@ connection.getConnection()
     });
 
 
-module.exports = { database: connection }; 
+module.exports = connection; // ✅ Export the pool directly
