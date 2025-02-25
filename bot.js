@@ -77,8 +77,9 @@ client.once('ready', async () => {
     console.log("Boss reminder scheduler started.");
 });
 
-// Handles the ! and ? commands
+
 client.on('messageCreate', async (message) => {
+    
     if (message.author.bot) return;
 
     // Handle "!" commands
@@ -102,22 +103,6 @@ client.on('messageCreate', async (message) => {
                 }
             }
         );
-    }
-
-    // Handle "?" commands (this remains unchanged)
-    if (message.content.startsWith('?')) {
-        if (message.content === '?') return;
-        const commandName = message.content.slice(1).split(' ')[0];
-        const command = questionCommands[commandName];
-
-        if (command) {
-            message.channel
-                .send(command.command_response)
-                .then(() => console.log(command.console_log))
-                .catch(console.error);
-        } else {
-            message.channel.send(`Unknown command: ${commandName}`);
-        }
     }
 });
 
