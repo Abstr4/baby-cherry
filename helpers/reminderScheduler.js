@@ -1,6 +1,6 @@
 module.exports = (client) => {
     const cron = require("node-cron");
-    const { database } = require("../database.js");
+    const database = require("../database.js");
 
     async function sendReminder(message, channelId) {
         try {
@@ -18,7 +18,8 @@ module.exports = (client) => {
             console.error("❌ Error sending reminder:", err);
         }
     }
-    
+
+    // Verify database connection
     database.query("SELECT 1", (err, results) => {
         if (err) {
             console.error("🚨 Database connection failed:", err);
@@ -26,19 +27,18 @@ module.exports = (client) => {
             console.log("✅ Database connection successful");
         }
     });
-    
 
     // Schedule reminders to run every minute
     cron.schedule("* * * * *", async () => {
         console.log("⏳ Checking for reminders...");
     
-        database.query("SELECT * FROM Reminders WHERE RemindAt <= UTC_TIMESTAMP()", (err, results) => {
+        database.query("SELECT * FROM Reminders WHERE RemindAt <= UTC_TIMESTAMP()", async (err, results) => {
             if (err) {
                 console.error("❌ Database error:", err);
                 return;
             }
     
-            console.log("📊 Raw query result:", results); // <---- PRINT FULL QUERY RESULT
+            console.log("📊 Raw query result:", results); // Debugging output
     
             if (!results || results.length === 0) {
                 console.log("❌ No reminders found.");
@@ -47,9 +47,16 @@ module.exports = (client) => {
     
             console.log(`🔍 Query executed. Found ${results.length} reminders.`);
     
-            results.forEach(reminder => {
-                console.log(`📢 Attempting to send reminder: ${reminder.Message} to ${reminder.ChannelId}`);
-            });
+            for (const reminder of results) {
+                console.log(`📢 Sending reminder: ${reminder.Message} to ${reminder.ChannelId}`);
+                await sendReminder(reminder.Message, reminder.ChannelId);
+
+                // Delete reminder after sending
+                database.query("DELETE FROM Reminders WHERE ID = ?", [reminder.ID], (deleteErr) => {
+                    if (deleteErr) console.error("❌ Error deleting reminder:", deleteErr);
+                    else console.log(`🗑 Reminder ID ${reminder.ID} deleted.`);
+                });
+            }
         });
-    }, { timezone: "UTC" });    
+    }, { timezone: "UTC" });
 };
