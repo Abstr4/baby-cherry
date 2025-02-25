@@ -21,27 +21,40 @@ module.exports = (client) => {
     
 
     // Schedule reminders to run every minute
-    cron.schedule("* * * * *", () => {
+    cron.schedule("* * * * *", async () => {
         console.log("⏳ Checking for reminders...");
-        database.query("SELECT * FROM Reminders WHERE RemindAt <= UTC_TIMESTAMP()", (err, results) => {
+    
+        database.query("SELECT * FROM Reminders WHERE RemindAt <= UTC_TIMESTAMP()", async (err, results) => {
             if (err) {
                 console.error("❌ Database error:", err);
                 return;
             }
     
-            console.log(`🔍 Found ${results.length} reminders.`); // Log number of reminders found
+            console.log(`🔍 Query executed. Found ${results.length} reminders.`);
     
-            results.forEach(reminder => {
-                console.log(`📢 Sending reminder: ${reminder.Message} to ${reminder.ChannelId}`);
-                sendReminder(reminder.Message, reminder.ChannelId);
+            for (const reminder of results) {
+                console.log(`📢 Attempting to send reminder: ${reminder.Message} to ${reminder.ChannelId}`);
     
-                // Delete the reminder after sending it
-                database.query("DELETE FROM Reminders WHERE ID = ?", [reminder.ID], (deleteErr) => {
-                    if (deleteErr) console.error("❌ Error deleting reminder:", deleteErr);
-                    else console.log(`🗑 Reminder ID ${reminder.ID} deleted.`);
-                });
-            });
+                try {
+                    const channel = await client.channels.fetch(reminder.ChannelId);
+                    if (channel) {
+                        await channel.send(`🔔 Reminder: ${reminder.Message}`);
+                        console.log(`✅ Reminder sent to ${reminder.ChannelId}: ${reminder.Message}`);
+    
+                        // Delete after sending
+                        database.query("DELETE FROM Reminders WHERE ID = ?", [reminder.ID], (deleteErr) => {
+                            if (deleteErr) console.error("❌ Error deleting reminder:", deleteErr);
+                            else console.log(`🗑 Reminder ID ${reminder.ID} deleted.`);
+                        });
+                    } else {
+                        console.error(`❌ Error: Channel ${reminder.ChannelId} not found.`);
+                    }
+                } catch (err) {
+                    console.error("❌ Error sending reminder:", err);
+                }
+            }
         });
-    });
+    }, { timezone: "UTC" });
+    
     
 };
