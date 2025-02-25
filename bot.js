@@ -84,7 +84,7 @@ client.on('messageCreate', async (message) => {
 
         // Query the database for the command
         connection.query(
-            'SELECT response FROM exclamationCommands WHERE command_name = ?',
+            'SELECT response FROM ExclamationCommands WHERE Command = ?',
             [commandName],
             (err, results) => {
                 if (err) {
