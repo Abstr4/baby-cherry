@@ -1,6 +1,5 @@
-require("./helpers/reminderSheduler.js");
 require('dotenv').config();
-require('./helpers/reminderScheduler')(client);
+require('./helpers/reminderScheduler.js')(client);
 
 // Modules load, don't touch this unless you're adding something new
 
