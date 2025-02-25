@@ -9,10 +9,10 @@ const mysql = require('mysql2');
 
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 
-console.log('MYSQLHOST:', process.env.MYSQL_HOST);
-console.log('MYSQLUSER:', process.env.MYSQL_USER);
-console.log('MYSQLDATABASE:', process.env.MYSQL_DATABASE);
-console.log('MYSQLPORT:', process.env.MYSQL_PORT);
+console.log('MYSQLHOST:', process.env.MYSQLHOST);
+console.log('MYSQLUSER:', process.env.MYSQLUSER);
+console.log('MYSQLDATABASE:', process.env.MYSQLDATABASE);
+console.log('MYSQLPORT:', process.env.MYSQLPORT);
 
 const connection = mysql.createPool({
     host: process.env.MYSQLHOST || process.env.MYSQL_HOST, 
