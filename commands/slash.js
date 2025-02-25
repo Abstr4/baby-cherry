@@ -3,8 +3,7 @@ const { calculateResources } = require('../wildForest/calculateResources.js'); /
 const connection = require('../database.js');
 
 // Allowed User IDs
-let allowedUserIds = ['396392854798336002', '357087654552010753', '167821784333287424', '253329702662569987'];
-
+let allowedUsers = ['396392854798336002', '357087654552010753', '167821784333287424', '253329702662569987'];
 
 module.exports = [
     // levelup 
@@ -43,7 +42,6 @@ module.exports = [
         // use .setDefaultMemberPermissions(PermissionFlagsBits.Administrator) to allow only admins to addcommands
         data: new SlashCommandBuilder()
             .setName('addcommand')
-            .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
             .setDescription('Add a static exclamation command')
             .addStringOption(option =>
                 option
@@ -57,54 +55,32 @@ module.exports = [
                     .setRequired(true)),
 
         async execute(interaction) {
-
-            if (!allowedUserIds.includes(interaction.user.id)) {
-                return await interaction.reply({
-                    content: 'You are not authorized to use this command!',
-                    ephemeral: true, // Ephemeral means only the user sees the message
-                });
-            }
-            
-            const commandName = interaction.options.getString('command');
-            const commandResponse = interaction.options.getString('response');
-
-            // Validate command format (must start with "!" and contain only letters)
-            if (!/^![a-zA-Z]+$/.test(commandName)) {
-                return await interaction.reply({
-                    content: 'Invalid command format! Commands must start with "!" and contain only letters (no spaces, numbers, or symbols).',
-                    ephemeral: true,
-                });
-            }
-            
-            // Check if the command already exists in the database
-            connection.query(
-                'SELECT * FROM ExclamationCommands WHERE Command = ?',
-                [commandName],
-                (err, results) => {
-                    if (err) {
-                        console.error('❌ Database query error:', err);
-                        return interaction.reply('Database error occurred. Please try again later.');
-                    }
-
-                    if (results.length > 0) {
-                        return interaction.reply(`Command ${commandName} already exists!`);
-                    }
-
-                    // Insert the new command into the database
-                    connection.query(
-                        'INSERT INTO ExclamationCommands (Command, Response) VALUES (?, ?)',
-                        [commandName, commandResponse],
-                        (insertErr) => {
-                            if (insertErr) {
-                                console.error('❌ Error inserting command:', insertErr);
-                                return interaction.reply('Failed to add the command. Please try again.');
-                            }
-
-                            interaction.reply(`✅ Command ${commandName} added successfully!`);
+            const userId = interaction.user.id; // Get the user's Discord ID
+            const member = interaction.member; // Get member info
+    
+            // Check if the user is an admin or in the allow list
+            if (
+                member.permissions.has(PermissionFlagsBits.Administrator) ||
+                allowedUsers.includes(userId)
+            ) {
+                const command = interaction.options.getString("command");
+                const response = interaction.options.getString("response");
+    
+                // Add command to the database
+                connection.query(
+                    "INSERT INTO ExclamationCommands (Command, Response) VALUES (?, ?)",
+                    [command, response],
+                    (err) => {
+                        if (err) {
+                            console.error("❌ Database error:", err);
+                            return interaction.reply({ content: "❌ Failed to add command!", ephemeral: true });
                         }
-                    );
-                }
-            );
+                        interaction.reply({ content: `✅ Command **${command}** added successfully!`, ephemeral: true });
+                    }
+                );
+            } else {
+                interaction.reply({ content: "❌ You do not have permission to use this command!", ephemeral: true });
+            }
         },
     },
 ];
