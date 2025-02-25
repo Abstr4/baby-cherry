@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits } = require("discord.js");
-const connection = require("./database");
+const connection = require("../database.js");
 const cron = require("node-cron");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
