@@ -3,29 +3,10 @@ require('dotenv').config();
 
 const cron = require('node-cron');
 const express = require("express");
-const fs = require("fs");
-const path = require('path');
-const mysql = require('mysql2');
 
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 
-const connection = mysql.createPool(process.env.MYSQL);
-
-const TOKEN = process.env.BOT_TOKEN;
-const clientId = process.env.CLIENT_ID;
-const guildId = process.env.GUILD_ID;
-
-// Test connection
-connection.getConnection((err, conn) => {
-    if (err) {
-        console.error("❌ Database connection failed:", err.message);
-    } else {
-        console.log("✅ Connected to MySQL database!");
-        conn.release();
-    }
-});
-
-module.exports = connection;
+const connection = require('./database');
 
 const slashCommands = require('./commands/slash.js');
 
