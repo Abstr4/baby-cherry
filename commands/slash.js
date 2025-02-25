@@ -78,7 +78,7 @@ module.exports = [
             
             // Check if the command already exists in the database
             connection.query(
-                'SELECT * FROM exclamationCommands WHERE command_name = ?',
+                'SELECT * FROM ExclamationCommands WHERE command_name = ?',
                 [commandName],
                 (err, results) => {
                     if (err) {
@@ -92,7 +92,7 @@ module.exports = [
 
                     // Insert the new command into the database
                     connection.query(
-                        'INSERT INTO exclamationCommands (command_name, response) VALUES (?, ?)',
+                        'INSERT INTO ExclamationCommands (command_name, response) VALUES (?, ?)',
                         [commandName, commandResponse],
                         (insertErr) => {
                             if (insertErr) {
