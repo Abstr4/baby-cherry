@@ -80,7 +80,7 @@ client.on('messageCreate', async (message) => {
     // Handle "!" commands
     if (message.content.startsWith('!')) {
         if (message.content === '!') return;
-        const commandName = message.content.slice(1).split(' ')[0];
+        const commandName = message.content.trim().split(/\s+/)[0]; // Keeps "!" and gets full command
 
         // Query the database for the command
         connection.query(
