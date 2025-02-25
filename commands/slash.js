@@ -69,7 +69,7 @@ module.exports = [
                 const response = interaction.options.getString("response");
     
                 // Add command to the database
-                connection.query(
+                database.query(
                     "INSERT INTO ExclamationCommands (Command, Response) VALUES (?, ?)",
                     [command, response],
                     (err) => {
@@ -109,7 +109,7 @@ module.exports = [
                 member.permissions.has(PermissionFlagsBits.Administrator) ||
                 allowedUsers.includes(userId)
             ) {
-                connection.query(
+                database.query(
                     "DELETE FROM ExclamationCommands WHERE Command = ?",
                     [command],
                     (err, result) => {
