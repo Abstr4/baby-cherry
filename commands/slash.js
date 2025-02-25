@@ -130,42 +130,48 @@ module.exports = [
     {
         data: new SlashCommandBuilder()
         .setName("addreminder")
-        .setDescription("Set a global reminder for everyone at a specific date and time.")
+        .setDescription("Set a reminder for everyone.")
         .addStringOption(option =>
             option.setName("date")
-                .setDescription("The date and time for the reminder (YYYY-MM-DD HH:mm UTC)")
+                .setDescription("Date and time (YYYY-MM-DD HH:mm) in UTC.")
                 .setRequired(true))
         .addStringOption(option =>
             option.setName("message")
-                .setDescription("The message to be sent at the specified time")
+                .setDescription("Reminder message.")
                 .setRequired(true))
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .addChannelOption(option =>
+            option.setName("channel")
+                .setDescription("The channel to send the reminder (optional)")
+                .setRequired(false)),
 
         async execute(interaction) {
-            if (!allowedUsers.includes(interaction.user.id)) {
-                return interaction.reply({ content: "❌ You are not allowed to use this command.", ephemeral: true });
-            }
-
-            const ChannelId = interaction.channel.id;
-            const dateString = interaction.options.getString("date");
-            const Message = interaction.options.getString("message");
+            const dateStr = interaction.options.getString("date");
+            const message = interaction.options.getString("message");
+            const channel = interaction.options.getChannel("channel") || interaction.channel;
+            const channelId = channel.id;
 
             // Validate date format
-            const RemindAt = moment(dateString, "YYYY-MM-DD HH:mm", true);
-            if (!RemindAt.isValid()) {
-                return interaction.reply({ content: "❌ Invalid date format! Use `YYYY-MM-DD HH:mm` in UTC time.", ephemeral: true });
+            const remindAt = moment.utc(dateStr, "YYYY-MM-DD HH:mm", true);
+            if (!remindAt.isValid()) {
+                return interaction.reply({
+                    content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
+                    ephemeral: true
+                });
             }
 
-            // Store the global reminder in the database
+            // Store in database
             connection.query(
-                "INSERT INTO GlobalReminders (ChannelId, Message, RemindAt) VALUES (?, ?, ?)",
-                [ChannelId, Message, RemindAt.format("YYYY-MM-DD HH:mm:ss")],
+                "INSERT INTO Reminders (Message, RemindAt, ChannelId) VALUES (?, ?, ?)",
+                [message, remindAt.format("YYYY-MM-DD HH:mm:ss"), channelId],
                 (err) => {
                     if (err) {
                         console.error("❌ Database error:", err);
-                        return interaction.reply({ content: "❌ Failed to set reminder.", ephemeral: true });
+                        return interaction.reply({ content: "❌ Failed to save reminder.", ephemeral: true });
                     }
-                    interaction.reply({ content: `✅ Reminder set for **${RemindAt.format("YYYY-MM-DD HH:mm")} UTC**!`, ephemeral: false });
+                    interaction.reply({
+                        content: `✅ Reminder set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>.`,
+                        ephemeral: false
+                    });
                 }
             );
         }

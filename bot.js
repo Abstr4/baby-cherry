@@ -1,3 +1,5 @@
+import "./helpers/reminderSheduler.js";
+
 require('dotenv').config();
 // Modules load, don't touch this unless you're adding something new
 
