@@ -125,5 +125,49 @@ module.exports = [
                 interaction.reply({ content: "❌ You do not have permission to use this command!", ephemeral: true });
             } 
         }
+    },
+    // addreminder
+    {
+        data: new SlashCommandBuilder()
+        .setName("addreminder")
+        .setDescription("Set a global reminder for everyone at a specific date and time.")
+        .addStringOption(option =>
+            option.setName("date")
+                .setDescription("The date and time for the reminder (YYYY-MM-DD HH:mm UTC)")
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName("message")
+                .setDescription("The message to be sent at the specified time")
+                .setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+        async execute(interaction) {
+            if (!allowedUsers.includes(interaction.user.id)) {
+                return interaction.reply({ content: "❌ You are not allowed to use this command.", ephemeral: true });
+            }
+
+            const ChannelId = interaction.channel.id;
+            const dateString = interaction.options.getString("date");
+            const Message = interaction.options.getString("message");
+
+            // Validate date format
+            const RemindAt = moment(dateString, "YYYY-MM-DD HH:mm", true);
+            if (!RemindAt.isValid()) {
+                return interaction.reply({ content: "❌ Invalid date format! Use `YYYY-MM-DD HH:mm` in UTC time.", ephemeral: true });
+            }
+
+            // Store the global reminder in the database
+            connection.query(
+                "INSERT INTO GlobalReminders (ChannelId, Message, RemindAt) VALUES (?, ?, ?)",
+                [ChannelId, Message, RemindAt.format("YYYY-MM-DD HH:mm:ss")],
+                (err) => {
+                    if (err) {
+                        console.error("❌ Database error:", err);
+                        return interaction.reply({ content: "❌ Failed to set reminder.", ephemeral: true });
+                    }
+                    interaction.reply({ content: `✅ Reminder set for **${RemindAt.format("YYYY-MM-DD HH:mm")} UTC**!`, ephemeral: false });
+                }
+            );
+        }
     }
 ];
