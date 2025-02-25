@@ -67,7 +67,7 @@ module.exports = [
             try {
                 // Check if the command already exists
                 const [existing] = await database.query(
-                    "SELECT * FROM ExclamationCommands WHERE CommandName = ?",
+                    "SELECT * FROM ExclamationCommands WHERE Command = ?",
                     [commandName]
                 );
     
@@ -80,7 +80,7 @@ module.exports = [
                 
                 // Insert the new command
                 await database.query(
-                    "INSERT INTO ExclamationCommands (CommandName, Response) VALUES (?, ?)",
+                    "INSERT INTO ExclamationCommands (Command, Response) VALUES (?, ?)",
                     [commandName, response]
                 );
     
