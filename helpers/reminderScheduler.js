@@ -21,7 +21,7 @@ module.exports = (client) => {
     // Schedule reminders to run every minute
     cron.schedule("* * * * *", () => {
         console.log("⏳ Checking for reminders...");
-        database.query("SELECT * FROM Reminders WHERE RemindAt <= NOW()", (err, results) => {
+        database.query("SELECT * FROM Reminders WHERE RemindAt <= UTC_TIMESTAMP()", (err, results) => {
             if (err) {
                 console.error("❌ Database error:", err);
                 return;
