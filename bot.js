@@ -62,6 +62,15 @@ client.once('ready', async () => {
     const channelId = '1221395301433081916'; // Replace with your channel ID
     const roleId = '1307759931016871987'; // Replace with @pha's role ID
 
+    database.query("SELECT 1", (err, results) => {
+        if (err) {
+            console.error("🚨 Database connection failed:", err);
+        } else {
+            console.log("✅ Database connection successful");
+        }
+    });
+
+    
     cron.schedule('50 11,23 * * *', async () => {
         try {
             const channel = await client.channels.fetch(channelId);

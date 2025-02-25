@@ -19,6 +19,14 @@ module.exports = (client) => {
         }
     }
     
+    database.query("SELECT 1", (err, results) => {
+        if (err) {
+            console.error("🚨 Database connection failed:", err);
+        } else {
+            console.log("✅ Database connection successful");
+        }
+    });
+    
 
     // Schedule reminders to run every minute
     cron.schedule("* * * * *", async () => {
