@@ -84,7 +84,6 @@ client.on('messageCreate', async (message) => {
 
 });
 
-
 const handleSlashCommand = require('./commands/handlers/slashCommands.js');
 
 client.on('interactionCreate', async (interaction) => {
