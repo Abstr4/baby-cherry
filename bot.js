@@ -77,9 +77,7 @@ client.once('ready', async () => {
     console.log("Boss reminder scheduler started.");
 });
 
-
 client.on('messageCreate', async (message) => {
-    
     if (message.author.bot) return;
 
     // Handle "!" commands
@@ -87,24 +85,25 @@ client.on('messageCreate', async (message) => {
         if (message.content === '!') return;
         const commandName = message.content.trim().split(/\s+/)[0].toLowerCase();
 
-        // Query the database for the command
-        connection.query(
-            'SELECT Response FROM ExclamationCommands WHERE Command = ?',
-            [commandName],
-            (err, results) => {
-                if (err) {
-                    console.error('❌ Database query error:', err);
-                    return;
-                }
+        try {
+            // Query the database for the command
+            const [results] = await connection.execute(
+                'SELECT Response FROM ExclamationCommands WHERE Command = ?',
+                [commandName]
+            );
 
-                if (results.length > 0) {
-                    // Send the command's response from the database
-                    message.channel.send(results[0].Response).catch(console.error);
-                }
+            if (results.length > 0) {
+                // Send the command's response from the database
+                await message.channel.send(results[0].Response);
+            } else {
+                console.log(`⚠️ No response found for command: ${commandName}`);
             }
-        );
+        } catch (err) {
+            console.error('❌ Database query error:', err);
+        }
     }
 });
+
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
