@@ -26,10 +26,14 @@ module.exports = (client) => {
                 console.error("❌ Database error:", err);
                 return;
             }
-
+    
+            console.log(`🔍 Found ${results.length} reminders.`); // Log number of reminders found
+    
             results.forEach(reminder => {
+                console.log(`📢 Sending reminder: ${reminder.Message} to ${reminder.ChannelId}`);
                 sendReminder(reminder.Message, reminder.ChannelId);
-                // Optionally, delete the reminder after sending it
+    
+                // Delete the reminder after sending it
                 database.query("DELETE FROM Reminders WHERE ID = ?", [reminder.ID], (deleteErr) => {
                     if (deleteErr) console.error("❌ Error deleting reminder:", deleteErr);
                     else console.log(`🗑 Reminder ID ${reminder.ID} deleted.`);
@@ -37,4 +41,5 @@ module.exports = (client) => {
             });
         });
     });
+    
 };
