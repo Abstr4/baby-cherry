@@ -2,14 +2,15 @@ module.exports = (client) => {
     const cron = require("node-cron");
     const { database } = require("../database.js");
 
-    // Function to send the reminder
     async function sendReminder(message, channelId) {
         try {
-            console.log("Trying to send reminder to channel:", channelId);
+            console.log(`🔍 Fetching channel ${channelId}...`);
             const channel = await client.channels.fetch(channelId);
+    
             if (channel) {
+                console.log(`✅ Channel found. Sending reminder: ${message}`);
                 await channel.send(`🔔 Reminder: ${message}`);
-                console.log(`✅ Reminder sent to ${channelId}: ${message}`);
+                console.log(`📨 Message sent successfully!`);
             } else {
                 console.error(`❌ Error: Channel ${channelId} not found.`);
             }
@@ -17,6 +18,7 @@ module.exports = (client) => {
             console.error("❌ Error sending reminder:", err);
         }
     }
+    
 
     // Schedule reminders to run every minute
     cron.schedule("* * * * *", () => {
