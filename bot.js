@@ -1,15 +1,13 @@
 require('dotenv').config();
 // Modules load, don't touch this unless you're adding something new
 
-const blockedUsers = ['1209912413776904203', '909474089406722110'];
-
 const cron = require('node-cron');
-const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 const express = require("express");
 const fs = require("fs");
 const path = require('path');
 const mysql = require('mysql2');
-require('dotenv').config();
+
+const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 
 const connection = mysql.createPool({
     host: process.env.MYSQLHOST || process.env.MYSQL_HOST, 
@@ -38,18 +36,7 @@ connection.getConnection((err, conn) => {
 
 module.exports = connection;
 
-// Path to the static commands JSON file
-const staticCommandsPath = path.join(__dirname, './commands/exclamation/static.json');
-
-// Preload static commands
-let staticCommands = {};
-if (fs.existsSync(staticCommandsPath)) {
-    staticCommands = JSON.parse(fs.readFileSync(staticCommandsPath, 'utf-8'));
-}
-
-const dynamicCommands = require('./commands/exclamation/dynamic.js');
 const slashCommands = require('./commands/slash.js');
-const questionCommands = require('./commands/question.js');
 
 const client = new Client({
     intents: [
@@ -65,7 +52,6 @@ for (const command of slashCommands) {
     client.slashCommands.set(command.data.name, command);
 }
 
-
 // Your code below ---------------------------------------------------------
 
 // Handles the slash commands, refresh every deploy / re-deploy
@@ -78,16 +64,17 @@ client.once('ready', async () => {
 
     // Register Slash Commands
     const rest = new REST({ version: '10' }).setToken(TOKEN);
-    try {
+    try 
+    {
         console.log('Started refreshing application (/) commands.');
-
+        
         await rest.put(
             Routes.applicationGuildCommands(clientId, guildId), // Register for specific guild
             { body: commandsToRegister }
         );
-
         console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error registering commands:', error);
     }
 
@@ -113,61 +100,59 @@ client.once('ready', async () => {
 // Handles the ! and ? commands
 client.on('messageCreate', async (message) => {
     if (message.author.bot || blockedUsers.includes(message.author.id)) return;
-    
+
     // Handle "!" commands
     if (message.content.startsWith('!')) {
-        if(message.content === '!') return;
-        const commandName = message.content.slice(1).split(' ')[0]; 
+        if (message.content === '!') return;
+        const commandName = message.content.slice(1).split(' ')[0];
 
-        // Handle static commands
-        if (staticCommands[commandName]) {
-            const command = staticCommands[commandName];
-            message.channel
-                .send(command.command_response)
-                .then(() => console.log(command.console_log))
-                .catch(console.error);
-            return;
-        }
+        // Query the database for the command
+        connection.query(
+            'SELECT response FROM exclamationCommands WHERE command_name = ?',
+            [commandName],
+            (err, results) => {
+                if (err) {
+                    console.error('❌ Database query error:', err);
+                    return;
+                }
 
-        // Handle dynamic commands
-        else if (dynamicCommands[commandName]) {
-            await dynamicCommands[commandName].execute(message);
-            return;
-        }
-        else { 
-            // Command not found
-            return;
-        }
+                if (results.length > 0) {
+                    // Send the command's response from the database
+                    message.channel.send(results[0].response).catch(console.error);
+                }
+            }
+        );
     }
 
-    // Handle "?" commands
+    // Handle "?" commands (this remains unchanged)
     if (message.content.startsWith('?')) {
-        if(message.content === '?') return;
-        const commandName = message.content.slice(1).split(' ')[0]; 
+        if (message.content === '?') return;
+        const commandName = message.content.slice(1).split(' ')[0];
         const command = questionCommands[commandName];
 
         if (command) {
             message.channel
-            .send(command.command_response)
-            .then(() => console.log(command.console_log))
-            .catch(console.error);
-        } 
-        else {
+                .send(command.command_response)
+                .then(() => console.log(command.console_log))
+                .catch(console.error);
+        } else {
             message.channel.send(`Unknown command: ${commandName}`);
         }
     }
 });
 
-
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand() || blockedUsers.includes(message.author.id)) return;
+    
     const command = client.slashCommands.get(interaction.commandName);
     if (!command) return;
-    try {
-            console.log(`/${interaction.commandName} called`);
-            await command.execute(interaction);
-            staticCommands = JSON.parse(fs.readFileSync(staticCommandsPath, 'utf-8'));
-    } catch (error) {
+    try 
+    {
+        console.log(`/${interaction.commandName} called`);
+        await command.execute(interaction);
+    } 
+    catch (error) 
+    {
         console.error(error);
         await interaction.reply({ content: 'There was an error executing this command!', ephemeral: true });
     }

@@ -1,39 +1,11 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const levels = require('../wildForest/levels.json'); // Ensure this points to the correct path
 const { calculateResources } = require('../wildForest/calculateResources.js'); // Export the function
-const fs = require('fs');
-const path = require('path');
-
-// Path to your static commands JSON file
-const staticCommandsPath = path.join(__dirname, './exclamation/static.json');
-
-// Load existing static commands
-let staticCommands = {};
-if (fs.existsSync(staticCommandsPath)) {
-    staticCommands = JSON.parse(fs.readFileSync(staticCommandsPath, 'utf-8'));
-}
 
 // Allowed User IDs
 let allowedUserIds = ['396392854798336002', '357087654552010753', '167821784333287424', '253329702662569987'];
 
 
 module.exports = [
-    // help 
-    {
-        data: new SlashCommandBuilder()
-            .setName('help')
-            .setDescription('Displays available commands'),
-            async execute(interaction) {
-
-                try {
-
-                    // Respond to the interaction
-                    await interaction.reply('Available commands: !time (utc time), !wf, !<cryptocurrency-short>, ?trophies, ?lords, ?partidas, ?levelup');
-                } catch (error) {
-                    await interaction.reply({ content: `Error: ${error.message}`, ephemeral: true });
-                }
-            },
-    },
     // levelup 
     {
         data: new SlashCommandBuilder()
@@ -70,6 +42,7 @@ module.exports = [
         // use .setDefaultMemberPermissions(PermissionFlagsBits.Administrator) to allow only admins to addcommands
         data: new SlashCommandBuilder()
             .setName('addcommand')
+            .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
             .setDescription('Add a static exclamation command')
             .addStringOption(option =>
                 option
@@ -81,6 +54,7 @@ module.exports = [
                     .setName('response')
                     .setDescription('The response of the command')
                     .setRequired(true)),
+
         async execute(interaction) {
 
             if (!allowedUserIds.includes(interaction.user.id)) {
@@ -93,85 +67,43 @@ module.exports = [
             const commandName = interaction.options.getString('command');
             const commandResponse = interaction.options.getString('response');
 
-            if(staticCommands[commandName]) {
-                console.error('Command already exists');
-                await interaction.reply(`Command !${commandName} already exists!`);
-                return;
-            } 
-            // Add the new command to the static commands object
-            staticCommands[commandName] = {
-                description: 'Custom command added via /addcommand',
-                command_response: commandResponse,
-                console_log: `!${commandName} command called`,
-            };
-
-            // Save to the JSON file
-            try {
-                fs.writeFileSync(staticCommandsPath, JSON.stringify(staticCommands, null, 2), 'utf-8');
-                await interaction.reply(`Command !${commandName} added successfully!`);
-            } catch (error) {
-                console.error('Error writing to staticCommands.json:', error);
-                await interaction.reply('Failed to add the command. Please try again later.');
-            }
-        },
-    },
-    // delcommand
-    {
-        data: new SlashCommandBuilder()
-            .setName('delcommand')
-            .setDescription('Delete a static command')
-            .addStringOption(option =>
-                option.setName('command')
-                    .setDescription('The command to delete')
-                    .setRequired(true)),
-        async execute(interaction) {
-
-            if (!allowedUserIds.includes(interaction.user.id)) {
+            // Validate command format (must start with "!" and contain only letters)
+            if (!/^![a-zA-Z]+$/.test(commandName)) {
                 return await interaction.reply({
-                    content: 'You are not authorized to use this command!',
-                    ephemeral: true, // Ephemeral means only the user sees the message
+                    content: 'Invalid command format! Commands must start with "!" and contain only letters (no spaces, numbers, or symbols).',
+                    ephemeral: true,
                 });
             }
+            
+            // Check if the command already exists in the database
+            connection.query(
+                'SELECT * FROM exclamationCommands WHERE command_name = ?',
+                [commandName],
+                (err, results) => {
+                    if (err) {
+                        console.error('❌ Database query error:', err);
+                        return interaction.reply('Database error occurred. Please try again later.');
+                    }
 
-            const commandName = interaction.options.getString('command');
+                    if (results.length > 0) {
+                        return interaction.reply(`Command ${commandName} already exists!`);
+                    }
 
-            if (!staticCommands[commandName]) {
-                return await interaction.reply(`Command ${commandName} not found!`);
-            }
+                    // Insert the new command into the database
+                    connection.query(
+                        'INSERT INTO exclamationCommands (command_name, response) VALUES (?, ?)',
+                        [commandName, commandResponse],
+                        (insertErr) => {
+                            if (insertErr) {
+                                console.error('❌ Error inserting command:', insertErr);
+                                return interaction.reply('Failed to add the command. Please try again.');
+                            }
 
-            // Delete the command from the staticCommands object
-            delete staticCommands[commandName];
-
-            // Save the updated static commands to the JSON file
-            fs.writeFileSync(staticCommandsPath, JSON.stringify(staticCommands, null, 2), 'utf-8');
-
-            // Respond to the user
-            await interaction.reply(`Command ${commandName} has been deleted!`);
-        },
-    },
-    // listcommands
-    {
-        data: new SlashCommandBuilder()
-            .setName('listcommands')
-            .setDescription('Displays the list of static commands'),
-        async execute(interaction) {
-            // Reload static commands in case they were updated dynamically
-            staticCommands = JSON.parse(fs.readFileSync(staticCommandsPath, 'utf-8'));
-
-            // Prepare the list of commands
-            const commandList = Object.keys(staticCommands)
-                .map(command => `**!${command}**: ${staticCommands[command].description || 'No description provided'}`)
-                .join('\n');
-
-            if (!commandList) {
-                return await interaction.reply('There are no static commands currently.');
-            }
-
-            // Reply with the list of static commands
-            await interaction.reply({
-                content: `Here's the list of commands:\n\n${commandList}`,
-                ephemeral: true, // Optional: Only visible to the user who requested it
-            });
+                            interaction.reply(`✅ Command ${commandName} added successfully!`);
+                        }
+                    );
+                }
+            );
         },
     },
 ];
