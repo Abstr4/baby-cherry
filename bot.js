@@ -9,6 +9,11 @@ const mysql = require('mysql2');
 
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 
+console.log('MYSQLHOST:', process.env.MYSQLHOST);
+console.log('MYSQLUSER:', process.env.MYSQLUSER);
+console.log('MYSQLDATABASE:', process.env.MYSQLDATABASE);
+console.log('MYSQLPORT:', process.env.MYSQLPORT);
+
 const connection = mysql.createPool({
     host: process.env.MYSQLHOST || process.env.MYSQL_HOST, 
     user: process.env.MYSQLUSER || process.env.MYSQL_USER,
@@ -99,7 +104,7 @@ client.once('ready', async () => {
 
 // Handles the ! and ? commands
 client.on('messageCreate', async (message) => {
-    if (message.author.bot || blockedUsers.includes(message.author.id)) return;
+    if (message.author.bot) return;
 
     // Handle "!" commands
     if (message.content.startsWith('!')) {
@@ -142,7 +147,7 @@ client.on('messageCreate', async (message) => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand() || blockedUsers.includes(message.author.id)) return;
+    if (!interaction.isCommand()) return;
     
     const command = client.slashCommands.get(interaction.commandName);
     if (!command) return;
