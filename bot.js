@@ -77,49 +77,18 @@ client.once('ready', async () => {
     console.log("Boss reminder scheduler started.");
 });
 
+const handleExclamationCommand = require('./commands/handlers/exclamationCommands.js');
+
 client.on('messageCreate', async (message) => {
-    if (message.author.bot) return;
+    await handleExclamationCommand(message, connection);
 
-    // Handle "!" commands
-    if (message.content.startsWith('!')) {
-        if (message.content === '!') return;
-        const commandName = message.content.trim().split(/\s+/)[0].toLowerCase();
-
-        try {
-            // Query the database for the command
-            const [results] = await connection.execute(
-                'SELECT Response FROM ExclamationCommands WHERE Command = ?',
-                [commandName]
-            );
-
-            if (results.length > 0) {
-                // Send the command's response from the database
-                await message.channel.send(results[0].Response);
-            } else {
-                console.log(`⚠️ No response found for command: ${commandName}`);
-            }
-        } catch (err) {
-            console.error('❌ Database query error:', err);
-        }
-    }
 });
 
 
+const handleSlashCommand = require('./commands/handlers/slashCommands.js');
+
 client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) return;
-    
-    const command = client.slashCommands.get(interaction.commandName);
-    if (!command) return;
-    try 
-    {
-        console.log(`/${interaction.commandName} called`);
-        await command.execute(interaction);
-    } 
-    catch (error) 
-    {
-        console.error(error);
-        await interaction.reply({ content: 'There was an error executing this command!', ephemeral: true });
-    }
+    await handleSlashCommand(interaction, client);
 });
 
 
