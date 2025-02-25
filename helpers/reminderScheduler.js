@@ -24,42 +24,24 @@ module.exports = (client) => {
     cron.schedule("* * * * *", async () => {
         console.log("⏳ Checking for reminders...");
     
-        database.query("SELECT * FROM Reminders WHERE RemindAt <= UTC_TIMESTAMP()", async (err, results) => {
+        database.query("SELECT * FROM Reminders WHERE RemindAt <= UTC_TIMESTAMP()", (err, results) => {
             if (err) {
                 console.error("❌ Database error:", err);
                 return;
             }
     
+            console.log("📊 Raw query result:", results); // <---- PRINT FULL QUERY RESULT
+    
             if (!results || results.length === 0) {
-                console.log("❌ No reminders found. Either the query is wrong, or the timestamps are incorrect.");
+                console.log("❌ No reminders found.");
                 return;
             }
     
             console.log(`🔍 Query executed. Found ${results.length} reminders.`);
     
-            for (const reminder of results) {
+            results.forEach(reminder => {
                 console.log(`📢 Attempting to send reminder: ${reminder.Message} to ${reminder.ChannelId}`);
-    
-                try {
-                    const channel = await client.channels.fetch(reminder.ChannelId);
-                    if (channel) {
-                        await channel.send(`🔔 Reminder: ${reminder.Message}`);
-                        console.log(`✅ Reminder sent to ${reminder.ChannelId}: ${reminder.Message}`);
-    
-                        database.query("DELETE FROM Reminders WHERE ID = ?", [reminder.ID], (deleteErr) => {
-                            if (deleteErr) console.error("❌ Error deleting reminder:", deleteErr);
-                            else console.log(`🗑 Reminder ID ${reminder.ID} deleted.`);
-                        });
-                    } else {
-                        console.error(`❌ Error: Channel ${reminder.ChannelId} not found.`);
-                    }
-                } catch (err) {
-                    console.error("❌ Error sending reminder:", err);
-                }
-            }
+            });
         });
-    }, { timezone: "UTC" });
-    
-    
-    
+    }, { timezone: "UTC" });    
 };
