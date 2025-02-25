@@ -80,7 +80,7 @@ client.on('messageCreate', async (message) => {
     // Handle "!" commands
     if (message.content.startsWith('!')) {
         if (message.content === '!') return;
-        const commandName = message.content.trim().split(/\s+/)[0]; // Keeps "!" and gets full command
+        const commandName = message.content.trim().split(/\s+/)[0].toLowerCase();
 
         // Query the database for the command
         connection.query(
@@ -94,7 +94,7 @@ client.on('messageCreate', async (message) => {
 
                 if (results.length > 0) {
                     // Send the command's response from the database
-                    message.channel.send(results[0].response).catch(console.error);
+                    message.channel.send(results[0].Response).catch(console.error);
                 }
             }
         );
