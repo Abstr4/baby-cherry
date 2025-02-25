@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('./helpers/reminderScheduler.js')(client);
 
 // Modules load, don't touch this unless you're adding something new
 
@@ -24,6 +23,8 @@ const client = new Client({
         GatewayIntentBits.GuildMessages
     ],
 });
+
+require('./helpers/reminderScheduler.js')(client);
 
 client.slashCommands = new Collection();
 
