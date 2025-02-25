@@ -1,6 +1,11 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { calculateResources } = require('../wildForest/calculateResources.js'); // Export the function
 const connection = require('../database.js');
+const moment = require('moment');
+
+const date = moment().format('YYYY-MM-DD HH:mm:ss'); 
+console.log("Current date and time:", date);
+
 
 // Allowed User IDs
 let allowedUsers = ['396392854798336002', '357087654552010753', '167821784333287424', '253329702662569987'];
@@ -155,7 +160,7 @@ module.exports = [
             if (!remindAt.isValid()) {
                 return interaction.reply({
                     content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
-                    ephemeral: true
+                    flags: 64
                 });
             }
 
@@ -166,11 +171,11 @@ module.exports = [
                 (err) => {
                     if (err) {
                         console.error("❌ Database error:", err);
-                        return interaction.reply({ content: "❌ Failed to save reminder.", ephemeral: true });
+                        return interaction.reply({ content: "❌ Failed to save reminder.", flags: 64 });
                     }
                     interaction.reply({
                         content: `✅ Reminder set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>.`,
-                        ephemeral: false
+                        flags: 64
                     });
                 }
             );
