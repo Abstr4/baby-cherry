@@ -6,6 +6,10 @@ const express = require("express");
 
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 
+const TOKEN = process.env.BOT_TOKEN;
+const clientId = process.env.CLIENT_ID;
+const guildId = process.env.GUILD_ID;
+
 const connection = require('./database.js');
 
 const slashCommands = require('./commands/slash.js');
