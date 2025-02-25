@@ -57,33 +57,46 @@ module.exports = [
                     .setRequired(true)),
 
         async execute(interaction) {
-            const userId = interaction.user.id; // Get the user's Discord ID
-            const member = interaction.member; // Get member info
+            const commandName = interaction.options.getString("command");
+            const response = interaction.options.getString("response");
     
-            // Check if the user is an admin or in the allow list
-            if (
-                member.permissions.has(PermissionFlagsBits.Administrator) ||
-                allowedUsers.includes(userId)
-            ) {
-                const command = interaction.options.getString("command");
-                const response = interaction.options.getString("response");
-    
-                // Add command to the database
-                database.query(
-                    "INSERT INTO ExclamationCommands (Command, Response) VALUES (?, ?)",
-                    [command, response],
-                    (err) => {
-                        if (err) {
-                            console.error("❌ Database error:", err);
-                            return interaction.reply({ content: "❌ Failed to add command!", ephemeral: true });
-                        }
-                        interaction.reply({ content: `✅ Command **${command}** added successfully!`, ephemeral: true });
-                    }
-                );
-            } else {
-                interaction.reply({ content: "❌ You do not have permission to use this command!", ephemeral: true });
+                // Ensure command starts with "!"
+            if (!commandName.startsWith("!")) {
+                return interaction.reply({ content: "❌ Commands must start with `!`. Example: `!hello`", ephemeral: true });
             }
-        },
+            try {
+                // Check if the command already exists
+                const [existing] = await database.query(
+                    "SELECT * FROM Commands WHERE CommandName = ?",
+                    [commandName]
+                );
+    
+                if (existing.length > 0) {
+                    return interaction.reply({
+                        content: `❌ The command \`${commandName}\` already exists.`,
+                        flags: 64
+                    });
+                }
+                
+                // Insert the new command
+                await database.query(
+                    "INSERT INTO Commands (CommandName, Response) VALUES (?, ?)",
+                    [commandName, response]
+                );
+    
+                return interaction.reply({
+                    content: `✅ Command \`${commandName}\` has been added successfully!`,
+                    flags: 64
+                });
+    
+            } catch (err) {
+                console.error("❌ Database error:", err);
+                return interaction.reply({
+                    content: "❌ Failed to add the command due to a database error.",
+                    flags: 64
+                });
+            }
+        }
     },
     // delcommand
     {
