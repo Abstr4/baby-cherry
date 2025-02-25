@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { calculateResources } = require('../wildForest/calculateResources.js'); // Export the function
-const connection = require('../database.js');
+const { database } = require('../database.js');
 const moment = require('moment');
 
 const date = moment().format('YYYY-MM-DD HH:mm:ss'); 
@@ -150,35 +150,36 @@ module.exports = [
                 .setRequired(false)),
 
         async execute(interaction) {
-            const dateStr = interaction.options.getString("date");
-            const message = interaction.options.getString("message");
-            const channel = interaction.options.getChannel("channel") || interaction.channel;
-            const channelId = channel.id;
+            try {
+                const dateStr = interaction.options.getString("date");
+                const message = interaction.options.getString("message");
+                const channel = interaction.options.getChannel("channel") || interaction.channel;
+                const channelId = channel.id;
 
-            // Validate date format
-            const remindAt = moment.utc(dateStr, "YYYY-MM-DD HH:mm", true);
-            if (!remindAt.isValid()) {
-                return interaction.reply({
-                    content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
-                    flags: 64
-                });
-            }
-
-            // Store in database
-            connection.query(
-                "INSERT INTO Reminders (Message, RemindAt, ChannelId) VALUES (?, ?, ?)",
-                [message, remindAt.format("YYYY-MM-DD HH:mm:ss"), channelId],
-                (err) => {
-                    if (err) {
-                        console.error("❌ Database error:", err);
-                        return interaction.reply({ content: "❌ Failed to save reminder.", flags: 64 });
-                    }
-                    interaction.reply({
-                        content: `✅ Reminder set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>.`,
-                        flags: 64
+                // Validate date format
+                const remindAt = moment.utc(dateStr, "YYYY-MM-DD HH:mm", true);
+                if (!remindAt.isValid()) {
+                    return interaction.reply({
+                        content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
+                        ephemeral: true
                     });
                 }
-            );
+
+                // Store in database
+                await database.promise().query(
+                    "INSERT INTO Reminders (Message, RemindAt, ChannelId) VALUES (?, ?, ?)",
+                    [message, remindAt.format("YYYY-MM-DD HH:mm:ss"), channelId]
+                );
+
+                await interaction.reply({
+                    content: `✅ Reminder set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>.`,
+                    ephemeral: true
+                });
+
+            } catch (err) {
+                console.error("❌ Database error:", err);
+                await interaction.reply({ content: "❌ Failed to save reminder.", ephemeral: true });
+            }
         }
     }
 ];
