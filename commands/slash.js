@@ -131,10 +131,10 @@ module.exports = [
             } 
         }
     },
-    // addreminder
+    // setreminder
     {
         data: new SlashCommandBuilder()
-        .setName("addreminder")
+        .setName("setreminder")
         .setDescription("Set a reminder for everyone.")
         .addStringOption(option =>
             option.setName("date")
