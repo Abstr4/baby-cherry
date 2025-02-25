@@ -30,6 +30,11 @@ module.exports = (client) => {
                 return;
             }
     
+            if (!results || results.length === 0) {
+                console.log("❌ No reminders found. Either the query is wrong, or the timestamps are incorrect.");
+                return;
+            }
+    
             console.log(`🔍 Query executed. Found ${results.length} reminders.`);
     
             for (const reminder of results) {
@@ -41,7 +46,6 @@ module.exports = (client) => {
                         await channel.send(`🔔 Reminder: ${reminder.Message}`);
                         console.log(`✅ Reminder sent to ${reminder.ChannelId}: ${reminder.Message}`);
     
-                        // Delete after sending
                         database.query("DELETE FROM Reminders WHERE ID = ?", [reminder.ID], (deleteErr) => {
                             if (deleteErr) console.error("❌ Error deleting reminder:", deleteErr);
                             else console.log(`🗑 Reminder ID ${reminder.ID} deleted.`);
@@ -55,6 +59,7 @@ module.exports = (client) => {
             }
         });
     }, { timezone: "UTC" });
+    
     
     
 };
