@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { calculateResources } = require('../wildForest/calculateResources.js'); // Export the function
-const connection = require('./database');
+const connection = require('../database.js');
 
 // Allowed User IDs
 let allowedUserIds = ['396392854798336002', '357087654552010753', '167821784333287424', '253329702662569987'];

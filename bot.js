@@ -6,7 +6,7 @@ const express = require("express");
 
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require('discord.js');
 
-const connection = require('./database');
+const connection = require('./database.js');
 
 const slashCommands = require('./commands/slash.js');
 
