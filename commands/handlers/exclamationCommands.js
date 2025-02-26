@@ -7,7 +7,7 @@ const handleExclamationCommand = async (message, connection) => {
     try {
         // Query the database for the command
         const [results] = await connection.execute(
-            'SELECT Response FROM ExclamationCommands WHERE Command = ?',
+            'SELECT Response FROM ExclamationCommand WHERE Command = ?',
             [commandName]
         );
 
