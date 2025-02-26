@@ -8,9 +8,9 @@ let allowedUsers = ['396392854798336002', '357087654552010753', '167821784333287
 
 module.exports = [
 
+    levelUpCommand,
     // addcommand 
     {
-        levelUpCommand,
         // use .setDefaultMemberPermissions(PermissionFlagsBits.Administrator) to allow only admins to addcommands
         data: new SlashCommandBuilder()
             .setName('addcommand')
