@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { calculateResources } = require('../wildForest/calculateResources.js');
+const { calculateResources } = require('../../wildForest/calculateResources.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
