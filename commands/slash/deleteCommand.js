@@ -1,7 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const database = require("../../database.js");
-const { PermissionFlagsBits } = require('discord.js');
-
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -11,7 +9,7 @@ module.exports = {
             option.setName("command")
                 .setDescription("The command to delete (e.g., !hello)")
                 .setRequired(true)),
-        
+
     async execute(interaction) {
         const userId = interaction.user.id;
         const member = interaction.member;
@@ -21,27 +19,31 @@ module.exports = {
         if (!command.startsWith("!")) {
             return interaction.reply({ content: "❌ Commands must start with `!`. Example: `!hello`", ephemeral: true });
         }
+
         // Permission check
         if (
             member.permissions.has(PermissionFlagsBits.Administrator) ||
             allowedUsers.includes(userId)
         ) {
+            // Defer the reply to prevent timeouts
+            await interaction.deferReply({ ephemeral: true });
+
             database.query(
                 "DELETE FROM ExclamationCommands WHERE Command = ?",
                 [command],
-                (err, result) => {
+                async (err, result) => {
                     if (err) {
                         console.error("❌ Database error:", err);
-                        return interaction.reply({ content: "❌ Failed to delete command!", ephemeral: true });
+                        return interaction.editReply({ content: "❌ Failed to delete command!" });
                     }
                     if (result.affectedRows === 0) {
-                        return interaction.reply({ content: `❌ Command **${command}** not found!`, ephemeral: true });
+                        return interaction.editReply({ content: `❌ Command **${command}** not found!` });
                     }
-                    interaction.reply({ content: `✅ Command **${command}** deleted successfully!`, ephemeral: true });
+                    await interaction.editReply({ content: `✅ Command **${command}** deleted successfully!` });
                 }
             );
         } else {
-            interaction.reply({ content: "❌ You do not have permission to use this command!", ephemeral: true });
-        } 
+            await interaction.reply({ content: "❌ You do not have permission to use this command!", ephemeral: true });
+        }
     }
 };
