@@ -35,7 +35,7 @@ module.exports = (client) => {
         console.log("⏳ Checking for Events...");
 
         try {
-            const [results] = await database.query("SELECT * FROM Event WHERE RemindAt <= UTC_TIMESTAMP()");
+            const [results] = await database.query("SELECT * FROM Event WHERE EventAt <= UTC_TIMESTAMP()");
 
             if (!results || results.length === 0) {
                 console.log("❌ No Events found.");

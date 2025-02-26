@@ -2,7 +2,7 @@ require('dotenv').config();
 const mysql = require('mysql2');
 
 // Ensure the pool uses a valid MySQL connection string
-const connection = mysql.createPool(process.env.DATABASE_URL).promise();
+const connection = mysql.createPool(process.env.MYSQL).promise();
 
 // Test connection
 connection.getConnection()
