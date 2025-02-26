@@ -1,46 +1,16 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { calculateResources } = require('../wildForest/calculateResources.js');
 const moment = require('moment');
 const database = require("../database.js"); // ✅ Import it directly
-
+const levelUpCommand = require('./slash/levelup.js');
 
 // Allowed User IDs
 let allowedUsers = ['396392854798336002', '357087654552010753', '167821784333287424', '253329702662569987'];
 
 module.exports = [
-    // levelup 
-    {
-        data: new SlashCommandBuilder()
-            .setName('levelup')
-            .setDescription('Calculate the resources needed to level up')
-            .addIntegerOption(option =>
-                option
-                    .setName('start')
-                    .setDescription('The starting level')
-                    .setRequired(true)
-            )
-            .addIntegerOption(option =>
-                option
-                    .setName('end')
-                    .setDescription('The ending level')
-                    .setRequired(true)
-            ),
-            async execute(interaction) {
-                const startLevel = interaction.options.getInteger('start');
-                const endLevel = interaction.options.getInteger('end');
 
-                try {
-                    const { shardsNeeded, goldNeeded } = calculateResources(startLevel, endLevel);
-
-                    // Respond to the interaction
-                    await interaction.reply(`Los recursos necesarios para subir tu unidad de nivel ${startLevel} a nivel ${endLevel} son: ${shardsNeeded} Shards, ${goldNeeded} Gold`);
-                } catch (error) {
-                    await interaction.reply({ content: `Error: ${error.message}`, ephemeral: true });
-                }
-            },
-    },
     // addcommand 
     {
+        levelUpCommand,
         // use .setDefaultMemberPermissions(PermissionFlagsBits.Administrator) to allow only admins to addcommands
         data: new SlashCommandBuilder()
             .setName('addcommand')
