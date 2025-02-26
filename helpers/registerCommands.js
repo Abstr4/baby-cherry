@@ -7,15 +7,13 @@ async function registerCommands(client, slashCommands) {
     
     const commandsToRegister = slashCommands.map(command => command.data.toJSON());
     console.log('Commands to register:', commandsToRegister);
+    
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
     try {
         console.log('Started refreshing application (/) commands.');
 
-        // Clear old commands before registering new ones
-        await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: [] });
-
-        // Register new commands
+        // Directly update commands without clearing them first
         await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commandsToRegister });
 
         console.log('Successfully reloaded application (/) commands.');

@@ -50,7 +50,7 @@ const app = express();
 app.get("/", (req, res) => {
     res.send("Bot is running!");
 });
-app.listen(3001, () => {
+app.listen(3002, () => {
     console.log("Web server is live on port 3001!");
 });
 

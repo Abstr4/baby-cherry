@@ -3,7 +3,7 @@ const database = require("../../database.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("deletecommand")
+        .setName("delcommand")
         .setDescription("Deletes an existing exclamation command.")
         .addStringOption(option =>
             option.setName("command")
