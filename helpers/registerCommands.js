@@ -11,10 +11,13 @@ async function registerCommands(client, slashCommands) {
 
     try {
         console.log('Started refreshing application (/) commands.');
-        await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId), 
-            { body: commandsToRegister }
-        );
+
+        // Clear old commands before registering new ones
+        await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: [] });
+
+        // Register new commands
+        await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commandsToRegister });
+
         console.log('Successfully reloaded application (/) commands.');
     } catch (error) {
         console.error('Error registering commands:', error);
