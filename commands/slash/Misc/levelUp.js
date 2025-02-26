@@ -1,5 +1,6 @@
+require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
-const { calculateResources } = require('../../wildForest/calculateResources.js');
+const { calculateResources } = require('@root/wildForest/calculateResources.js');
 
 module.exports = {
     data: new SlashCommandBuilder()

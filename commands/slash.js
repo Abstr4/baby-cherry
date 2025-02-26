@@ -1,17 +1,28 @@
-const levelUp = require('./slash/levelUp.js');
-const addCommand = require('./slash/addCommand.js');
-const deleteCommand = require('./slash/deleteCommand.js');
-const setEvent = require('./slash/setEvent.js');
-const commands = require('./slash/commands.js');
-const events = require('./slash/events.js');
-const deleteEventById = require('./slash/deleteEventById.js');
+// Misc
+const levelUp = require('./slash/Misc/levelUp.js');
+
+// Command
+const addCommand = require('./slash/Command/addCommand');
+const deleteCommand = require('./slash/Command/delCommand.js');
+const commands = require('./slash/Command/commands.js');
+
+// Event
+const setEvent = require('./slash/Event/setEvent.js');
+const events = require('./slash/Event/events.js');
+const delEvent = require('./slash/Event/delEvent.js');
 
 module.exports = [
+
+    // Misc
     levelUp,
+
+    // Command
     addCommand,
     deleteCommand,
-    setEvent,
     commands,
+
+    // Event
+    setEvent,
     events,
-    deleteEventById
+    delEvent
 ];
