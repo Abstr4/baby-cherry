@@ -1,7 +1,8 @@
+require('dotenv').config();
 const mysql = require('mysql2');
 
 // Ensure the pool uses a valid MySQL connection string
-const connection = mysql.createPool(process.env.MYSQL).promise();  // ✅ Add `.promise()`
+const connection = mysql.createPool(process.env.DATABASE_URL).promise();
 
 // Test connection
 connection.getConnection()
@@ -14,4 +15,4 @@ connection.getConnection()
     });
 
 
-module.exports = connection; // ✅ Export the pool directly
+module.exports = connection;
