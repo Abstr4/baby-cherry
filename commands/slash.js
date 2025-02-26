@@ -10,7 +10,7 @@ module.exports = [
 
     // addcommand 
     {
-        levelUpCommand,
+        data: levelUpCommand,
         // use .setDefaultMemberPermissions(PermissionFlagsBits.Administrator) to allow only admins to addcommands
         data: new SlashCommandBuilder()
             .setName('addcommand')
