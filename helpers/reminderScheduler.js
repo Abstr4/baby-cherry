@@ -2,14 +2,20 @@ module.exports = (client) => {
     const cron = require("node-cron");
     const database = require("../database.js"); // ✅ Import it directly
 
-    async function sendMessage(type, message, channelId) {
+    async function sendMessage(type, message, channelId, roleId) {
         try {
             console.log(`🔍 Fetching channel ${channelId}...`);
             const channel = await client.channels.fetch(channelId);
     
             if (channel) {
                 console.log(`✅ Channel found. Sending ${type}: ${message}`);
-                await channel.send(`🔔 ${type}: ${message}`);
+                
+                // Only mention the role if RoleId is not NULL
+                const formattedMessage = roleId 
+                    ? `🔔 ${type}: <@&${roleId}> ${message}` 
+                    : `🔔 ${type}: ${message}`;
+
+                await channel.send(formattedMessage);
                 console.log(`📨 Message sent successfully!`);
             } else {
                 console.error(`❌ Error: Channel ${channelId} not found.`);
@@ -36,9 +42,9 @@ module.exports = (client) => {
         try {
             // Fetch Events and Reminders together
             const [results] = await database.query(`
-                (SELECT ID, Message, ChannelId, 'Event' AS Type FROM Event WHERE EventAt <= UTC_TIMESTAMP())
+                (SELECT ID, Message, ChannelId, RoleId, 'Event' AS Type FROM Event WHERE EventAt <= UTC_TIMESTAMP())
                 UNION ALL
-                (SELECT ID, Message, ChannelId, 'Reminder' AS Type FROM Reminder WHERE TIME_FORMAT(ReminderAt, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i'))
+                (SELECT ID, Message, ChannelId, RoleId, 'Reminder' AS Type FROM Reminder WHERE TIME_FORMAT(ReminderAt, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i'))
             `);
 
             if (!results || results.length === 0) {
@@ -49,8 +55,10 @@ module.exports = (client) => {
             console.log(`🔍 Found ${results.length} items.`);
 
             for (const item of results) {
-                console.log(`📢 Sending ${item.Type}: ${item.Message} to ${item.ChannelId}`);
-                await sendMessage(item.Type, item.Message, item.ChannelId);
+                const roleMention = item.RoleId ? `<@&${item.RoleId}>` : "No Role";
+                console.log(`📢 Sending ${item.Type}: ${item.Message} to ${item.ChannelId} (Role: ${roleMention})`);
+                
+                await sendMessage(item.Type, item.Message, item.ChannelId, item.RoleId);
 
                 if (item.Type === "Event") {
                     // Delete Events after execution
