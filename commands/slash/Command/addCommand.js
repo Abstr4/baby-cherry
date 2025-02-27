@@ -23,7 +23,7 @@ module.exports = {
 
             // Ensure command starts with "!"
         if (!commandName.startsWith("!")) {
-            return interaction.reply({ content: "❌ Commands must start with `!`. Example: `!hello`", ephemeral: true });
+            return interaction.reply({ content: "❌ Commands must start with `!`. Example: `!hello`", flags: 64 });
         }
         try {
             // Check if the command already exists

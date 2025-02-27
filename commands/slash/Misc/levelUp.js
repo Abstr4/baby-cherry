@@ -27,7 +27,7 @@ module.exports = {
 
             await interaction.reply(`Los recursos necesarios para subir tu unidad de nivel ${startLevel} a nivel ${endLevel} son: ${shardsNeeded} Shards, ${goldNeeded} Gold`);
         } catch (error) {
-            await interaction.reply({ content: `Error: ${error.message}`, ephemeral: true });
+            await interaction.reply({ content: `Error: ${error.message}`, flags: 64 });
         }
     },
 };

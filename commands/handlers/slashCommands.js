@@ -1,3 +1,5 @@
+const { RoleFlags } = require("discord.js");
+
 const handleSlashCommand = async (interaction, client) => {
     if (!interaction.isCommand()) return;
 
@@ -9,7 +11,7 @@ const handleSlashCommand = async (interaction, client) => {
         await command.execute(interaction);
     } catch (error) {
         console.error(error);
-        await interaction.reply({ content: 'There was an error executing this command!', ephemeral: true });
+        await interaction.reply({ content: 'There was an error executing this command!', flags: 64 });
     }
 };
 

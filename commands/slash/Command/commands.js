@@ -12,14 +12,14 @@ module.exports = {
             const [rows] = await database.execute("SELECT Command FROM ExclamationCommand");
 
             if (rows.length === 0) {
-                return interaction.reply({ content: 'No exclamation commands found.', ephemeral: true });
+                return interaction.reply({ content: 'No exclamation commands found.', flags: 64 });
             }
 
             const commandList = rows.map(cmd => `• ${cmd.Command}`).join('\n');
-            await interaction.reply({ content: commandList, ephemeral: true });
+            await interaction.reply({ content: commandList, flags: 64 });
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'An error occurred while retrieving the command list.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while retrieving the command list.', flags: 64 });
         }
     }
 };
