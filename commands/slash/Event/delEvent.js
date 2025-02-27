@@ -19,13 +19,13 @@ module.exports = {
             const [result] = await database.execute("DELETE FROM Event WHERE ID = ?", [id]);
 
             if (result.affectedRows === 0) {
-                return interaction.reply({ content: 'No event found with that ID.', ephemeral: true });
+                return interaction.reply({ content: 'No event found with that ID.', flags: 64 });
             }
 
-            await interaction.reply({ content: `event with ID **${id}** deleted.`, ephemeral: true });
+            await interaction.reply({ content: `event with ID **${id}** deleted.`, flags: 64 });
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'An error occurred while deleting the event.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while deleting the event.', flags: 64 });
         }
     }
 };

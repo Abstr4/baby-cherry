@@ -12,7 +12,7 @@ module.exports = {
             const [rows] = await database.execute("SELECT ID, Message, EventAt, ChannelId, RoleId FROM Event");
 
             if (rows.length === 0) {
-                return interaction.reply({ content: 'No events found.', ephemeral: true });
+                return interaction.reply({ content: 'No events found.', flags: 64 });
             }
 
             const eventList = rows.map(event => 
@@ -23,7 +23,7 @@ module.exports = {
             await interaction.reply({ content: eventList, flags: 64 });
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'An error occurred while retrieving the events.', ephemeral: true });
+            await interaction.reply({ content: 'An error occurred while retrieving the events.', flags: 64 });
         }
     }
 };
