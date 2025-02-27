@@ -3,6 +3,8 @@ const handleExclamationCommand = async (message, connection) => {
     if (message.author.bot || !message.content.startsWith('!')) return;
 
     const commandName = message.content.trim().split(/\s+/)[0].toLowerCase();
+    console.log(`🔍 Extracted commandName: "${commandName}"`);
+
 
     try {
         // Query the database for the command
@@ -10,6 +12,8 @@ const handleExclamationCommand = async (message, connection) => {
             'SELECT Response FROM ExclamationCommand WHERE Command = ?',
             [commandName]
         );
+
+        console.log(`📝 Query result:`, results);
 
         if (results.length > 0) {
             // Send the command's response from the database
