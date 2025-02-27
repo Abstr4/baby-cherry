@@ -42,13 +42,16 @@ module.exports = {
         }
 
         try {
-            await database.execute(
+            // Insert event into the database
+            const [result] = await database.execute(
                 "INSERT INTO Event (Message, EventAt, ChannelId, RoleId) VALUES (?, ?, ?, ?)",
                 [message, remindAt.format("YYYY-MM-DD HH:mm:ss"), channelId, roleId]
             );
 
+            const eventId = result.insertId; // ✅ Get the inserted event ID
+
             await interaction.reply({
-                content: `✅ Event set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
+                content: `✅ Event **#${eventId}** set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
                 flags: 64
             });
         } catch (err) {
