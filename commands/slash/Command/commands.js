@@ -4,12 +4,12 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('listcommands')
+        .setName('commands')
         .setDescription('Lists all exclamation commands (!commands) from the database'),
 
     async execute(interaction) {
         try {
-            const [rows] = await database.execute("SELECT Command FROM ExclamationCommands");
+            const [rows] = await database.execute("SELECT Command FROM ExclamationCommand");
 
             if (rows.length === 0) {
                 return interaction.reply({ content: 'No exclamation commands found.', ephemeral: true });
