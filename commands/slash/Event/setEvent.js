@@ -37,7 +37,7 @@ module.exports = {
         if (!remindAt.isValid()) {
             return interaction.reply({
                 content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
-                ephemeral: true
+                flags: 64
             });
         }
 
@@ -49,11 +49,11 @@ module.exports = {
 
             await interaction.reply({
                 content: `✅ Event set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
-                ephemeral: true
+                flags: 64
             });
         } catch (err) {
             console.error("❌ Database error:", err);
-            return interaction.reply({ content: "❌ Failed to save event.", ephemeral: true });
+            return interaction.reply({ content: "❌ Failed to save event.", flags: 64 });
         }
     }
 };

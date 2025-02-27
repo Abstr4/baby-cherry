@@ -20,7 +20,7 @@ module.exports = {
                 `in <#${event.ChannelId}> ${event.RoleId ? `for <@&${event.RoleId}>` : ""}`
             ).join('\n');
 
-            await interaction.reply({ content: eventList, ephemeral: true });
+            await interaction.reply({ content: eventList, flags: 64 });
         } catch (error) {
             console.error(error);
             await interaction.reply({ content: 'An error occurred while retrieving the events.', ephemeral: true });
