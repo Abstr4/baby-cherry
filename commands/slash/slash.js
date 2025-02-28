@@ -19,6 +19,7 @@ const delReminder = require('./Reminder/delReminder.js');
 // Slash
 const allow = require('./allow.js');
 const disallow = require('./disallow.js');
+const allowlist = require('./allowlist.js')
 
 module.exports = [
 
@@ -42,6 +43,7 @@ module.exports = [
 
     // Slash
     allow,
-    disallow
+    disallow,
+    allowlist
 
 ];
