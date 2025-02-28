@@ -5,12 +5,13 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const TOKEN = process.env.BOT_TOKEN;
 const connection = require('./database.js');
 
-const slashCommands = require('./commands/slash.js');
 const handleExclamationCommand = require('./commands/handlers/exclamationCommands.js');
-const handleSlashCommand = require('./commands/handlers/slashCommands.js');
-const registerCommands = require('./helpers/registerCommands.js');
 const scheduleBossReminder = require('./helpers/scheduleBossReminder.js');
+
+const registerCommands = require('./helpers/registerCommands.js');
+const slashCommands = require('./commands/slash/slash.js');
 const loadSlashCommands = require('./helpers/loadSlashCommands.js');
+const handleSlashCommand = require('./commands/handlers/slashCommands.js');
 
 const client = new Client({
     intents: [
