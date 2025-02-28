@@ -51,7 +51,7 @@ module.exports = {
             const eventId = result.insertId; // ✅ Get the inserted event ID
 
             await interaction.reply({
-                content: `✅ Event **#${eventId}** set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
+                content: `✅ Event **#${eventId}**: **${message}** set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
                 flags: 64
             });
         } catch (err) {

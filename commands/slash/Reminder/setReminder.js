@@ -51,7 +51,7 @@ module.exports = {
             const reminderId = result.insertId;
 
             await interaction.reply({
-                content: `✅ Reminder **#${reminderId}** set for **${remindAt.format("HH:mm")} UTC** in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
+                content: `✅ Reminder **#${reminderId}**: **${message}** set for **${remindAt.format("HH:mm")} UTC** in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
                 flags: 64
             });
         } catch (err) {

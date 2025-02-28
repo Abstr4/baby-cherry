@@ -6,7 +6,6 @@ async function registerCommands(client, slashCommands) {
     const guildId = process.env.GUILD_ID;
     
     const commandsToRegister = slashCommands.map(command => command.data.toJSON());
-    console.log('Commands to register:', commandsToRegister);
     
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
