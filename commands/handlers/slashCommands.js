@@ -1,7 +1,7 @@
 require('module-alias/register');
 const database = require('@database')
 
-let allowlist = new Set(); // In-memory allowlist
+let allowList = new Set(); // In-memory allowlist
 
 // Load allowlist on bot startup
 const loadAllowList = async () => {
@@ -33,4 +33,4 @@ const handleSlashCommand = async (interaction, client) => {
     }
 };
 
-module.exports = { handleSlashCommand, loadAllowlist, allowlist };
+module.exports = { handleSlashCommand, loadAllowList, allowList };
