@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
+const { allowlist } = require('../handlers/slashCommands.js'); // Import allowlist
 
 module.exports = {
     data: new SlashCommandBuilder()
