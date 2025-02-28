@@ -33,4 +33,4 @@ const handleSlashCommand = async (interaction, client) => {
     }
 };
 
-module.exports = { handleSlashCommand, loadAllowList };
+module.exports = { handleSlashCommand, loadAllowlist, allowlist };
