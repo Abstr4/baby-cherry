@@ -44,7 +44,7 @@ module.exports = {
         try {
             // Insert reminder into the database
             const [result] = await database.execute(
-                "INSERT INTO Reminder (Message, ReminderTime, ChannelId, RoleId) VALUES (?, ?, ?, ?)",
+                "INSERT INTO Reminder (Message, Time, ChannelId, RoleId) VALUES (?, ?, ?, ?)",
                 [message, remindAt.format("HH:mm"), channelId, roleId]
             );
 
