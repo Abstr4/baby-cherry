@@ -44,7 +44,7 @@ module.exports = (client) => {
             const [results] = await database.query(`
                 (SELECT ID, Message, ChannelId, RoleId, 'Event' AS Type FROM Event WHERE EventAt <= UTC_TIMESTAMP())
                 UNION ALL
-                (SELECT ID, Message, ChannelId, RoleId, 'Reminder' AS Type FROM Reminder WHERE TIME_FORMAT(ReminderAt, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i'))
+                (SELECT ID, Message, ChannelId, RoleId, 'Reminder' AS Type FROM Reminder WHERE TIME_FORMAT(Time, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i'))
             `);
 
             if (!results || results.length === 0) {
