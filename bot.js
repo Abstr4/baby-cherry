@@ -28,8 +28,9 @@ client.slashCommands = new Collection();
 loadSlashCommands(client, slashCommands);
 
 client.once('ready', async () => {
+    // Load allowlist for slash commands
+    await loadAllowlist(); 
     console.log(`Logged in as ${client.user.tag}`);
-    
     // Register Slash Commands
     await registerCommands(client, slashCommands);
     // Schedule Boss Reminder at 11:50 UTC and 23:50 UTC
