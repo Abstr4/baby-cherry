@@ -1,4 +1,5 @@
-const database = require("../../database.js");
+require('module-alias/register');
+const database = require('@database')
 
 let allowlist = new Set(); // In-memory allowlist
 

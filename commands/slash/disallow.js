@@ -1,24 +1,33 @@
 require('module-alias/register');
-const database = require('@database')
+const database = require('@database');
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-    name: "disallow",
-    description: "Remove a user from the allowlist.",
-    options: [
-        {
-            name: "user",
-            type: 6,
-            description: "User to disallow",
-            required: true
-        }
-    ],
-    execute: async (interaction) => {
+    data: new SlashCommandBuilder()
+        .setName("disallow")
+        .setDescription("Remove a user from the allowlist, preventing them from using commands.")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("User to disallow")
+                .setRequired(true)
+        ),
+
+    async execute(interaction) {
         const user = interaction.options.getUser("user");
 
-        await database.query("DELETE FROM Allowlist WHERE user_id = ?", [user.id]);
-        allowlist.delete(user.id); // Update in-memory list
+        try {
+            const [result] = await database.query("DELETE FROM Allowlist WHERE user_id = ?", [user.id]);
 
-        return interaction.reply({ content: `${user.username} is no longer allowed to use commands!`, ephemeral: true });
+            if (result.affectedRows === 0) {
+                return interaction.reply({ content: `${user.username} is not in the allowlist.`, ephemeral: true });
+            }
+
+            allowlist.delete(user.id); // Update in-memory list
+
+            await interaction.reply({ content: `${user.username} has been removed from the allowlist.`, ephemeral: true });
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: "An error occurred while disallowing the user.", ephemeral: true });
+        }
     }
 };
-

@@ -1,5 +1,5 @@
 require('module-alias/register');
-const database = require('@database')
+const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
