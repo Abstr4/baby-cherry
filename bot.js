@@ -11,7 +11,8 @@ const scheduleBossReminder = require('./helpers/scheduleBossReminder.js');
 const registerCommands = require('./helpers/registerCommands.js');
 const slashCommands = require('./commands/slash/slash.js');
 const loadSlashCommands = require('./helpers/loadSlashCommands.js');
-const handleSlashCommand = require('./commands/handlers/slashCommands.js');
+const { handleSlashCommand, loadAllowList } = require('./helpers/slashCommands');
+
 
 const client = new Client({
     intents: [
@@ -28,9 +29,9 @@ client.slashCommands = new Collection();
 loadSlashCommands(client, slashCommands);
 
 client.once('ready', async () => {
-    // Load allowlist for slash commands
-    await loadAllowlist(); 
     console.log(`Logged in as ${client.user.tag}`);
+    // Load allowlist for slash commands
+    await loadAllowList(); 
     // Register Slash Commands
     await registerCommands(client, slashCommands);
     // Schedule Boss Reminder at 11:50 UTC and 23:50 UTC

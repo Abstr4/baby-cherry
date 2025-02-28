@@ -4,7 +4,7 @@ const database = require('@database')
 let allowlist = new Set(); // In-memory allowlist
 
 // Load allowlist on bot startup
-const loadAllowlist = async () => {
+const loadAllowList = async () => {
     const result = await database.query("SELECT user_id FROM Allowlist");
     allowlist = new Set(result.map(row => row.user_id));
     console.log("Allowlist loaded:", allowlist);
@@ -29,4 +29,4 @@ const handleSlashCommand = async (interaction, client) => {
     }
 };
 
-module.exports = { handleSlashCommand, loadAllowlist };
+module.exports = { handleSlashCommand, loadAllowList };
