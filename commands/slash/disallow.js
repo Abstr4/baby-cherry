@@ -14,7 +14,15 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const user = interaction.options.getUser("user");
+            const user = interaction.options.getUser('user');
+
+            // Check if the user is in the allowlist
+            const [rows] = await database.execute("SELECT 1 FROM Allowlist WHERE user_id = ?", [user.id]);
+            if (rows.length === 0) {
+                return interaction.reply({ content: `${user} is not in the allowlist.`, flags: 64 });
+            }
+
+            // Delete it
             await database.execute("DELETE FROM Allowlist WHERE user_id = ?", [user.id]);
 
             allowList.delete(user.id); // Ensure allowlist is updated

@@ -14,7 +14,15 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const user = interaction.options.getUser("user");
+            const user = interaction.options.getUser('user');
+
+            // Check if the user is already allowed
+            const [rows] = await database.execute("SELECT 1 FROM Allowlist WHERE user_id = ?", [user.id]);
+            if (rows.length > 0) {
+                return interaction.reply({ content: `${user} is already in the allowlist.`, flags: 64 });
+            }
+
+            // Add it
             await database.execute("INSERT IGNORE INTO Allowlist (user_id) VALUES (?)", [user.id]);
 
             allowList.add(user.id); // Ensure allowlist is updated
