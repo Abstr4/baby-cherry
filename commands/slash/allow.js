@@ -17,7 +17,7 @@ module.exports = {
             const user = interaction.options.getUser("user");
             await database.execute("INSERT IGNORE INTO Allowlist (user_id) VALUES (?)", [user.id]);
 
-            allowlist.add(user.id); // Ensure allowlist is updated
+            allowList.add(user.id); // Ensure allowlist is updated
 
             return interaction.reply({ content: `${user.username} is now allowed to use commands!`, flags: 64 });
         } catch (error) {

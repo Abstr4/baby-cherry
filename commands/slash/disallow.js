@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
-const { allowlist } = require('../handlers/slashCommands.js'); // Import allowlist
+const { allowList } = require('../handlers/slashCommands.js'); // Import allowlist
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,7 +17,7 @@ module.exports = {
             const user = interaction.options.getUser("user");
             await database.execute("DELETE FROM Allowlist WHERE user_id = ?", [user.id]);
 
-            allowlist.delete(user.id); // Ensure allowlist is updated
+            allowList.delete(user.id); // Ensure allowlist is updated
 
             return interaction.reply({ content: `${user.username} is no longer allowed to use commands.`, flags: 64 });
         } catch (error) {
