@@ -6,7 +6,7 @@ let allowList = new Set(); // In-memory allowlist
 // Load allowlist on bot startup
 const loadAllowList = async () => {
     const result = await database.query("SELECT user_id FROM Allowlist");
-    allowlist = new Set(result.map(row => row.user_id));
+    allowList = new Set(result.map(row => row.user_id));
     console.log("Allowlist loaded:", allowlist);
 };
 
@@ -17,7 +17,7 @@ const handleSlashCommand = async (interaction, client) => {
     const member = await guild.members.fetch(interaction.user.id);
     const isAdmin = member.permissions.has("ADMINISTRATOR"); 
 
-    if (!isAdmin && !allowlist.has(interaction.user.id)) {
+    if (!isAdmin && !allowList.has(interaction.user.id)) {
         return interaction.reply({ content: "You are not allowed to use this bot!", flags: 64 });
     }
 
