@@ -1,16 +1,20 @@
 require('module-alias/register');
 const database = require('@database');
-const { SlashCommandBuilder } = require('discord.js');
+const { allowlist } = require('@./commands/handlers/slashCommands.js'); // Import allowlist
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName("allow")
-        .setDescription("Allow a user to use commands.")
-        .addUserOption(option =>
-            option.setName("user")
-                .setDescription("User to allow")
-                .setRequired(true)
-        ),
+    data: {
+        name: "allow",
+        description: "Allow a user to use commands.",
+        options: [
+            {
+                name: "user",
+                type: 6, // User type
+                description: "User to allow",
+                required: true
+            }
+        ]
+    },
 
     async execute(interaction) {
         const user = interaction.options.getUser("user");
@@ -19,10 +23,10 @@ module.exports = {
             await database.query("INSERT IGNORE INTO Allowlist (user_id) VALUES (?)", [user.id]);
             allowlist.add(user.id); // Update in-memory list
 
-            await interaction.reply({ content: `${user.username} is now allowed to use commands!`, ephemeral: true });
+            return interaction.reply({ content: `${user.username} is now allowed to use commands!`, flags: 64 });
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: "An error occurred while allowing the user.", ephemeral: true });
+            return interaction.reply({ content: "An error occurred while updating the allowlist.", flags: 64 });
         }
     }
 };

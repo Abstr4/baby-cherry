@@ -18,7 +18,7 @@ const handleSlashCommand = async (interaction, client) => {
     const isAdmin = member.permissions.has("ADMINISTRATOR"); 
 
     if (!isAdmin && !allowlist.has(interaction.user.id)) {
-        return interaction.reply({ content: "You are not allowed to use this bot!", ephemeral: true });
+        return interaction.reply({ content: "You are not allowed to use this bot!", flags: 64 });
     }
 
     const command = client.slashCommands.get(interaction.commandName);
