@@ -11,6 +11,11 @@ const setEvent = require('./slash/Event/setEvent.js');
 const events = require('./slash/Event/events.js');
 const delEvent = require('./slash/Event/delEvent.js');
 
+// reminder
+const setReminder = require('./slash/Reminder/setReminder.js');
+const reminders = require('./slash/Reminder/reminders.js');
+const delReminder = require('./slash/Reminder/delReminder.js');
+
 module.exports = [
 
     // Misc
@@ -24,5 +29,10 @@ module.exports = [
     // Event
     setEvent,
     events,
-    delEvent
+    delEvent,
+
+    // Reminder
+    setReminder,
+    reminders,
+    delReminder
 ];
