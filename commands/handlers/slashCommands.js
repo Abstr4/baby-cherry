@@ -7,7 +7,7 @@ let allowList = new Set(); // In-memory allowlist
 const loadAllowList = async () => {
     const result = await database.query("SELECT user_id FROM Allowlist");
     allowList = new Set(result.map(row => row.user_id));
-    console.log("Allowlist loaded:", allowlist);
+    console.log("Allowlist loaded:", allowList);
 };
 
 const handleSlashCommand = async (interaction, client) => {
