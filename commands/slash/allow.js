@@ -1,6 +1,6 @@
 require('module-alias/register');
 const database = require('@database');
-const { allowlist } = require('@./commands/handlers/slashCommands.js'); // Import allowlist
+const { allowlist } = require('../handlers/slashCommands.js'); // Import allowlist
 
 module.exports = {
     data: {
