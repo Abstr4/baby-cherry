@@ -11,7 +11,7 @@ const scheduleBossReminder = require('./helpers/scheduleBossReminder.js');
 const registerCommands = require('./helpers/registerCommands.js');
 const slashCommands = require('./commands/slash/slash.js');
 const loadSlashCommands = require('./helpers/loadSlashCommands.js');
-const { handleSlashCommand, loadAllowList } = require('./helpers/slashCommands');
+const { handleSlashCommand, loadAllowList } = require('./commands/handlers/slashCommands');
 
 
 const client = new Client({
