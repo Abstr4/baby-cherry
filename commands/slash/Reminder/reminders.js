@@ -16,7 +16,7 @@ module.exports = {
             }
 
             const reminderList = rows.map(reminder => 
-                `• **ID:** ${reminder.ID} | **${reminder.Message}** - <t:${Math.floor(new Date(reminder.Time).getTime() / 1000)}:F> ` +
+                `• **ID:** ${reminder.ID} | **${reminder.Message}** -  **${reminder.format("HH:mm")} UTC** ` +
                 `in <#${reminder.ChannelId}> ${reminder.RoleId ? `for <@&${reminder.RoleId}>` : ""}`
             ).join('\n');
 
