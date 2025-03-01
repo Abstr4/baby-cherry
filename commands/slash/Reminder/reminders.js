@@ -20,7 +20,7 @@ module.exports = {
                 // Parse "HH:mm" time correctly
                 const remindAt = moment.utc(reminder.Time, "HH:mm");
 
-                return `• **ID:** ${reminder.ID} | **${reminder.Message}** - <t:${remindAt.unix()}:t> ` +
+                return `• Reminder **#${reminder.ID}**: **${reminder.Message}** set for <t:${remindAt.unix()}:t> ` +
                     `in <#${reminder.ChannelId}> ${reminder.RoleId ? `for <@&${reminder.RoleId}>` : ""}`;
             }).join('\n');
 
