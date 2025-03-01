@@ -1,6 +1,7 @@
 require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
+const moment = require('moment');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,10 +16,13 @@ module.exports = {
                 return interaction.reply({ content: 'No reminders found.', flags: 64 });
             }
 
-            const reminderList = rows.map(reminder => 
-                `• **ID:** ${reminder.ID} | **${reminder.Message}** -  **${reminder.Time.format("HH:mm")} UTC** ` +
-                `in <#${reminder.ChannelId}> ${reminder.RoleId ? `for <@&${reminder.RoleId}>` : ""}`
-            ).join('\n');
+            const reminderList = rows.map(reminder => {
+                // Parse "HH:mm" time correctly
+                const remindAt = moment.utc(reminder.Time, "HH:mm");
+
+                return `• **ID:** ${reminder.ID} | **${reminder.Message}** - <t:${remindAt.unix()}:t> ` +
+                    `in <#${reminder.ChannelId}> ${reminder.RoleId ? `for <@&${reminder.RoleId}>` : ""}`;
+            }).join('\n');
 
             await interaction.reply({ content: reminderList, flags: 64 });
         } catch (error) {
