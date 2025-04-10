@@ -36,7 +36,7 @@ module.exports = (client) => {
     })();
 
     // Schedule task to check both Events and Reminders every minute
-    cron.schedule("/10 * * * *", async () => {
+    cron.schedule("*/10 * * * *", async () => {
         console.log("⏳ Checking for Events and Reminders...");
 
         try {
