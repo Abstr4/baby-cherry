@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
     res.send("Bot is running!");
 });
 app.listen(3002, () => {
-    console.log("Web server is live on port 3001!");
+    console.log("Web server is live on port 3002!");
 });
 
 // Log in the bot
