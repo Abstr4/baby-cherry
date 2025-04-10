@@ -1,6 +1,7 @@
 require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
+const { PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,6 +10,13 @@ module.exports = {
 
     async execute(interaction) {
         try {
+            // Check if the user has Administrator permission
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.reply({
+                    content: "❌ You do not have permission to use this command.",
+                    ephemeral: true,
+                });
+            }
             const [rows] = await database.execute("SELECT user_id FROM Allowlist");
 
             if (rows.length === 0) {

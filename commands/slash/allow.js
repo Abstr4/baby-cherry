@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
 const { allowList } = require('../handlers/slashCommands.js'); // Import allowlist
+const { PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,6 +15,13 @@ module.exports = {
 
     async execute(interaction) {
         try {
+            // Check if the user has Administrator permission
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.reply({
+                    content: "❌ You do not have permission to use this command.",
+                    ephemeral: true,
+                });
+            }
             const user = interaction.options.getUser('user');
 
             // Check if the user is already allowed
