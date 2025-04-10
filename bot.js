@@ -35,7 +35,7 @@ client.once('ready', async () => {
     // Register Slash Commands
     await registerCommands(client, slashCommands);
     // Schedule Boss Reminder at 11:50 UTC and 23:50 UTC
-    scheduleBossReminder(client);
+    // scheduleBossReminder(client);
 });
 
 // Message Command Handler
