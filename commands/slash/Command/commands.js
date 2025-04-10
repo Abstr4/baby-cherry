@@ -9,7 +9,7 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const [rows] = await database.execute("SELECT Command, Message FROM ExclamationCommand");
+            const [rows] = await database.execute("SELECT Command, Response FROM ExclamationCommand");
 
             if (rows.length === 0) {
                 return interaction.reply({ content: 'No exclamation commands found.', flags: 64 });
