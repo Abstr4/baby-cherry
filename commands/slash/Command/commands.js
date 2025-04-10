@@ -9,13 +9,13 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const [rows] = await database.execute("SELECT Command FROM ExclamationCommand");
+            const [rows] = await database.execute("SELECT Command, Message FROM ExclamationCommand");
 
             if (rows.length === 0) {
                 return interaction.reply({ content: 'No exclamation commands found.', flags: 64 });
             }
 
-            const commandList = rows.map(cmd => `• ${cmd.Command}`).join('\n');
+            const commandList = rows.map(cmd => `• ${cmd.Command}: ${cmd.Message}`).join('\n');
             await interaction.reply({ content: commandList, flags: 64 });
         } catch (error) {
             console.error(error);
