@@ -15,7 +15,7 @@ module.exports = {
                 return interaction.reply({ content: 'No exclamation commands found.', flags: 64 });
             }
 
-            const commandList = rows.map(cmd => `• ${cmd.Command}: ${cmd.Message}`).join('\n');
+            const commandList = rows.map(cmd => `• ${cmd.Command}: ${cmd.Response}`).join('\n');
             await interaction.reply({ content: commandList, flags: 64 });
         } catch (error) {
             console.error(error);
