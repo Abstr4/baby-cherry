@@ -5,7 +5,7 @@ const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('events')
-        .setDescription('Lists all events from the database'),
+        .setDescription('Lists all events from the database.'),
 
     async execute(interaction) {
         try {

@@ -6,7 +6,7 @@ const moment = require('moment');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('reminders')
-        .setDescription('Lists all reminders from the database'),
+        .setDescription('Lists all reminders from the database.'),
 
     async execute(interaction) {
         try {

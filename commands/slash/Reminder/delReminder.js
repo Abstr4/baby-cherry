@@ -5,7 +5,7 @@ const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('delreminder')
-        .setDescription('Deletes a reminder by ID')
+        .setDescription('Deletes a reminder by ID.')
         .addIntegerOption(option =>
             option.setName('id')
                 .setDescription('The ID of the reminder to delete')

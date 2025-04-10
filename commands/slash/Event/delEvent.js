@@ -5,7 +5,7 @@ const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('delevent')
-        .setDescription('Deletes a event by ID')
+        .setDescription('Deletes a event by ID.')
         .addIntegerOption(option =>
             option.setName('id')
                 .setDescription('The ID of the event to delete')
