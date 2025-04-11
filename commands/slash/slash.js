@@ -24,6 +24,7 @@ const allowlist = require('./Allow/allowlist.js');
 const lands = require('./Land/lands.js');
 const addland = require('./Land/addland.js');
 const deleteland = require('./Land/deleteland.js');
+const landsinfo = require('./Land/landsinfo.js');
 
 module.exports = [
 
@@ -53,5 +54,6 @@ module.exports = [
     // Lands
     addland,
     deleteland,
-    lands
+    lands,
+    landsinfo
 ];
