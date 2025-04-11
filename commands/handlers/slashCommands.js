@@ -4,16 +4,20 @@ const { PermissionFlagsBits } = require('discord.js');
 
 let allowList = new Set(); // In-memory allowlist
 
+
 // Load allowlist on bot startup
 const loadAllowList = async () => {
     const result = await database.query("SELECT user_id FROM Allowlist");
-    allowList = new Set(result.map(row => row.user_id));
+    allowList = new Set(result.map(row => String(row.user_id)));
+
     console.log("Allowlist loaded:", allowList);
 };
 
 const handleSlashCommand = async (interaction, client) => {
+
     if (!interaction.isCommand()) return;
 
+    console.log("Checking user:", interaction.user.id, "Allowlist has:", allowList.has(interaction.user.id));
     if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) 
     {
         if(!allowList.has(interaction.user.id))
