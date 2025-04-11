@@ -102,7 +102,7 @@ module.exports = {
         }
 
         const query = `
-            SELECT * FROM lands
+            SELECT * FROM Lands
             ${whereClauses.length > 0 ? "WHERE " + whereClauses.join(" AND ") : ""}
             LIMIT ?
         `;
