@@ -1,5 +1,6 @@
 require('module-alias/register');
 const database = require('@database')
+const { PermissionFlagsBits } = require('discord.js');
 
 let allowList = new Set(); // In-memory allowlist
 
@@ -16,7 +17,8 @@ const handleSlashCommand = async (interaction, client) => {
     const guild = interaction.guild;
     const member = await guild.members.fetch(interaction.user.id);
     
-    if (!allowList.has(interaction.user.id)) {
+    if (!allowList.has(interaction.user.id) ||
+    !interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
         return interaction.reply({ content: "You are not allowed to use this bot!", flags: 64 });
     }
 
