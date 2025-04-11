@@ -115,10 +115,28 @@ module.exports = {
             return await interaction.reply("🔍 No se encontraron lands que coincidan con los filtros especificados.");
         }
 
-        const list = results.map(land =>
-            `• **ID:** ${land.land_id} | Tipo: ${land.type} | Zona: ${land.zone} | Ciudad: ${land.city} | Recursos: ${land.resources} | Usuario: <@${land.user_id}>`
-        ).join("\n");
+        // Crear un embed por cada land
+        for (const land of results) {
+            const embed = new EmbedBuilder()
+                .setTitle(`🌍 Land #${land.land_id}`)
+                .setColor(0x5fb1f7)
+                .addFields(
+                    { name: "Tipo", value: land.type, inline: true },
+                    { name: "Zona", value: land.zone, inline: true },
+                    { name: "Bloqueada", value: land.blocked ? "Sí" : "No", inline: true },
+                    { name: "Ciudad", value: land.city, inline: true },
+                    { name: "Distrito", value: land.district, inline: true },
+                    { name: "Recursos", value: land.resources || "—", inline: false },
+                    { name: "Estructuras", value: land.structures || "—", inline: false },
+                    { name: "Usuario", value: `<@${land.user_id}>`, inline: false }
+                );
 
-        await interaction.reply({ content: list });
+            await interaction.channel.send({ embeds: [embed] });
+        }
+
+        await interaction.reply({
+            content: `✅ Se encontraron ${results.length} land(s) registradas.`,
+            ephemeral: true
+        });
     }
 };
