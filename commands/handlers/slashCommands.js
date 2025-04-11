@@ -12,11 +12,9 @@ const loadAllowList = async () => {
 };
 
 const handleSlashCommand = async (interaction, client) => {
+    
     if (!interaction.isCommand()) return;
 
-    const guild = interaction.guild;
-    const member = await guild.members.fetch(interaction.user.id);
-    
     if (!allowList.has(interaction.user.id) ||
     !interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
         return interaction.reply({ content: "You are not allowed to use this bot!", flags: 64 });
