@@ -19,7 +19,11 @@ const delReminder = require('./Reminder/delReminder.js');
 // Slash
 const allow = require('./Allow/allow.js');
 const disallow = require('./Allow/disallow.js');
-const allowlist = require('./Allow/allowlist.js')
+const allowlist = require('./Allow/allowlist.js');
+
+const lands = require('./Land/lands.js');
+const addland = require('./Land/addland.js');
+const deleteland = require('./Land/deleteland.js');
 
 module.exports = [
 
@@ -44,6 +48,10 @@ module.exports = [
     // Slash
     allow,
     disallow,
-    allowlist
+    allowlist,
 
+    // Lands
+    addland,
+    deleteland,
+    lands
 ];

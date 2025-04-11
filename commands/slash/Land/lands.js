@@ -9,6 +9,9 @@ module.exports = {
         .addStringOption(option =>
             option.setName("land_id")
                 .setDescription("Buscar por ID exacto de land"))
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("Filtrar por usuario que registró la land"))
         .addStringOption(option =>
             option.setName("type")
                 .setDescription("Filtrar por tipo")
@@ -42,11 +45,12 @@ module.exports = {
                 .setDescription("Buscar estructura (coincidencia parcial)"))
         .addIntegerOption(option =>
             option.setName("limit")
-                .setDescription("Número máximo de resultados a mostrar (default: 10)")),
+                .setDescription("Número máximo de resultados a mostrar (por defecto: 10)")),
 
     async execute(interaction) {
         const filters = {
             land_id: interaction.options.getString("land_id"),
+            user_id: interaction.options.getUser("user")?.id,
             type: interaction.options.getString("type"),
             zone: interaction.options.getString("zone"),
             blocked: interaction.options.getString("blocked"),
@@ -63,6 +67,10 @@ module.exports = {
         if (filters.land_id) {
             whereClauses.push("land_id = ?");
             values.push(filters.land_id);
+        }
+        if (filters.user_id) {
+            whereClauses.push("user_id = ?");
+            values.push(filters.user_id);
         }
         if (filters.type) {
             whereClauses.push("type = ?");
@@ -104,7 +112,7 @@ module.exports = {
         const [results] = await database.query(query, values);
 
         if (results.length === 0) {
-            return await interaction.reply("🔍 No se encontraron lands con esos filtros.");
+            return await interaction.reply("🔍 No se encontraron lands que coincidan con los filtros especificados.");
         }
 
         const list = results.map(land =>
