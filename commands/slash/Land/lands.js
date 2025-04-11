@@ -131,7 +131,7 @@ module.exports = {
                     { name: "Usuario", value: `<@${land.user_id}>`, inline: false }
                 );
 
-            await interaction.channel.send({ embeds: [embed] });
+            await interaction.reply({ embeds: [embed], flags: 64 });
         }
 
         await interaction.reply({
