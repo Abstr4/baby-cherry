@@ -60,11 +60,7 @@ module.exports = {
     async execute(interaction) {
         const landId = interaction.options.getString("land_id").trim();
         const userId = interaction.user.id;
-
-            // 🔍 DEBUG: Ver tablas disponibles desde la conexión actual
-            const [test] = await database.query("SHOW TABLES");
-            console.log("Tablas disponibles:", test);
-
+        
         // Validar que el land_id contenga solo números
         if (!/^\d+$/.test(landId)) {
             return await interaction.reply({
