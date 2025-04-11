@@ -7,9 +7,10 @@ let allowList = new Set(); // In-memory allowlist
 
 // Load allowlist on bot startup
 const loadAllowList = async () => {
-    const result = await database.query("SELECT user_id FROM Allowlist");
+    const result = await database.query("SELECT user_id AS user_id FROM Allowlist");
+    console.log("Raw DB result:", result);
+    
     allowList = new Set(result.map(row => String(row.user_id)));
-
     console.log("Allowlist loaded:", allowList);
 };
 
