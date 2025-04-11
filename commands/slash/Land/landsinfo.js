@@ -41,7 +41,7 @@ module.exports = {
                     .join('\n') || '• None';
 
             const embed = new EmbedBuilder()
-                .setTitle('📊 Lands Overview')
+                .setTitle('⛩️ DOJO Lands Overview📊 ⛩️')
                 .setColor('#4e5d94') // Puedes cambiar el color a gusto
                 .addFields(
                     { name: 'Resumen', value: `• Total Lands: **${totalLands}**\n• Unique Owners: **${uniqueOwners}**\n• Blocked Lands: **${blockedLands}**`, inline: false },
