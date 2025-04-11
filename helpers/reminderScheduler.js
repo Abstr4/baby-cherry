@@ -25,16 +25,6 @@ module.exports = (client) => {
         }
     }
 
-    // Verify database connection (using async/await)
-    (async () => {
-        try {
-            await database.query("SELECT 1");
-            console.log("✅ Database connection successful");
-        } catch (err) {
-            console.error("🚨 Database connection failed:", err);
-        }
-    })();
-
     // Schedule task to check both Events and Reminders every minute
     cron.schedule("*/10 * * * *", async () => {
         console.log("⏳ Checking for Events and Reminders...");

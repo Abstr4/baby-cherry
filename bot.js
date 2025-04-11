@@ -6,7 +6,6 @@ const TOKEN = process.env.BOT_TOKEN;
 const connection = require('./database.js');
 
 const handleExclamationCommand = require('./commands/handlers/exclamationCommands.js');
-const scheduleBossReminder = require('./helpers/scheduleBossReminder.js');
 
 const registerCommands = require('./helpers/registerCommands.js');
 const slashCommands = require('./commands/slash/slash.js');
@@ -34,8 +33,6 @@ client.once('ready', async () => {
     await loadAllowList(); 
     // Register Slash Commands
     await registerCommands(client, slashCommands);
-    // Schedule Boss Reminder at 11:50 UTC and 23:50 UTC
-    // scheduleBossReminder(client);
 });
 
 // Message Command Handler

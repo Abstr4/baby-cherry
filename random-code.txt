@@ -1,0 +1,14 @@
+    // Verify database connection (using async/await)
+    
+    /** (async () => {
+        try {
+            await database.query("SELECT 1");
+            console.log("✅ Database connection successful");
+        } catch (err) {
+            console.error("🚨 Database connection failed:", err);
+        }
+    })();
+
+    **/
+
+    

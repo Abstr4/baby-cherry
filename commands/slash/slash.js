@@ -17,9 +17,9 @@ const reminders = require('./Reminder/reminders.js');
 const delReminder = require('./Reminder/delReminder.js');
 
 // Slash
-const allow = require('./allow.js');
-const disallow = require('./disallow.js');
-const allowlist = require('./allowlist.js')
+const allow = require('./Allow/allow.js');
+const disallow = require('./Allow/disallow.js');
+const allowlist = require('./Allow/allowlist.js')
 
 module.exports = [
 

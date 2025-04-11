@@ -1,7 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const database = require('@database');
-const { allowList } = require('../handlers/slashCommands.js'); // Import allowlist
-const { PermissionFlagsBits } = require("discord.js");
+const { allowList } = require('../../handlers/slashCommands.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
