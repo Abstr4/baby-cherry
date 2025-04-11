@@ -1,68 +1,111 @@
+require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
-// import allowList
-const { allowList } = require('../handlers/slashCommands.js'); 
-const { PermissionFlagsBits } = require("discord.js");
+
+// Limpia listas tipo: "wood,berries, water" → "wood, berries, water"
+function cleanList(input) {
+    return input
+        .split(",")
+        .map(item => item.trim().toLowerCase())
+        .join(", ");
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("addland")
-        .setDescription("Add a Runiverse Land in the database.")
+        .setDescription("Agrega una nueva land.")
         .addStringOption(option =>
-            option.setName("Type")
-                .setDescription("Land Type to add e.g: Homestead")
+            option.setName("land_id")
+                .setDescription("ID numérico único de la land")
                 .setRequired(true))
         .addStringOption(option =>
-            option.setName("Zone")
-                .setDescription("What's the Lands Zone e.g: Toadstool")
+            option.setName("type")
+                .setDescription("Tipo de land")
+                .setRequired(true)
+                .addChoices(
+                    { name: "Homestead", value: "Homestead" },
+                    { name: "Settlement", value: "Settlement" },
+                    { name: "City", value: "City" },
+                    { name: "Village", value: "Village" }
+                ))
         .addStringOption(option =>
-            option.setName("Blocked")
-                .setDescription("Is the land Zone blocked? Yes or No.")
+            option.setName("zone")
+                .setDescription("Zona")
                 .setRequired(true))
         .addStringOption(option =>
-            option.setName("Resources")
-                .setDescription("Resources gatherable in the land.")
+            option.setName("blocked")
+                .setDescription("¿Está bloqueada?")
+                .setRequired(true)
+                .addChoices(
+                    { name: "Sí", value: "true" },
+                    { name: "No", value: "false" }
+                ))
+        .addStringOption(option =>
+            option.setName("city")
+                .setDescription("Ciudad")
                 .setRequired(true))
         .addStringOption(option =>
-            option.setName("Structures")
-                .setDescription("Structures or Buildings in the land.")
+            option.setName("district")
+                .setDescription("Distrito")
                 .setRequired(true))
         .addStringOption(option =>
-            option.setName("City")
-                .setDescription("The city the land is in (if it's in a city).")
-                .setRequired(false))
+            option.setName("resources")
+                .setDescription("Recursos separados por coma")
+                .setRequired(true))
         .addStringOption(option =>
-            option.setName("District")
-                .setDescription("The district the land is in.")
-                .setRequired(false))
-        ),
+            option.setName("structures")
+                .setDescription("Estructuras separadas por coma")
+                .setRequired(true)),
 
     async execute(interaction) {
-        try {
-            // Check if the user has Administrator permission
-            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({
-                    content: "❌ You do not have permission to use this command.",
-                    ephemeral: true,
-                });
-            }
-            const user = interaction.options.getUser('user');
+        const landId = interaction.options.getString("land_id").trim();
+        const userId = interaction.user.id;
 
-            // Check if the user is already allowed
-            const [rows] = await database.execute("SELECT 1 FROM Allowlist WHERE user_id = ?", [user.id]);
-            if (rows.length > 0) {
-                return interaction.reply({ content: `${user} is already in the allowlist.`, flags: 64 });
-            }
-
-            // Add it
-            await database.execute("INSERT IGNORE INTO Allowlist (user_id) VALUES (?)", [user.id]);
-
-            allowList.add(user.id); // Ensure allowlist is updated
-
-            return interaction.reply({ content: `${user.username} is now allowed to use commands!`, flags: 64 });
-        } catch (error) {
-            console.error(error);
-            return interaction.reply({ content: "An error occurred while allowing the user.", flags: 64 });
+        // Validar que el land_id contenga solo números
+        if (!/^\d+$/.test(landId)) {
+            return await interaction.reply({
+                content: "❌ El `land_id` debe contener **solo números**. No se permiten letras, espacios ni símbolos.",
+                ephemeral: true
+            });
         }
+
+        // Validar unicidad de land_id
+        const [existing] = await database.query(
+            "SELECT id FROM lands WHERE land_id = ?",
+            [landId]
+        );
+
+        if (existing.length > 0) {
+            return await interaction.reply({
+                content: "❌ La Land `land_id` ya está registrada.",
+                ephemeral: true
+            });
+        }
+
+        // Limpiar listas
+        const resources = cleanList(interaction.options.getString("resources"));
+        const structures = cleanList(interaction.options.getString("structures"));
+
+        // Convertir string a booleano
+        const blocked = interaction.options.getString("blocked") === "true";
+
+        // Insertar en base de datos
+        await database.query(
+            `INSERT INTO lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                landId,
+                userId,
+                interaction.options.getString("type"),
+                interaction.options.getString("zone"),
+                blocked,
+                interaction.options.getString("city"),
+                interaction.options.getString("district"),
+                resources,
+                structures
+            ]
+        );
+
+        await interaction.reply("✅ Tu land fue registrada correctamente.");
     }
 };

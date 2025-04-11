@@ -1,5 +1,5 @@
 require('module-alias/register');
-const database = require('@database')
+const database = require('@database');
 const { PermissionFlagsBits } = require('discord.js');
 
 let allowList = new Set(); // In-memory allowlist

@@ -1,3 +1,4 @@
+require('module-alias/register');
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const database = require('@database');
 const { allowList } = require('../../handlers/slashCommands.js'); 
