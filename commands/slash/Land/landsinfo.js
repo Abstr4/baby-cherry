@@ -50,7 +50,7 @@ module.exports = {
                 )
                 .setFooter({ text: `LandsInfo - Actualizado al ${new Date().toLocaleDateString()}` });
 
-            await interaction.reply({ embeds: [embed], flags: 64 });
+            await interaction.reply({ embeds: [embed]});
 
         } catch (err) {
             console.error(err);
