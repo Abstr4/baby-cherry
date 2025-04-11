@@ -61,6 +61,10 @@ module.exports = {
         const landId = interaction.options.getString("land_id").trim();
         const userId = interaction.user.id;
 
+            // 🔍 DEBUG: Ver tablas disponibles desde la conexión actual
+            const [test] = await database.query("SHOW TABLES");
+            console.log("Tablas disponibles:", test);
+
         // Validar que el land_id contenga solo números
         if (!/^\d+$/.test(landId)) {
             return await interaction.reply({
@@ -71,7 +75,7 @@ module.exports = {
 
         // Validar unicidad de land_id
         const [existing] = await database.query(
-            "SELECT id FROM lands WHERE land_id = ?",
+            "SELECT id FROM Lands WHERE land_id = ?",
             [landId]
         );
 
@@ -91,7 +95,7 @@ module.exports = {
 
         // Insertar en base de datos
         await database.query(
-            `INSERT INTO lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
+            `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 landId,
