@@ -50,11 +50,11 @@ module.exports = {
                 )
                 .setFooter({ text: `LandsInfo - Actualizado al ${new Date().toLocaleDateString()}` });
 
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: 64 });
 
         } catch (err) {
             console.error(err);
-            await interaction.reply({ content: '❌ Hubo un error al obtener la información de lands.', ephemeral: true });
+            await interaction.reply({ content: '❌ Hubo un error al obtener la información de lands.', flags: 64 });
         }
     }
 };

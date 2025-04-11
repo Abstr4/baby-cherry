@@ -13,7 +13,7 @@ module.exports = {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return interaction.reply({
                     content: "❌ You do not have permission to use this command.",
-                    ephemeral: true,
+                    flags: 64,
                 });
             }
             const [rows] = await database.execute("SELECT user_id FROM Allowlist");

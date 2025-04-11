@@ -24,7 +24,7 @@ module.exports = {
         if (result.affectedRows === 0) {
             return await interaction.reply({
                 content: "❌ No se encontró ninguna land con ese ID asociada a tu usuario.",
-                ephemeral: true
+                flags: 64
             });
         }
 

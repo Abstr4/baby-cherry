@@ -65,7 +65,7 @@ module.exports = {
         if (!/^\d+$/.test(landId)) {
             return await interaction.reply({
                 content: "❌ El `land_id` debe contener **solo números**. No se permiten letras, espacios ni símbolos.",
-                ephemeral: true
+                flags: 64
             });
         }
 
@@ -78,7 +78,7 @@ module.exports = {
         if (existing.length > 0) {
             return await interaction.reply({
                 content: "❌ La Land `land_id` ya está registrada.",
-                ephemeral: true
+                flags: 64
             });
         }
 

@@ -136,7 +136,7 @@ module.exports = {
 
         await interaction.reply({
             content: `✅ Se encontraron ${results.length} land(s) registradas.`,
-            ephemeral: true
+            flags: 64
         });
     }
 };

@@ -19,7 +19,7 @@ module.exports = {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return interaction.reply({
                     content: "❌ You do not have permission to use this command.",
-                    ephemeral: true,
+                    flags: 64,
                 });
             }
             const user = interaction.options.getUser('user');
