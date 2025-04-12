@@ -100,3 +100,5 @@ async function handleLandMessage(message) {
         message.reply('❌ Hubo un error al registrar o actualizar la land. Intenta de nuevo más tarde.');
     }
 }
+
+module.exports = { handleLandMessage };
