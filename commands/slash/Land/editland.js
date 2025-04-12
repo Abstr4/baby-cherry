@@ -2,6 +2,21 @@ require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
 
+// Limpia listas tipo: "wood,berries, water" → "wood, berries, water"
+function cleanList(input) {
+    return input
+        .split(",")
+        .map(item => item.trim().toLowerCase())
+        .join(", ");
+}
+
+// Valida si la cadena solo contiene letras, comas y espacios (sin números)
+function validateResourcesOrStructures(input) {
+    // Permitir solo letras, comas y espacios
+    const regex = /^[a-zA-Z\s,]+$/;
+    return regex.test(input);
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('editland')
@@ -54,11 +69,39 @@ module.exports = {
             structures: interaction.options.getString('structures')
         };
 
+        // Validar recursos y estructuras
+        const rawResources = fields.resources;
+        const rawStructures = fields.structures;
+
+        // Validar recursos
+        if (rawResources && !validateResourcesOrStructures(rawResources)) {
+            return await interaction.reply({
+                content: "❌ Los `recursos` solo pueden contener letras, comas y espacios (sin números).",
+                flags: 64
+            });
+        }
+
+        // Validar estructuras
+        if (rawStructures && !validateResourcesOrStructures(rawStructures)) {
+            return await interaction.reply({
+                content: "❌ Las `estructuras` solo pueden contener letras, comas y espacios (sin números).",
+                flags: 64
+            });
+        }
+
+        // Limpiar listas
+        if (rawResources) {
+            fields.resources = cleanList(rawResources);
+        }
+        if (rawStructures) {
+            fields.structures = cleanList(rawStructures);
+        }
+
         const updates = [];
         const values = [];
 
         for (const [key, value] of Object.entries(fields)) {
-            if (value !== null) {
+            if (value !== null && value !== undefined) {
                 updates.push(`${key} = ?`);
                 values.push(key === 'blocked' ? value === 'true' : value);
             }
