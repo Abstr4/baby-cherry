@@ -18,6 +18,14 @@ module.exports = {
             const resourceCounts = {};
             const structureCounts = {};
 
+            // Land type counters
+            const landTypeCounts = {
+                Homestead: 0,
+                Settlement: 0,
+                City: 0,
+                Village: 0
+            };
+
             // Function to validate entries (only allows letters, commas, and spaces, no numbers)
             const isValidEntry = entry => {
                 const trimmed = entry.trim();
@@ -27,6 +35,11 @@ module.exports = {
             for (const land of lands) {
                 const resources = land.resources?.split(',') || [];
                 const structures = land.structures?.split(',') || [];
+
+                // Count land types
+                if (land.type in landTypeCounts) {
+                    landTypeCounts[land.type]++;
+                }
 
                 // Validate and process resources
                 for (const r of resources) {
@@ -48,13 +61,20 @@ module.exports = {
                     .map(([key, val]) => `• **${key}**: ${val}`)
                     .join('\n') || '• None';
 
+            // Format land types as a single line: Homesteads: 4, Settlements: 8, etc.
+            const landTypeSummary = `• **Homesteads**: ${landTypeCounts.Homestead}, ` +
+                                    `**Settlements**: ${landTypeCounts.Settlement}, ` +
+                                    `**Cities**: ${landTypeCounts.City}, ` +
+                                    `**Villages**: ${landTypeCounts.Village}`;
+
             const embed = new EmbedBuilder()
                 .setTitle('⛩️ DOJO Lands Overview 📊')
                 .setColor('#4e5d94')
                 .addFields(
                     { name: 'Resumen', value: `• Total Lands: **${totalLands}**\n• Unique Owners: **${uniqueOwners}**\n• Blocked Lands: **${blockedLands}**`, inline: false },
                     { name: '💎 Resources', value: formatCounts(resourceCounts), inline: true },
-                    { name: '🏗️ Structures', value: formatCounts(structureCounts), inline: true }
+                    { name: '🏗️ Structures', value: formatCounts(structureCounts), inline: true },
+                    { name: '🏡 Land Types', value: landTypeSummary, inline: false }
                 )
                 .setFooter({ text: `LandsInfo - Actualizado al ${new Date().toLocaleDateString()}` });
 

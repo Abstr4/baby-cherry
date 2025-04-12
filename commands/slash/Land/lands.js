@@ -4,67 +4,139 @@ const database = require("@database");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('landsinfo')
-        .setDescription('Resumen general de todas las lands registradas'),
+        .setName("lands")
+        .setDescription("Busca lands con filtros avanzados y opción de limitar resultados.")
+        .addStringOption(option =>
+            option.setName("land_id")
+                .setDescription("Buscar por ID exacto de land"))
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("Filtrar por usuario que registró la land"))
+        .addStringOption(option =>
+            option.setName("type")
+                .setDescription("Filtrar por tipo")
+                .addChoices(
+                    { name: "Homestead", value: "Homestead" },
+                    { name: "Settlement", value: "Settlement" },
+                    { name: "City", value: "City" },
+                    { name: "Village", value: "Village" }
+                ))
+        .addStringOption(option =>
+            option.setName("zone")
+                .setDescription("Filtrar por zona"))
+        .addStringOption(option =>
+            option.setName("blocked")
+                .setDescription("¿Está bloqueada?")
+                .addChoices(
+                    { name: "Sí", value: "true" },
+                    { name: "No", value: "false" }
+                ))
+        .addStringOption(option =>
+            option.setName("city")
+                .setDescription("Filtrar por ciudad"))
+        .addStringOption(option =>
+            option.setName("district")
+                .setDescription("Filtrar por distrito"))
+        .addStringOption(option =>
+            option.setName("resources")
+                .setDescription("Buscar recurso (coincidencia parcial)"))
+        .addStringOption(option =>
+            option.setName("structures")
+                .setDescription("Buscar estructura (coincidencia parcial)"))
+        .addIntegerOption(option =>
+            option.setName("limit")
+                .setDescription("Número máximo de resultados a mostrar (por defecto: 10)")),
 
     async execute(interaction) {
-        try {
-            const [lands] = await database.query("SELECT * FROM Lands");
+        const filters = {
+            land_id: interaction.options.getString("land_id"),
+            user_id: interaction.options.getUser("user")?.id,
+            type: interaction.options.getString("type"),
+            zone: interaction.options.getString("zone"),
+            blocked: interaction.options.getString("blocked"),
+            city: interaction.options.getString("city"),
+            district: interaction.options.getString("district"),
+            resources: interaction.options.getString("resources")?.toLowerCase(),
+            structures: interaction.options.getString("structures")?.toLowerCase(),
+            limit: interaction.options.getInteger("limit") ?? 10
+        };
 
-            const totalLands = lands.length;
-            const blockedLands = lands.filter(l => l.blocked).length;
-            const uniqueOwners = new Set(lands.map(l => l.owner)).size;
+        const whereClauses = [];
+        const values = [];
 
-            const resourceCounts = {};
-            const structureCounts = {};
-            const homesteadCount = { Homestead: 0, Settlement: 0, City: 0, Village: 0 };
-
-            for (const land of lands) {
-                const resources = land.resources?.split(',') || [];
-                const structures = land.structures?.split(',') || [];
-
-                // Count resources
-                for (const r of resources) {
-                    const trimmed = r.trim();
-                    if (!trimmed) continue;
-                    resourceCounts[trimmed] = (resourceCounts[trimmed] || 0) + 1;
-                }
-
-                // Count structures
-                for (const s of structures) {
-                    const trimmed = s.trim();
-                    if (!trimmed) continue;
-                    structureCounts[trimmed] = (structureCounts[trimmed] || 0) + 1;
-                }
-
-                // Count types of lands
-                if (land.type in homesteadCount) {
-                    homesteadCount[land.type] += 1;
-                }
-            }
-
-            const formatCounts = (obj) =>
-                Object.entries(obj)
-                    .map(([key, val]) => `• **${key}**: ${val}`)
-                    .join('\n') || '• None';
-
-            const embed = new EmbedBuilder()
-                .setTitle('⛩️ DOJO Lands Overview 📊')
-                .setColor('#4e5d94')
-                .addFields(
-                    { name: 'Resumen', value: `• Total Lands: **${totalLands}**\n• Unique Owners: **${uniqueOwners}**\n• Blocked Lands: **${blockedLands}**`, inline: false },
-                    { name: '💎 Resources', value: formatCounts(resourceCounts), inline: true },
-                    { name: '🏗️ Structures', value: formatCounts(structureCounts), inline: true },
-                    { name: '🏠 Land Types', value: `• Homesteads: **${homesteadCount.Homestead}**\n• Settlements: **${homesteadCount.Settlement}**\n• Cities: **${homesteadCount.City}**\n• Villages: **${homesteadCount.Village}**`, inline: false }
-                )
-                .setFooter({ text: `LandsInfo - Actualizado al ${new Date().toLocaleDateString()}` });
-
-            // Ensure the message is sent properly
-            await interaction.reply({ embeds: [embed] });
-
-        } catch (err) {
-            console.error(err);
-            await interaction.reply({ content: '❌ Hubo un error al obtener la información de lands.', flags: 64 });
+        if (filters.land_id) {
+            whereClauses.push("land_id = ?");
+            values.push(filters.land_id);
         }
+        if (filters.user_id) {
+            whereClauses.push("user_id = ?");
+            values.push(filters.user_id);
+        }
+        if (filters.type) {
+            whereClauses.push("type = ?");
+            values.push(filters.type);
+        }
+        if (filters.zone) {
+            whereClauses.push("zone = ?");
+            values.push(filters.zone);
+        }
+        if (filters.blocked !== undefined) {
+            whereClauses.push("blocked = ?");
+            values.push(filters.blocked === "true");
+        }
+        if (filters.city) {
+            whereClauses.push("city = ?");
+            values.push(filters.city);
+        }
+        if (filters.district) {
+            whereClauses.push("district = ?");
+            values.push(filters.district);
+        }
+        if (filters.resources) {
+            whereClauses.push("LOWER(resources) LIKE ?");
+            values.push(`%${filters.resources}%`);
+        }
+        if (filters.structures) {
+            whereClauses.push("LOWER(structures) LIKE ?");
+            values.push(`%${filters.structures}%`);
+        }
+
+        const query = `
+            SELECT * FROM Lands
+            ${whereClauses.length > 0 ? "WHERE " + whereClauses.join(" AND ") : ""}
+            LIMIT ?
+        `;
+
+        values.push(filters.limit);
+
+        const [results] = await database.query(query, values);
+
+        if (results.length === 0) {
+            return await interaction.reply("🔍 No se encontraron lands que coincidan con los filtros especificados.");
+        }
+
+        // Crear un embed por cada land
+        for (const land of results) {
+            const embed = new EmbedBuilder()
+                .setTitle(`🌍 Land #${land.land_id}`)
+                .setColor(0x5fb1f7)
+                .addFields(
+                    { name: "Tipo", value: land.type, inline: true },
+                    { name: "Zona", value: land.zone, inline: true },
+                    { name: "Bloqueada", value: land.blocked ? "Sí" : "No", inline: true },
+                    { name: "Ciudad", value: land.city, inline: true },
+                    { name: "Distrito", value: land.district, inline: true },
+                    { name: "Recursos", value: land.resources || "—", inline: false },
+                    { name: "Estructuras", value: land.structures || "—", inline: false },
+                    { name: "Usuario", value: `<@${land.user_id}>`, inline: false }
+                );
+
+            await interaction.reply({ embeds: [embed], flags: 64 });
+        }
+
+        await interaction.reply({
+            content: `✅ Se encontraron ${results.length} land(s) registradas.`,
+            flags: 64
+        });
     }
 };
