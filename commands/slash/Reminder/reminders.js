@@ -5,29 +5,53 @@ const moment = require('moment');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('reminders')
-        .setDescription('Lists all reminders from the database.'),
-
+      .setName('reminders')
+      .setDescription('Lista todos los recordatorios configurados'),
+  
     async execute(interaction) {
-        try {
-            const [rows] = await database.execute("SELECT ID, Message, Time, ChannelId, RoleId FROM Reminder");
-
-            if (rows.length === 0) {
-                return interaction.reply({ content: 'No reminders found.', flags: 64 });
-            }
-
-            const reminderList = rows.map(reminder => {
-                // Parse "HH:mm" time correctly
-                const remindAt = moment.utc(reminder.Time, "HH:mm");
-
-                return `• Reminder **#${reminder.ID}**: **${reminder.Message}** set for <t:${remindAt.unix()}:t> (your time) ` +
-                    `in <#${reminder.ChannelId}> ${reminder.RoleId ? `for <@&${reminder.RoleId}>` : ""}`;
-            }).join('\n');
-
-            await interaction.reply({ content: reminderList, flags: 64 });
-        } catch (error) {
-            console.error(error);
-            await interaction.reply({ content: 'An error occurred while retrieving the reminders.', flags: 64 });
+      const [reminders] = await database.query("SELECT * FROM Reminders ORDER BY time");
+  
+      if (reminders.length === 0)
+        return await interaction.reply({ content: 'No hay recordatorios configurados.', flags: 64 });
+  
+      const embeds = [];
+      let currentDescription = '';
+      let page = 1;
+  
+      for (let i = 0; i < reminders.length; i++) {
+        const r = reminders[i];
+        const line = `ID: \`${r.id}\` | ${r.message}\n`;
+  
+        if (currentDescription.length + line.length > 4000) {
+          embeds.push(
+            new EmbedBuilder()
+              .setTitle('📅 Lista de Recordatorios')
+              .setColor('#4e5d94')
+              .setDescription(currentDescription)
+              .setFooter({ text: `Página ${page}` })
+          );
+  
+          currentDescription = '';
+          page++;
         }
+  
+        currentDescription += line;
+      }
+  
+      if (currentDescription) {
+        embeds.push(
+          new EmbedBuilder()
+            .setTitle('📅 Lista de Recordatorios')
+            .setColor('#4e5d94')
+            .setDescription(currentDescription)
+            .setFooter({ text: `Página ${page}` })
+        );
+      }
+  
+      await interaction.reply({ embeds: [embeds[0]], flags: 64 });
+  
+      for (let i = 1; i < embeds.length; i++) {
+        await interaction.followUp({ embeds: [embeds[i]], flags: 64 });
+      }
     }
-};
+  };
