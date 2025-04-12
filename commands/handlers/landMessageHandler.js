@@ -1,5 +1,6 @@
 const { PermissionFlagsBits } = require('discord.js');
 const database = require('@database');
+const helpers = require('../../helpers/helpers.js');
 
 async function handleLandMessage(message) {
 
@@ -19,31 +20,50 @@ async function handleLandMessage(message) {
         const [key, value] = field.split(':').map(item => item.trim());
         switch (key) {
             case 'land_id':
+                if (!helpers.isNumeric(value)) {
+                    return sendWarningAndDelete(message, `❌ El ID de la land debe ser numérico.`);
+                }
                 land_id = value;
                 break;
+
             case 'Type':
+                if(!helpers.isLand(value))
+                {
+                    return sendWarningAndDelete(message, `❌ El Tipo de land debe ser Homestead, Settlement, City o Village.`);
+                }
                 type = value;
                 break;
+
             case 'Zone':
                 zone = value;
                 break;
+
             case 'Blocked':
-                blocked = value.toLowerCase();  // Convert blocked to lowercase
+                if(!helpers.isValidYesNo(value))
+                {
+                    return sendWarningAndDelete(message, `❌ El valor debe ser "si" o "no".`);
+                }
+                blocked = helpers.isYes(value.toLowerCase());
                 break;
+
             case 'City':
                 city = value || null;
                 break;
+
             case 'District':
                 district = value || null;
                 break;
+
             case 'Resources':
                 // Convert each resource to lowercase
                 resources = value ? value.split(',').map(item => item.trim().toLowerCase()) : [];
                 break;
+
             case 'Structures':
                 // Convert each structure to lowercase
                 structures = value ? value.split(',').map(item => item.trim().toLowerCase()) : [];
                 break;
+                
             default:
                 break;
         }

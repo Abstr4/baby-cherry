@@ -56,5 +56,26 @@ function validateResourcesOrStructures(input) {
     return regex.test(input);
 }
 
+function isNumeric(str) {
+    return /^[0-9]+$/.test(str);
+}
 
-module.exports = {loadTokenList, fetchTokenPrice, cleanList, validateResourcesOrStructures };
+function isLand(str) {
+    const validLandTypes = ["homestead", "settlement", "city", "village"];
+    return validLandTypes.includes(str.toLowerCase());
+}
+function isValidYesNo(str) {
+    if (typeof str !== 'string') return false;
+
+    const validValues = ["yes", "sí", "si", "y", "no", "n"];
+    return validValues.includes(str.toLowerCase());
+}
+
+function isYes(str) {
+    if (typeof str !== 'string') return false;
+
+    const yesValues = ["yes", "sí", "si", "y"];
+    return yesValues.includes(str.toLowerCase());
+}
+
+module.exports = {loadTokenList, fetchTokenPrice, cleanList, validateResourcesOrStructures, isNumeric, isLand, isValidYesNo, isYes };

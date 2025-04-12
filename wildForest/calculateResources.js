@@ -1,5 +1,4 @@
 // Load the JSON data
-const { CommandInteractionOptionResolver } = require('discord.js');
 const levels = require('./levels.json');
 
 // Function to calculate resources using subtraction
