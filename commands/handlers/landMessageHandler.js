@@ -75,7 +75,7 @@ async function handleLandMessage(message) {
 
         console.log(existingLand);
 
-        if (existingLand && existingLand.user_id === user_id) {
+        if (existingLand.length > 0 && existingLand[0].user_id === user_id) {
             // If the land exists and belongs to the user, update the existing record
             await database.query(
                 `UPDATE Lands 
@@ -88,26 +88,26 @@ async function handleLandMessage(message) {
                     land_id
                 ]
             );
-
+        
             message.reply('✅ La land fue actualizada correctamente!');
-        } else if (!existingLand) {
+        } else if (existingLand.length === 0) {
             // If the land doesn't exist, insert a new record
             await database.query(
                 `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     land_id,
-                    user_id,
+                    user_id, // Store user_id of the message author
                     type,
                     zone,
-                    isBlocked,
+                    blocked === 'Yes',  // Convert blocked to boolean
                     city,
                     district,
-                    resources.join(', '),
-                    structures.join(', ')
+                    resources.join(', '),  // Save as comma-separated string
+                    structures.join(', ')  // Save as comma-separated string
                 ]
             );
-
+        
             message.reply('✅ La land fue registrada correctamente!');
         } else {
             // If the land exists but doesn't belong to the user, send an error
