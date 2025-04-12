@@ -1,14 +1,16 @@
 require('module-alias/register');
 const database = require('@database');
+const { PermissionFlagsBits } = require('discord.js');
 const { cleanList, validateResourcesOrStructures } = require('../../helpers/helpers.js');
 
 const ASHIGARU_ROLE_ID = '1263974586530402466';
 
 async function handleLandMessage(message) {
     
-    // Check if the user has the required role
-    if (!message.member.roles.cache.has(ASHIGARU_ROLE_ID)) {
-        return message.reply('❌ You do not have the required role to submit land information.');
+
+    if (!member.permissions.has(PermissionFlagsBits.Administrator) && !member.roles.cache.has(REQUIRED_ROLE_ID)) 
+    {
+        return sendWarningAndDelete(message, `❌ No tienes permisos para registar una land.`)
     }
 
     const landMessage = message.content.trim();
