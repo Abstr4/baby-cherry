@@ -21,6 +21,7 @@ const handleSlashCommand = async (interaction, client) => {
     if (!interaction.isCommand()) return;
 
     console.log("Checking user:", interaction.user.id, "Allowlist has:", allowList.has(interaction.user.id));
+    
     if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) 
     {
         if(!allowList.has(interaction.user.id))

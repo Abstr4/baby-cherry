@@ -16,7 +16,7 @@ async function handleLandMessage(message) {
     const fields = landMessage.split('\n');
 
     // Initialize variables
-    let land_id, type, zone, blocked, city, district, resources, structures;
+    let land_id, type, zone, blocked, city, district, resources, structures, user_id;
 
     // Process each field to extract values
     fields.forEach(field => {
@@ -51,9 +51,13 @@ async function handleLandMessage(message) {
         }
     });
 
-    // Prepare the output in the desired format
+    // Get the user ID from the message author
+    user_id = message.author.id;
+
+    // Prepare the data to be inserted or updated
     const landData = [
         land_id,       // land_id
+        user_id,       // user_id
         type,          // Type
         zone,          // Zone
         blocked,       // Blocked
@@ -63,11 +67,56 @@ async function handleLandMessage(message) {
         structures     // Structures (array)
     ];
 
-    // Log the result
-    console.log(landData);
+    try {
+        // Check if the land already exists in the database
+        const [existingLand] = await database.query(
+            'SELECT * FROM Lands WHERE land_id = ?',
+            [land_id]
+        );
 
-    // Send a reply indicating the success
-    message.reply('✅ La land fue registrada correctamente!');
+        if (existingLand) {
+            // If the land exists, update the existing record
+            if (existingLand.user_id !== user_id) {
+                return sendWarningAndDelete(message, '❌ No tienes permisos para modificar esta land.');
+            }
+
+            await database.query(
+                `UPDATE Lands 
+                SET type = ?, zone = ?, blocked = ?, city = ?, district = ?, resources = ?, structures = ?
+                WHERE land_id = ?`,
+                [
+                    type, zone, blocked, city, district,
+                    resources.join(', '),  // Save as comma-separated string
+                    structures.join(', '),  // Save as comma-separated string
+                    land_id
+                ]
+            );
+
+            message.reply('✅ La land fue actualizada correctamente!');
+        } else {
+            // If the land doesn't exist, insert a new record
+            await database.query(
+                `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    land_id,
+                    user_id, // Store user_id of the message author
+                    type,
+                    zone,
+                    blocked === 'Yes',  // Convert blocked to boolean
+                    city,
+                    district,
+                    resources.join(', '),  // Save as comma-separated string
+                    structures.join(', ')  // Save as comma-separated string
+                ]
+            );
+
+            message.reply('✅ La land fue registrada correctamente!');
+        }
+    } catch (error) {
+        console.error('Error adding or updating land:', error);
+        message.reply('❌ Hubo un error al registrar o actualizar la land. Intenta de nuevo más tarde.');
+    }
 }
 
 module.exports = { handleLandMessage };
