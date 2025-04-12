@@ -17,18 +17,19 @@ async function handleLandMessage(message) {
         type: /^Type:\s*(\w+)$/m,
         zone: /^Zone:\s*(.+)$/m,
         blocked: /^Blocked:\s*(Si|Sí|Yes|No)$/m,
-        city: /^City:\s*(.+)$/m,
-        district: /^District:\s*(.+)$/m,
+        city: /^City:\s*(.*)$/m,
+        district: /^District:\s*(.*)$/m,
         resources: /^Resources:\s*([a-zA-Z\s,]+)$/m,
         structures: /^Structures:\s*([a-zA-Z\s,]+)$/m
     };
+    
 
     // Validate the land message format
     const matches = {};
     for (const [key, regex] of Object.entries(landRegex)) {
         const match = landMessage.match(regex);
         if (match) {
-            matches[key] = match[1].trim();
+            matches[key] = match[1] ? match[1].trim() : '';  // Default to empty string if no match
         } else {
             return sendWarningAndDelete(message, `❌ El campo **${key}** está en un formato incorrecto. Por favor, sigue el formato correcto.`);
         }
