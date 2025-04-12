@@ -48,11 +48,11 @@ async function handleLandMessage(message) {
                 break;
         }
     });
-    
+
     // Get the user ID
     user_id = message.author.id;
 
-    let isBlocked = blocked == 'yes' || blocked == 'si' || blocked == 'sí';
+    let isBlocked = blocked == 'yes' || blocked == 'si' || blocked == 'sí' || blocked == 'y' || blocked == 's';
 
     const landData = [
         land_id,
