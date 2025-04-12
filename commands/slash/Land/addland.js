@@ -10,6 +10,13 @@ function cleanList(input) {
         .join(", ");
 }
 
+// Valida si la cadena solo contiene letras, comas y espacios (sin números)
+function validateResourcesOrStructures(input) {
+    // Permitir solo letras, comas y espacios
+    const regex = /^[a-zA-Z\s,]+$/;
+    return regex.test(input);
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("addland")
@@ -82,9 +89,29 @@ module.exports = {
             });
         }
 
+        // Obtener recursos y estructuras
+        const rawResources = interaction.options.getString("resources");
+        const rawStructures = interaction.options.getString("structures");
+
+        // Validar recursos
+        if (!validateResourcesOrStructures(rawResources)) {
+            return await interaction.reply({
+                content: "❌ Los `recursos` solo pueden contener letras, comas y espacios (sin números).",
+                flags: 64
+            });
+        }
+
+        // Validar estructuras
+        if (!validateResourcesOrStructures(rawStructures)) {
+            return await interaction.reply({
+                content: "❌ Las `estructuras` solo pueden contener letras, comas y espacios (sin números).",
+                flags: 64
+            });
+        }
+
         // Limpiar listas
-        const resources = cleanList(interaction.options.getString("resources"));
-        const structures = cleanList(interaction.options.getString("structures"));
+        const resources = cleanList(rawResources);
+        const structures = cleanList(rawStructures);
 
         // Convertir string a booleano
         const blocked = interaction.options.getString("blocked") === "true";
