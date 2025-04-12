@@ -47,7 +47,8 @@ async function handleLandMessage(message) {
         return sendWarningAndDelete(message, '❌ Las estructuras deben contener solo letras, comas y espacios.');
     }
 
-    try {
+    try 
+    {
         const { land_id, type, zone, blocked, city, district } = matches;
 
         // Check if the land_id already exists in the database
@@ -56,6 +57,12 @@ async function handleLandMessage(message) {
             [land_id]
         );
 
+                // Normalize blocked value to lowercase and check if it represents "yes"
+        const normalizedBlocked = blocked.toLowerCase();
+
+        // Convert to boolean based on possible values
+        const isBlocked = normalizedBlocked === 'yes' || normalizedBlocked === 'si' || normalizedBlocked === 'sí';
+
         if (existingLand.length > 0) {
             // If land_id exists, update the existing record
             await database.query(
@@ -63,15 +70,15 @@ async function handleLandMessage(message) {
                  SET user_id = ?, type = ?, zone = ?, blocked = ?, city = ?, district = ?, resources = ?, structures = ?
                  WHERE land_id = ?`,
                 [
-                    message.author.id, // user_id of the message author
+                    message.author.id,
                     type,
                     zone,
-                    blocked === 'Yes',  // Convert blocked to boolean
+                    isBlocked,
                     city,
                     district,
                     resources,
                     structures,
-                    land_id // The land_id to identify the record
+                    land_id
                 ]
             );
 
