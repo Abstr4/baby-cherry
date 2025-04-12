@@ -69,17 +69,13 @@ async function handleLandMessage(message) {
         }
     });
 
-    // Get the user ID
     user_id = message.author.id;
-
-    let isBlocked = blocked == 'yes' || blocked == 'si' || blocked == 'sí' || blocked == 'y' || blocked == 's';
-
     const landData = [
         land_id,
         user_id,
         type,
         zone,
-        isBlocked,
+        blocked,
         city,
         district,
         resources,
@@ -103,7 +99,7 @@ async function handleLandMessage(message) {
                 SET type = ?, zone = ?, blocked = ?, city = ?, district = ?, resources = ?, structures = ?
                 WHERE land_id = ?`,
                 [
-                    type, zone, isBlocked, city, district,
+                    type, zone, blocked, city, district,
                     resources.join(', '),
                     structures.join(', '),
                     land_id
@@ -122,7 +118,7 @@ async function handleLandMessage(message) {
                     user_id,
                     type,
                     zone,
-                    isBlocked,
+                    blocked,
                     city,
                     district,
                     resources.join(', '),
