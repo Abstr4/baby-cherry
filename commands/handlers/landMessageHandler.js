@@ -1,6 +1,6 @@
 require('module-alias/register');
 const database = require('@database');
-const { cleanList, validateResourcesOrStructures } = require('./helpers');  
+const { cleanList, validateResourcesOrStructures } = require('../../helpers/helpers.js');
 
 const ASHIGARU_ROLE_ID = '1263974586530402466';
 

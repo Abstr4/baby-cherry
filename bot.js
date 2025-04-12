@@ -13,7 +13,6 @@ const loadSlashCommands = require('./helpers/loadSlashCommands.js');
 const { handleSlashCommand, loadAllowList } = require('./commands/handlers/slashCommands');
 const { handleLandMessage } = require('./commands/handlers/landMessageHandler.js');
 
-
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
