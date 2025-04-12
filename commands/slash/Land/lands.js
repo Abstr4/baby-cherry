@@ -17,55 +17,36 @@ module.exports = {
 
             const resourceCounts = {};
             const structureCounts = {};
-
-            // Land type counters
-            const landTypeCounts = {
-                Homestead: 0,
-                Settlement: 0,
-                City: 0,
-                Village: 0
-            };
-
-            // Function to validate entries (only allows letters, commas, and spaces, no numbers)
-            const isValidEntry = entry => {
-                const trimmed = entry.trim();
-                return trimmed && trimmed !== "-" && /^[A-Za-z\s,]+$/.test(trimmed);
-            };
+            const homesteadCount = { Homestead: 0, Settlement: 0, City: 0, Village: 0 };
 
             for (const land of lands) {
                 const resources = land.resources?.split(',') || [];
                 const structures = land.structures?.split(',') || [];
 
-                // Count land types
-                if (land.type in landTypeCounts) {
-                    landTypeCounts[land.type]++;
-                }
-
-                // Validate and process resources
+                // Count resources
                 for (const r of resources) {
                     const trimmed = r.trim();
-                    if (!isValidEntry(trimmed)) continue;
+                    if (!trimmed) continue;
                     resourceCounts[trimmed] = (resourceCounts[trimmed] || 0) + 1;
                 }
 
-                // Validate and process structures
+                // Count structures
                 for (const s of structures) {
                     const trimmed = s.trim();
-                    if (!isValidEntry(trimmed)) continue;
+                    if (!trimmed) continue;
                     structureCounts[trimmed] = (structureCounts[trimmed] || 0) + 1;
+                }
+
+                // Count types of lands
+                if (land.type in homesteadCount) {
+                    homesteadCount[land.type] += 1;
                 }
             }
 
-            const formatCounts = obj =>
+            const formatCounts = (obj) =>
                 Object.entries(obj)
                     .map(([key, val]) => `• **${key}**: ${val}`)
                     .join('\n') || '• None';
-
-            // Format land types as a single line: Homesteads: 4, Settlements: 8, etc.
-            const landTypeSummary = `• **Homesteads**: ${landTypeCounts.Homestead}, ` +
-                                    `**Settlements**: ${landTypeCounts.Settlement}, ` +
-                                    `**Cities**: ${landTypeCounts.City}, ` +
-                                    `**Villages**: ${landTypeCounts.Village}`;
 
             const embed = new EmbedBuilder()
                 .setTitle('⛩️ DOJO Lands Overview 📊')
@@ -74,10 +55,11 @@ module.exports = {
                     { name: 'Resumen', value: `• Total Lands: **${totalLands}**\n• Unique Owners: **${uniqueOwners}**\n• Blocked Lands: **${blockedLands}**`, inline: false },
                     { name: '💎 Resources', value: formatCounts(resourceCounts), inline: true },
                     { name: '🏗️ Structures', value: formatCounts(structureCounts), inline: true },
-                    { name: '🏡 Land Types', value: landTypeSummary, inline: false }
+                    { name: '🏠 Land Types', value: `• Homesteads: **${homesteadCount.Homestead}**\n• Settlements: **${homesteadCount.Settlement}**\n• Cities: **${homesteadCount.City}**\n• Villages: **${homesteadCount.Village}**`, inline: false }
                 )
                 .setFooter({ text: `LandsInfo - Actualizado al ${new Date().toLocaleDateString()}` });
 
+            // Ensure the message is sent properly
             await interaction.reply({ embeds: [embed] });
 
         } catch (err) {
