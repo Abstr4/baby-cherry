@@ -67,52 +67,49 @@ async function handleLandMessage(message) {
     console.log(landData);
 
     try {
-
         // Check if the land already exists in the database
         const [existingLand] = await database.query(
             'SELECT * FROM Lands WHERE land_id = ?',
             [land_id]
         );
 
-        if (existingLand) {
-            // If the land exists, update the existing record
-            if (existingLand.user_id !== user_id) {
-                return sendWarningAndDelete(message, '❌ No tienes permisos para modificar esta land.');
-            }
-
+        if (existingLand && existingLand.user_id === user_id) {
+            // If the land exists and belongs to the user, update the existing record
             await database.query(
                 `UPDATE Lands 
                 SET type = ?, zone = ?, blocked = ?, city = ?, district = ?, resources = ?, structures = ?
                 WHERE land_id = ?`,
                 [
                     type, zone, blocked, city, district,
-                    resources.join(', '), 
-                    structures.join(', '),  
+                    resources.join(', '),  // Save as comma-separated string
+                    structures.join(', '),  // Save as comma-separated string
                     land_id
                 ]
             );
 
             message.reply('✅ La land fue actualizada correctamente!');
-        } 
-        // Land doesn't exists
-        else 
-        {
+        } else if (!existingLand) {
+            // If the land doesn't exist, insert a new record
             await database.query(
                 `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     land_id,
-                    user_id, 
+                    user_id, // Store user_id of the message author
                     type,
                     zone,
-                    blocked === 'Yes',
+                    blocked === 'Yes',  // Convert blocked to boolean
                     city,
                     district,
-                    resources.join(', '),
-                    structures.join(', ')
+                    resources.join(', '),  // Save as comma-separated string
+                    structures.join(', ')  // Save as comma-separated string
                 ]
             );
+
             message.reply('✅ La land fue registrada correctamente!');
+        } else {
+            // If the land exists but doesn't belong to the user, send an error
+            message.reply('❌ No tienes permisos para modificar esta land.');
         }
     } catch (error) {
         console.error('Error adding or updating land:', error);
