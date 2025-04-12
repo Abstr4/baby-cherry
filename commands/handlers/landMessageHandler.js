@@ -4,21 +4,16 @@ async function handleLandMessage(message) {
 
     const member = await message.guild.members.fetch(message.author.id);
 
-    // Check if the user has the correct permissions
     if (!member.permissions.has(PermissionFlagsBits.Administrator) && !member.roles.cache.has(REQUIRED_ROLE_ID)) {
         return sendWarningAndDelete(message, `❌ No tienes permisos para registrar una land.`);
     }
 
-    // Extract the message content (assuming it's in the correct format)
     const landMessage = message.content.trim();
 
-    // Manually split the message into fields based on the expected format
     const fields = landMessage.split('\n');
 
-    // Initialize variables
     let land_id, type, zone, blocked, city, district, resources, structures, user_id;
 
-    // Process each field to extract values
     fields.forEach(field => {
         const [key, value] = field.split(':').map(item => item.trim());
         switch (key) {
@@ -35,10 +30,10 @@ async function handleLandMessage(message) {
                 blocked = value;
                 break;
             case 'City':
-                city = value || null;  // Set to null if the value is empty
+                city = value || null;
                 break;
             case 'District':
-                district = value || null;  // Set to null if the value is empty
+                district = value || null;
                 break;
             case 'Resources':
                 resources = value ? value.split(',').map(item => item.trim()) : [];
@@ -51,23 +46,27 @@ async function handleLandMessage(message) {
         }
     });
 
-    // Get the user ID from the message author
+    // Get the user ID
     user_id = message.author.id;
 
-    // Prepare the data to be inserted or updated
+    blocked = blocked == 'yes' || blocked == 'si' || blocked == 'si';
+
     const landData = [
-        land_id,       // land_id
-        user_id,       // user_id
-        type,          // Type
-        zone,          // Zone
-        blocked,       // Blocked
-        city,          // City (null if empty)
-        district,      // District (null if empty)
-        resources,     // Resources (array)
-        structures     // Structures (array)
+        land_id,
+        user_id,
+        type,
+        zone,
+        blocked,
+        city,
+        district,
+        resources,
+        structures
     ];
 
+    console.log(landData);
+
     try {
+
         // Check if the land already exists in the database
         const [existingLand] = await database.query(
             'SELECT * FROM Lands WHERE land_id = ?',
@@ -94,6 +93,7 @@ async function handleLandMessage(message) {
 
             message.reply('✅ La land fue actualizada correctamente!');
         } 
+        // Land doesn't exists
         else 
         {
             await database.query(
@@ -111,7 +111,6 @@ async function handleLandMessage(message) {
                     structures.join(', ')
                 ]
             );
-
             message.reply('✅ La land fue registrada correctamente!');
         }
     } catch (error) {
