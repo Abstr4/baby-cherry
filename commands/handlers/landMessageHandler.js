@@ -50,14 +50,14 @@ async function handleLandMessage(message) {
     // Get the user ID
     user_id = message.author.id;
 
-    blocked = blocked == 'yes' || blocked == 'si' || blocked == 'si';
+    let isBlocked = blocked == 'yes' || blocked == 'si' || blocked == 'sí';
 
     const landData = [
         land_id,
         user_id,
         type,
         zone,
-        blocked,
+        isBlocked,
         city,
         district,
         resources,
@@ -72,6 +72,8 @@ async function handleLandMessage(message) {
             'SELECT * FROM Lands WHERE land_id = ?',
             [land_id]
         );
+
+        console.log(existingLand);
 
         if (existingLand && existingLand.user_id === user_id) {
             // If the land exists and belongs to the user, update the existing record
@@ -95,14 +97,14 @@ async function handleLandMessage(message) {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     land_id,
-                    user_id, // Store user_id of the message author
+                    user_id,
                     type,
                     zone,
-                    blocked === 'Yes',  // Convert blocked to boolean
+                    isBlocked,
                     city,
                     district,
-                    resources.join(', '),  // Save as comma-separated string
-                    structures.join(', ')  // Save as comma-separated string
+                    resources.join(', '),
+                    structures.join(', ')
                 ]
             );
 
