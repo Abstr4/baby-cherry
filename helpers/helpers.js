@@ -42,4 +42,19 @@ const fetchTokenPrice = async (tokenId) => {
     }
 };
 
-module.exports = {loadTokenList, fetchTokenPrice };
+// Function to clean lists (resources, structures)
+function cleanList(input) {
+    return input
+        .split(",")
+        .map(item => item.trim().toLowerCase())
+        .join(", ");
+}
+
+// Function to validate resources or structures (letters, commas, and spaces)
+function validateResourcesOrStructures(input) {
+    const regex = /^[a-zA-Z\s,]+$/;
+    return regex.test(input);
+}
+
+
+module.exports = {loadTokenList, fetchTokenPrice, cleanList, validateResourcesOrStructures };

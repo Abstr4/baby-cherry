@@ -11,6 +11,7 @@ const registerCommands = require('./helpers/registerCommands.js');
 const slashCommands = require('./commands/slash/slash.js');
 const loadSlashCommands = require('./helpers/loadSlashCommands.js');
 const { handleSlashCommand, loadAllowList } = require('./commands/handlers/slashCommands');
+const { handleLandMessage } = require('./commands/handlers/landMessageHandler.js');
 
 
 const client = new Client({
@@ -37,11 +38,20 @@ client.once('ready', async () => {
 
 // Message Command Handler
 client.on('messageCreate', async (message) => {
-    await handleExclamationCommand(message, connection);
-});
+    const LAND_CHANNEL_ID = '1360626314993860818';
 
+    if (message.author.bot) return; 
+    if (message.channel.id === LAND_CHANNEL_ID) {
+        await handleLandMessage(message);
+        return;
+    }
+    if (message.content.startsWith("!")) {
+        await handleExclamationCommand(message, connection);
+    }
+});
 // Slash Command Handler
 client.on('interactionCreate', async (interaction) => {
+    if(interaction.user.bot) return;
     await handleSlashCommand(interaction, client);
 });
 
