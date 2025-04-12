@@ -19,8 +19,8 @@ module.exports = {
             const structureCounts = {};
 
             for (const land of lands) {
-                const resources = land.resource?.split(',') || [];
-                const structures = land.structure?.split(',') || [];
+                const resources = land.resources?.split(',') || [];
+                const structures = land.structures?.split(',') || [];
 
                 for (const r of resources) {
                     const trimmed = r.trim();
