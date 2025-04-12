@@ -20,7 +20,7 @@ module.exports = {
   
       for (let i = 0; i < reminders.length; i++) {
         const r = reminders[i];
-        const line = `ID: \`${r.id}\` | ${r.message}\n`;
+        const line = `ID: \`${r.ID}\` | ${r.Message}\n`;
   
         if (currentDescription.length + line.length > 4000) {
           embeds.push(
