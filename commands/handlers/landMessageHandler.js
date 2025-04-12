@@ -3,10 +3,9 @@ const database = require('@database');
 const { PermissionFlagsBits } = require('discord.js');
 const { cleanList, validateResourcesOrStructures } = require('../../helpers/helpers.js');
 
-const ASHIGARU_ROLE_ID = '1263974586530402466';
-
 async function handleLandMessage(message) {
     
+    const member = await message.guild.members.fetch(message.author.id);
 
     if (!member.permissions.has(PermissionFlagsBits.Administrator) && !member.roles.cache.has(REQUIRED_ROLE_ID)) 
     {

@@ -41,6 +41,7 @@ client.on('messageCreate', async (message) => {
     const LAND_CHANNEL_ID = '1360626314993860818';
 
     if (message.author.bot) return; 
+    
     if (message.channel.id === LAND_CHANNEL_ID) {
         console.log(' message sent to the land thread.')
         await handleLandMessage(message);
