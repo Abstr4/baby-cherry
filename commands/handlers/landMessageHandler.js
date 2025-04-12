@@ -19,7 +19,7 @@ async function handleLandMessage(message) {
         land_id: /^land_id:\s*(\d+)$/m,
         type: /^Type:\s*(\w+)$/m,
         zone: /^Zone:\s*(.+)$/m,
-        blocked: /^Blocked:\s*(Yes|No)$/m,
+        blocked: /^Blocked:\s*(Si|Sí|Yes|No)$/m,
         city: /^City:\s*(.+)$/m,
         district: /^District:\s*(.+)$/m,
         resources: /^Resources:\s*([a-zA-Z\s,]+)$/m,
@@ -71,7 +71,6 @@ async function handleLandMessage(message) {
             ]
         );
 
-        // Confirm the land has been added
         message.reply('✅ La land fue registrada correctamente!');
     } catch (error) {
         console.error('Error adding land:', error);
@@ -81,10 +80,12 @@ async function handleLandMessage(message) {
 
 // Helper function to send a warning message and delete the invalid message after 2 minutes
 async function sendWarningAndDelete(message, warningText) {
-    // Send the warning message
-    const warningMessage = await message.reply(warningText);
 
-    // Delete the message after 2 minutes
+    const member = await message.guild.members.fetch(message.author.id);
+
+    if (member.permissions.has(PermissionFlagsBits.Administrator)) return;
+
+    const warningMessage = await message.reply(warningText);
     setTimeout(() => {
         warningMessage.delete();
         message.delete();
