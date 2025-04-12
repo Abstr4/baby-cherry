@@ -86,28 +86,29 @@ async function handleLandMessage(message) {
                 WHERE land_id = ?`,
                 [
                     type, zone, blocked, city, district,
-                    resources.join(', '),  // Save as comma-separated string
-                    structures.join(', '),  // Save as comma-separated string
+                    resources.join(', '), 
+                    structures.join(', '),  
                     land_id
                 ]
             );
 
             message.reply('✅ La land fue actualizada correctamente!');
-        } else {
-            // If the land doesn't exist, insert a new record
+        } 
+        else 
+        {
             await database.query(
                 `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     land_id,
-                    user_id, // Store user_id of the message author
+                    user_id, 
                     type,
                     zone,
-                    blocked === 'Yes',  // Convert blocked to boolean
+                    blocked === 'Yes',
                     city,
                     district,
-                    resources.join(', '),  // Save as comma-separated string
-                    structures.join(', ')  // Save as comma-separated string
+                    resources.join(', '),
+                    structures.join(', ')
                 ]
             );
 
