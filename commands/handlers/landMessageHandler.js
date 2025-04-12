@@ -1,3 +1,7 @@
+const { PermissionFlagsBits } = require('discord.js');
+const database = require('@database');
+const { cleanList, validateResourcesOrStructures } = require('../../helpers/helpers.js');
+
 async function handleLandMessage(message) {
     const member = await message.guild.members.fetch(message.author.id);
 
