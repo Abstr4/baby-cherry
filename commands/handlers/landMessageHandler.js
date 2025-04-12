@@ -28,7 +28,7 @@ async function handleLandMessage(message) {
                 zone = value;
                 break;
             case 'Blocked':
-                blocked = value;
+                blocked = value.toLowerCase();  // Convert blocked to lowercase
                 break;
             case 'City':
                 city = value || null;
@@ -37,16 +37,18 @@ async function handleLandMessage(message) {
                 district = value || null;
                 break;
             case 'Resources':
-                resources = value ? value.split(',').map(item => item.trim()) : [];
+                // Convert each resource to lowercase
+                resources = value ? value.split(',').map(item => item.trim().toLowerCase()) : [];
                 break;
             case 'Structures':
-                structures = value ? value.split(',').map(item => item.trim()) : [];
+                // Convert each structure to lowercase
+                structures = value ? value.split(',').map(item => item.trim().toLowerCase()) : [];
                 break;
             default:
                 break;
         }
     });
-
+    
     // Get the user ID
     user_id = message.author.id;
 
@@ -76,41 +78,42 @@ async function handleLandMessage(message) {
         console.log(existingLand);
 
         if (existingLand.length > 0 && existingLand[0].user_id === user_id) {
-            // If the land exists and belongs to the user, update the existing record
             await database.query(
                 `UPDATE Lands 
                 SET type = ?, zone = ?, blocked = ?, city = ?, district = ?, resources = ?, structures = ?
                 WHERE land_id = ?`,
                 [
-                    type, zone, blocked, city, district,
-                    resources.join(', '),  // Save as comma-separated string
-                    structures.join(', '),  // Save as comma-separated string
+                    type, zone, isBlocked, city, district,
+                    resources.join(', '),
+                    structures.join(', '),
                     land_id
                 ]
             );
         
             message.reply('✅ La land fue actualizada correctamente!');
-        } else if (existingLand.length === 0) {
-            // If the land doesn't exist, insert a new record
+        } 
+        // If the land doesn't exist, insert a new record
+        else if (existingLand.length === 0) {
             await database.query(
                 `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     land_id,
-                    user_id, // Store user_id of the message author
+                    user_id,
                     type,
                     zone,
-                    blocked === 'Yes',  // Convert blocked to boolean
+                    isBlocked,
                     city,
                     district,
-                    resources.join(', '),  // Save as comma-separated string
-                    structures.join(', ')  // Save as comma-separated string
+                    resources.join(', '),
+                    structures.join(', ')
                 ]
             );
         
             message.reply('✅ La land fue registrada correctamente!');
-        } else {
-            // If the land exists but doesn't belong to the user, send an error
+        } 
+        // If the land exists but doesn't belong to the user, send an error
+        else {
             message.reply('❌ No tienes permisos para modificar esta land.');
         }
     } catch (error) {
