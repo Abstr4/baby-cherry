@@ -18,19 +18,27 @@ module.exports = {
             const resourceCounts = {};
             const structureCounts = {};
 
+            // Function to validate entries (only allows letters, commas, and spaces, no numbers)
+            const isValidEntry = entry => {
+                const trimmed = entry.trim();
+                return trimmed && trimmed !== "-" && /^[A-Za-z\s,]+$/.test(trimmed);
+            };
+
             for (const land of lands) {
                 const resources = land.resources?.split(',') || [];
                 const structures = land.structures?.split(',') || [];
 
+                // Validate and process resources
                 for (const r of resources) {
                     const trimmed = r.trim();
-                    if (!trimmed) continue;
+                    if (!isValidEntry(trimmed)) continue;
                     resourceCounts[trimmed] = (resourceCounts[trimmed] || 0) + 1;
                 }
 
+                // Validate and process structures
                 for (const s of structures) {
                     const trimmed = s.trim();
-                    if (!trimmed) continue;
+                    if (!isValidEntry(trimmed)) continue;
                     structureCounts[trimmed] = (structureCounts[trimmed] || 0) + 1;
                 }
             }
@@ -50,7 +58,7 @@ module.exports = {
                 )
                 .setFooter({ text: `LandsInfo - Actualizado al ${new Date().toLocaleDateString()}` });
 
-            await interaction.reply({ embeds: [embed]});
+            await interaction.reply({ embeds: [embed] });
 
         } catch (err) {
             console.error(err);
