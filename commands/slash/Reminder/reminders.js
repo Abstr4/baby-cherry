@@ -1,6 +1,6 @@
 require('module-alias/register');
 const database = require('@database');
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const moment = require('moment');
 
 module.exports = {
