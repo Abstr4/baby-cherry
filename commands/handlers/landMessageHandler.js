@@ -1,13 +1,8 @@
-const { PermissionFlagsBits } = require('discord.js');
-const database = require('@database');
-const { cleanList, validateResourcesOrStructures } = require('../../helpers/helpers.js');
-
 async function handleLandMessage(message) {
-
     const member = await message.guild.members.fetch(message.author.id);
 
     if (!member.permissions.has(PermissionFlagsBits.Administrator) && !member.roles.cache.has(REQUIRED_ROLE_ID)) {
-        return sendWarningAndDelete(message, `❌ No tienes permisos para registrar una land.`)
+        return sendWarningAndDelete(message, `❌ No tienes permisos para registar una land.`);
     }
 
     const landMessage = message.content.trim();
@@ -18,8 +13,8 @@ async function handleLandMessage(message) {
         type: /^Type:\s*(\w+)$/m,
         zone: /^Zone:\s*(.+)$/m,
         blocked: /^Blocked:\s*(Si|Sí|Yes|No)$/m,
-        city: /^City:\s*(.*?)$/m,  // Non-greedy match to allow empty values
-        district: /^District:\s*(.*?)$/m,  // Non-greedy match to allow empty values
+        city: /^City:\s*(.+)$/m,
+        district: /^District:\s*(.+)$/m,
         resources: /^Resources:\s*([a-zA-Z\s,]+)$/m,
         structures: /^Structures:\s*([a-zA-Z\s,]+)$/m
     };
@@ -31,7 +26,6 @@ async function handleLandMessage(message) {
         if (match) {
             matches[key] = match[1].trim();
         } else {
-            // If the format is invalid, return false and send a warning
             return sendWarningAndDelete(message, `❌ El campo **${key}** está en un formato incorrecto. Por favor, sigue el formato correcto.`);
         }
     }
@@ -48,46 +42,57 @@ async function handleLandMessage(message) {
         return sendWarningAndDelete(message, '❌ Las estructuras deben contener solo letras, comas y espacios.');
     }
 
-    // If all validations pass, proceed to add the land
     try {
         const { land_id, type, zone, blocked, city, district } = matches;
 
-        // Insert the land into the database (this assumes you have a valid `database` module)
-        await database.query(
-            `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-                land_id,
-                message.author.id, // Store user_id of the message author
-                type,
-                zone,
-                blocked === 'Yes',  // Convert blocked to boolean
-                city || null,  // Handle empty city as null
-                district || null,  // Handle empty district as null
-                resources,
-                structures
-            ]
+        // Check if the land_id already exists in the database
+        const existingLand = await database.query(
+            'SELECT * FROM Lands WHERE land_id = ?',
+            [land_id]
         );
 
-        message.reply('✅ La land fue registrada correctamente!');
+        if (existingLand.length > 0) {
+            // If land_id exists, update the existing record
+            await database.query(
+                `UPDATE Lands 
+                 SET user_id = ?, type = ?, zone = ?, blocked = ?, city = ?, district = ?, resources = ?, structures = ?
+                 WHERE land_id = ?`,
+                [
+                    message.author.id, // user_id of the message author
+                    type,
+                    zone,
+                    blocked === 'Yes',  // Convert blocked to boolean
+                    city,
+                    district,
+                    resources,
+                    structures,
+                    land_id // The land_id to identify the record
+                ]
+            );
+
+            message.reply('✅ La land fue actualizada correctamente!');
+        } else {
+            // If land_id does not exist, insert the new land
+            await database.query(
+                `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    land_id,
+                    message.author.id, // Store user_id of the message author
+                    type,
+                    zone,
+                    blocked === 'Yes',  // Convert blocked to boolean
+                    city,
+                    district,
+                    resources,
+                    structures
+                ]
+            );
+
+            message.reply('✅ La land fue registrada correctamente!');
+        }
     } catch (error) {
-        console.error('Error adding land:', error);
-        message.reply('❌ Hubo un error al registrar la land. Intenta de nuevo más tarde.');
+        console.error('Error adding/updating land:', error);
+        message.reply('❌ Hubo un error al registrar o actualizar la land. Intenta de nuevo más tarde.');
     }
 }
-
-// Helper function to send a warning message and delete the invalid message after 2 minutes
-async function sendWarningAndDelete(message, warningText) {
-
-    const member = await message.guild.members.fetch(message.author.id);
-
-    if (!member.permissions.has(PermissionFlagsBits.Administrator)) return;
-
-    const warningMessage = await message.reply(warningText);
-    setTimeout(() => {
-        warningMessage.delete();
-        message.delete();
-    }, 120000); // 2 minutes = 120000 ms
-}
-
-module.exports = { handleLandMessage, sendWarningAndDelete };
