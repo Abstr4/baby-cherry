@@ -93,6 +93,7 @@ async function handleLandMessage(message) {
 
         console.log(existingLand);
 
+        // If it exists, update it
         if (existingLand.length > 0 && existingLand[0].user_id === user_id) {
             await database.query(
                 `UPDATE Lands 
