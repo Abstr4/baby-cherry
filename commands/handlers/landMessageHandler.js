@@ -1,4 +1,5 @@
 const { PermissionFlagsBits } = require('discord.js');
+const database = require('@database');
 
 async function handleLandMessage(message) {
 
