@@ -1,6 +1,4 @@
 const { PermissionFlagsBits } = require('discord.js');
-const database = require('@database');
-const { cleanList, validateResourcesOrStructures } = require('../../helpers/helpers.js');
 
 async function handleLandMessage(message) {
 
