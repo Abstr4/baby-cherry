@@ -109,16 +109,17 @@ async function handleLandMessage(message) {
                     structures.join(', ')
                 ]
             );
-        
+            console.log(`User with ID: ${message.author.id} successfully registered a land.`)
             message.reply('✅ La land fue registrada correctamente!');
         } 
         // If the land exists but doesn't belong to the user, send an error
         else {
-            message.reply('❌ No tienes permisos para modificar esta land.');
+            console.log(`User with ID: ${message.author.id} tried to modified anothers land.`)
+            await sendWarningAndDelete(message, '❌ No tienes permisos para modificar esta land.')
         }
     } catch (error) {
         console.error('Error adding or updating land:', error);
-        message.reply('❌ Hubo un error al registrar o actualizar la land. Intenta de nuevo más tarde.');
+        await sendWarningAndDelete(message, '❌ Hubo un error al registrar o actualizar la land. Intenta de nuevo más tarde.')
     }
 }
 
