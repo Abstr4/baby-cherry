@@ -48,14 +48,14 @@ module.exports = {
                     { name: 'Sí', value: 'Sí' },
                     { name: 'No', value: 'No' }
                 ))
-        .addStringOption(option =>
-            option.setName('user_id')
-                .setDescription('Filtrar por el ID del usuario dueño de la land')),
+        .addUserOption(option =>
+            option.setName('user')
+                .setDescription('Filtrar por usuario')),
 
     async execute(interaction) {
         const filters = {
             land_id: interaction.options.getString('land_id'),
-            user_id: interaction.options.getString('user_id'),
+            user_id: interaction.options.getUser('user_id')?.id,
             type: interaction.options.getString('type'),
             zone: interaction.options.getString('zone'),
             city: interaction.options.getString('city'),
