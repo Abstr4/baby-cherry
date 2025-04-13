@@ -1,5 +1,5 @@
 // Misc
-const levelUp = require('./Misc/levelUp.js');
+const levelUp = require('./Misc/levelup.js');
 
 // Command
 const addCommand = require('./Command/addcommand.js');
@@ -19,12 +19,12 @@ const delReminder = require('./Reminder/delreminder.js');
 // Slash
 const allow = require('./Allow/allow.js');
 const disallow = require('./Allow/disallow.js');
-const allowlist = require('./Allow/allowlist.js');
+const allowList = require('./Allow/allowlist.js');
 
 const lands = require('./Land/lands.js');
-const addland = require('./Land/addland.js');
-const deleteland = require('./Land/deleteland.js');
-const landsinfo = require('./Land/landsinfo.js');
+const addLand = require('./Land/addland.js');
+const deleteLand = require('./Land/deleteland.js');
+const landsInfo = require('./Land/landsinfo.js');
 
 module.exports = [
 
@@ -49,11 +49,11 @@ module.exports = [
     // Slash
     allow,
     disallow,
-    allowlist,
+    allowList,
 
     // Lands
-    addland,
-    deleteland,
+    addLand,
+    deleteLand,
     lands,
-    landsinfo
+    landsInfo
 ];
