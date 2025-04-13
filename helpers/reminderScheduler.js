@@ -5,7 +5,8 @@ const database = require("../database.js");
 module.exports = (client) => {
 
     async function sendMessage(type, message, channelId, roleId, reminderTime, offsetMinutes) {
-        try {
+        try 
+        {
             console.log(`🔍 Fetching channel ${channelId}...`);
             const channel = await client.channels.fetch(channelId);
 
@@ -15,30 +16,30 @@ module.exports = (client) => {
                 const now = new Date();
                 const reminderDate = new Date(now.toDateString());
                 const [hours, minutes] = reminderTime.split(':').map(Number);
-                reminderDate.setUTCHours(hours, minutes, 0, 0); // Usa UTC para la hora exacta del evento
+                
+                reminderDate.setUTCHours(hours, minutes + offsetMinutes, 0, 0); 
 
-                const timestamp = Math.floor(reminderDate.getTime() / 1000); // Timestamp exacto en UTC
-
-                // Aquí armamos el mensaje
-                const timeLeftMessage = offsetMinutes > 0
-                    ? `en ${offsetMinutes} minuto${offsetMinutes === 1 ? '' : 's'}`
-                    : '';
+                const timestamp = Math.floor(reminderDate.getTime() / 1000);
 
                 const formattedMessage = roleId 
-                    ? `🔔 ${type}: <@&${roleId}> ${timeLeftMessage} <t:${timestamp}:R> ${message}` 
-                    : `🔔 ${type}: ${timeLeftMessage} <t:${timestamp}:R> ${message}`;
+                    ? `🔔 ${type}: <@&${roleId}> <t:${timestamp}:R> ${message}` 
+                    : `🔔 ${type}: <t:${timestamp}:R> ${message}`;
 
                 await channel.send(formattedMessage);
                 console.log(`📨 Message sent successfully!`);
-            } else {
+            } 
+            else 
+            {
                 console.error(`❌ Error: Channel ${channelId} not found.`);
             }
-        } catch (err) {
+        } 
+        catch (err) 
+        {
             console.error(`❌ Error sending ${type}:`, err);
         }
     }
 
-    cron.schedule("*/1 * * * *", async () => {
+    cron.schedule("*/10 * * * *", async () => {
         console.log("⏳ Checking for Reminders...");
 
         try {
