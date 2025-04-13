@@ -1,6 +1,7 @@
 {
     "_moduleAliases": {
         "@database": "./database.js",
+        "@helpers": "./helpers/helpers.js",
         "@root": "."
     },
     "name": "ron-price-bot",
