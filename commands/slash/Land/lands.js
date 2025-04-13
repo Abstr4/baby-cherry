@@ -116,12 +116,12 @@ module.exports = {
             await interaction.editReply('Aquí están las lands que buscaste:');
 
             for (const land of rows) {
-                const ownerMention = `<@!${land.owner_id}>`;
-                console.log(ownerMention);
+                const ownerMention = `<@${land.owner_id}>`;
                 const embed = new EmbedBuilder()
                     .setTitle(`🌍 Land ID: ${land.land_id}`)
                     .setURL(`https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id}`)
                     .setColor('#4e5d94')
+                    .setDescription(`👤 Propietario: ${ownerMention}`)
                     .addFields(
                         { name: '🏷️ Tipo', value: land.type || 'Sin dato', inline: true },
                         { name: '🌐 Zona', value: land.zone || 'Sin dato', inline: true },
@@ -130,9 +130,7 @@ module.exports = {
                         { name: '📍 Distrito', value: land.district || 'Sin dato', inline: true },
                         { name: '💎 Recursos', value: land.resources?.split(',').map(r => `• ${r.trim()}`).join('\n') || '• Ninguno', inline: false },
                         { name: '🏗️ Estructuras', value: land.structures?.split(',').map(s => `• ${s.trim()}`).join('\n') || '• Ninguna', inline: false },
-                        { name: '🔗 Marketplace', value: `[Ver en el marketplace](https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id})`, inline: false },
-                        { name: '👤 Dueño', value: ownerMention, inline: true }
-
+                        { name: '🔗 Marketplace', value: `[Ver en el marketplace](https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id})`, inline: false }
                     )
                     .setFooter({ text: `LandsInfo • ${new Date().toUTCString()}` });
 
