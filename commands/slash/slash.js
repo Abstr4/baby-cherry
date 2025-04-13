@@ -19,7 +19,7 @@ const delReminder = require('./Reminder/delReminder.js');
 // Slash
 const allow = require('./Allow/allow.js');
 const disallow = require('./Allow/disallow.js');
-const allowList = require('./Allow/allowList.js');
+const allowList = require('./Allow/allowlist.js');
 
 const lands = require('./Land/lands.js');
 const addLand = require('./Land/addLand.js');
