@@ -47,7 +47,10 @@ module.exports = {
                 .addChoices(
                     { name: 'Sí', value: 'Sí' },
                     { name: 'No', value: 'No' }
-                )),
+                ))
+        .addStringOption(option =>
+            option.setName('user_id')
+                .setDescription('Filtrar por el ID del usuario dueño de la land')),
 
     async execute(interaction) {
         const filters = {
@@ -96,6 +99,10 @@ module.exports = {
             query += ' AND blocked = ?';
             values.push(filters.blocked ? 1 : 0);
         }
+        if (filters.user_id) {
+            query += ' AND owner_id = ?';
+            values.push(filters.user_id);
+        }
 
         try {
             await interaction.deferReply({ flags: 64 });
@@ -109,6 +116,7 @@ module.exports = {
             await interaction.editReply('Aquí están las lands que buscaste:');
 
             for (const land of rows) {
+                const ownerMention = `<@${land.owner_id}>`;
                 const embed = new EmbedBuilder()
                     .setTitle(`🌍 Land ID: ${land.land_id}`)
                     .setURL(`https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id}`)
@@ -121,10 +129,11 @@ module.exports = {
                         { name: '📍 Distrito', value: land.district || 'Sin dato', inline: true },
                         { name: '💎 Recursos', value: land.resources?.split(',').map(r => `• ${r.trim()}`).join('\n') || '• Ninguno', inline: false },
                         { name: '🏗️ Estructuras', value: land.structures?.split(',').map(s => `• ${s.trim()}`).join('\n') || '• Ninguna', inline: false },
-                        { name: '🔗 Marketplace', value: `[Ver en el marketplace](https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id})`, inline: false }
+                        { name: '🔗 Marketplace', value: `[Ver en el marketplace](https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id})`, inline: false },
+                        { name: '👤 Dueño', value: ownerMention, inline: true }
 
                     )
-                    .setFooter({ text: `LandsInfo • ${new Date().toLocaleDateString('es-AR')}` });
+                    .setFooter({ text: `LandsInfo • ${new Date().toUTCString()}` });
 
                 await interaction.followUp({ embeds: [embed], flags: 64 });
             }
