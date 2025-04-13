@@ -118,14 +118,13 @@ module.exports = {
 
             for (const land of rows) {
 
-                const ownerMention = `<@${land.owner_id}>`;
                 console.log(land.user_id);
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🌍 Land ID: ${land.land_id}`)
                     .setURL(`https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id}`)
                     .setColor('#4e5d94')
-                    .setDescription(`👤 Propietario: ${ownerMention}`)
+                    .setDescription(`👤 Propietario: <@${land.user_id}>`)
                     .addFields(
                         { name: '🏷️ Tipo', value: land.type || 'Sin dato', inline: true },
                         { name: '🌐 Zona', value: land.zone || 'Sin dato', inline: true },
