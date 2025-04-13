@@ -98,14 +98,15 @@ module.exports = {
         }
 
         try {
+            await interaction.deferReply({ ephemeral: true });
+
             const [rows] = await database.query(query, values);
 
             if (rows.length === 0) {
-                console.log('No se encontraron lands que coincidan con los filtros.');
-                return interaction.reply('No se encontraron lands que coincidan con los filtros.');
+                return await interaction.editReply('No se encontraron lands que coincidan con los filtros.');
             }
-            await interaction.deferReply({ ephemeral: true });
 
+            await interaction.editReply('Aquí están las lands que buscaste:');
 
             for (const land of rows) {
                 const embed = new EmbedBuilder()
