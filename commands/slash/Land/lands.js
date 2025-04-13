@@ -1,5 +1,5 @@
 require('module-alias/register');
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const database = require('@database');
 
 module.exports = {
@@ -105,11 +105,23 @@ module.exports = {
         return interaction.reply('No se encontraron lands que coincidan con los filtros.');
       }
 
-      const response = rows.map(l =>
-        `**Land ID:** ${l.land_id}\n**Tipo:** ${l.type}\n**Zona:** ${l.zone}\n**Bloqueada:** ${l.blocked ? 'Sí' : 'No'}\n**Ciudad:** ${l.city}\n**Distrito:** ${l.district}\n**Recursos:** ${l.resources}\n**Estructuras:** ${l.structures}`
-      ).join('\n\n');
-
-      await interaction.reply(response.length > 2000 ? response.slice(0, 1997) + '...' : response);
+      for (const land of rows) {
+        const embed = new EmbedBuilder()
+          .setTitle(`🌍 Land ID: ${land.land_id}`)
+          .setColor('#4e5d94')
+          .addFields(
+            { name: '🏷️ Tipo', value: land.type || 'Sin dato', inline: true },
+            { name: '🌐 Zona', value: land.zone || 'Sin dato', inline: true },
+            { name: '🚫 Bloqueada', value: land.blocked ? 'Sí' : 'No', inline: true },
+            { name: '🏙️ Ciudad', value: land.city || 'Sin dato', inline: true },
+            { name: '📍 Distrito', value: land.district || 'Sin dato', inline: true },
+            { name: '💎 Recursos', value: land.resources?.split(',').map(r => `• ${r.trim()}`).join('\n') || '• Ninguno', inline: false },
+            { name: '🏗️ Estructuras', value: land.structures?.split(',').map(s => `• ${s.trim()}`).join('\n') || '• Ninguna', inline: false }
+          )
+          .setFooter({ text: `LandsInfo • ${new Date().toLocaleDateString('es-AR')}` });
+      
+        await interaction.followUp({ embeds: [embed] });
+      }
 
     } catch (err) {
       console.error(err);
