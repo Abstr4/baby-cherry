@@ -36,7 +36,8 @@ module.exports = {
             allowList.add(user.id); // Ensure allowlist is updated
 
             return interaction.reply({ content: `${user.username} is now allowed to use commands!`, flags: 64 });
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return interaction.reply({ content: "An error occurred while allowing the user.", flags: 64 });
         }

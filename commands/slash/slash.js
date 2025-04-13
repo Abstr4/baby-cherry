@@ -2,19 +2,19 @@
 const levelUp = require('./Misc/levelUp.js');
 
 // Command
-const addCommand = require('./Command/addCommand');
-const deleteCommand = require('./Command/delCommand.js');
+const addCommand = require('./Command/addcommand');
+const deleteCommand = require('./Command/delcommand.js');
 const commands = require('./Command/commands.js');
 
 // Event
-const setEvent = require('./Event/setEvent.js');
+const setEvent = require('./Event/setevent.js');
 const events = require('./Event/events.js');
-const delEvent = require('./Event/delEvent.js');
+const delEvent = require('./Event/delevent.js');
 
 // Reminder
-const setReminder = require('./Reminder/setReminder.js');
+const setReminder = require('./Reminder/setreminder.js');
 const reminders = require('./Reminder/reminders.js');
-const delReminder = require('./Reminder/delReminder.js');
+const delReminder = require('./Reminder/delreminder.js');
 
 // Slash
 const allow = require('./Allow/allow.js');

@@ -38,7 +38,8 @@ module.exports = {
                 flags: 64
             });
 
-        } catch (err) {
+        } 
+        catch (err) {
             console.error("❌ Database error:", err);
             return interaction.reply({
                 content: "❌ Failed to delete the command due to a database error.",

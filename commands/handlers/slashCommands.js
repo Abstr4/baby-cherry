@@ -2,8 +2,8 @@ require('module-alias/register');
 const database = require('@database')
 const { PermissionFlagsBits } = require('discord.js');
 
-let allowList = new Set(); // In-memory allowlist
-
+// In-memory allowlist
+let allowList = new Set(); 
 
 // Load allowlist on bot startup
 const loadAllowList = async () => {

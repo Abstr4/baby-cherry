@@ -49,7 +49,8 @@ module.exports = {
       for (let i = 1; i < embeds.length; i++) {
         await interaction.followUp({ embeds: [embeds[i]], flags: 64 });
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error(error);
       await interaction.reply({
         content: '❌ An error occurred while retrieving the command list.',

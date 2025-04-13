@@ -36,7 +36,8 @@ module.exports = {
         content: `✅ Command \`!${commandName}\` updated successfully.`,
         flags: 64
       });
-    } catch (error) {
+    } 
+    catch (error) {
       console.error(error);
       await interaction.reply({
         content: '❌ An error occurred while updating the command.',
