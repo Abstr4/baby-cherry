@@ -1,19 +1,27 @@
-module.exports = (client) => {
-    const cron = require("node-cron");
-    const database = require("../database.js"); // ✅ Import it directly
+const cron = require("node-cron");
+const { Client, GatewayIntentBits } = require("discord.js");
+const database = require("../database.js"); // ✅ Import it directly
 
-    async function sendMessage(type, message, channelId, roleId) {
+module.exports = (client) => {
+
+    async function sendMessage(type, message, channelId, roleId, reminderTime) {
         try {
             console.log(`🔍 Fetching channel ${channelId}...`);
             const channel = await client.channels.fetch(channelId);
-    
+
             if (channel) {
                 console.log(`✅ Channel found. Sending ${type}: ${message}`);
-                
-                // Only mention the role if RoleId is not NULL
+
+                const now = new Date();
+                const reminderDate = new Date(now.toDateString());
+                const [hours, minutes] = reminderTime.split(':').map(Number);
+                reminderDate.setHours(hours, minutes - 10, 0, 0);
+
+                const timestamp = Math.floor(reminderDate.getTime() / 1000);
+
                 const formattedMessage = roleId 
-                    ? `🔔 ${type}: <@&${roleId}> ${message}` 
-                    : `🔔 ${type}: ${message}`;
+                    ? `🔔 ${type}: <@&${roleId}> ${message} <t:${timestamp}:R>` 
+                    : `🔔 ${type}: ${message} <t:${timestamp}:R>`;
 
                 await channel.send(formattedMessage);
                 console.log(`📨 Message sent successfully!`);
@@ -25,39 +33,29 @@ module.exports = (client) => {
         }
     }
 
-    // Schedule task to check both Events and Reminders every minute
     cron.schedule("*/10 * * * *", async () => {
-        console.log("⏳ Checking for Events and Reminders...");
+        console.log("⏳ Checking for Reminders...");
 
         try {
-            // Fetch Events and Reminders together
+            // Fetch Reminders
             const [results] = await database.query(`
-                (SELECT ID, Message, ChannelId, RoleId, 'Event' AS Type FROM Event WHERE EventAt <= UTC_TIMESTAMP())
-                UNION ALL
-                (SELECT ID, Message, ChannelId, RoleId, 'Reminder' AS Type FROM Reminder WHERE TIME_FORMAT(Time, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i'))
+                SELECT ID, Message, ChannelId, RoleId, Time FROM Reminder WHERE TIME_FORMAT(Time, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i')
             `);
 
             if (!results || results.length === 0) {
-                console.log("❌ No Events or Reminders found.");
+                console.log("❌ No Reminders found.");
                 return;
             }
 
-            console.log(`🔍 Found ${results.length} items.`);
+            console.log(`🔍 Found ${results.length} reminders.`);
 
             for (const item of results) {
-                const roleMention = item.RoleId ? `<@&${item.RoleId}>` : "No Role";
-                console.log(`📢 Sending ${item.Type}: ${item.Message} to ${item.ChannelId} (Role: ${roleMention})`);
-                
-                await sendMessage(item.Type, item.Message, item.ChannelId, item.RoleId);
-
-                if (item.Type === "Event") {
-                    // Delete Events after execution
-                    await database.query("DELETE FROM Event WHERE ID = ?", [item.ID]);
-                    console.log(`🗑 Event ID ${item.ID} deleted.`);
-                }
+                console.log(`📢 Sending Reminder: ${item.Message} to ${item.ChannelId} (Role: ${item.RoleId})`);
+                await sendMessage("Reminder", item.Message, item.ChannelId, item.RoleId, item.Time);
             }
         } catch (err) {
             console.error("❌ Database error:", err);
         }
     }, { timezone: "UTC" });
+
 };
