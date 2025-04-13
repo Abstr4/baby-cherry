@@ -21,10 +21,16 @@ const allow = require('./Allow/allow.js');
 const disallow = require('./Allow/disallow.js');
 const allowList = require('./Allow/allowlist.js');
 
+// Lands
 const lands = require('./Land/lands.js');
 const addLand = require('./Land/addland.js');
 const deleteLand = require('./Land/deleteland.js');
 const landsInfo = require('./Land/landsinfo.js');
+
+// Permission
+const permissions_add = require('./Permission/permissions-add.js');
+const permissions_remove = require('./Permission/permissions-remove.js');
+const permissions_list = require('./Permission/permissions-list.js');
 
 module.exports = [
 
@@ -55,5 +61,10 @@ module.exports = [
     addLand,
     deleteLand,
     lands,
-    landsInfo
+    landsInfo,
+
+    // Permissions
+    permissions_add,
+    permissions_list,
+    permissions_remove
 ];
