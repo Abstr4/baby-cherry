@@ -1,30 +1,30 @@
 // Misc
-const levelUp = require('./Misc/levelup.js');
+const levelUp = require('./Misc/levelUp.js');
 
 // Command
-const addCommand = require('./Command/addcommand.js');
-const deleteCommand = require('./Command/delcommand.js');
+const addCommand = require('./Command/addCommand.js');
+const deleteCommand = require('./Command/delCommand.js');
 const commands = require('./Command/commands.js');
 
 // Event
-const setEvent = require('./Event/setevent.js');
+const setEvent = require('./Event/setEvent.js');
 const events = require('./Event/events.js');
-const delEvent = require('./Event/delevent.js');
+const delEvent = require('./Event/delEvent.js');
 
 // Reminder
-const setReminder = require('./Reminder/setreminder.js');
+const setReminder = require('./Reminder/setReminder.js');
 const reminders = require('./Reminder/reminders.js');
-const delReminder = require('./Reminder/delreminder.js');
+const delReminder = require('./Reminder/delReminder.js');
 
 // Slash
 const allow = require('./Allow/allow.js');
 const disallow = require('./Allow/disallow.js');
-const allowList = require('./Allow/allowlist.js');
+const allowList = require('./Allow/allowList.js');
 
 const lands = require('./Land/lands.js');
-const addLand = require('./Land/addland.js');
-const deleteLand = require('./Land/deleteland.js');
-const landsInfo = require('./Land/landsinfo.js');
+const addLand = require('./Land/addLand.js');
+const deleteLand = require('./Land/deleteLand.js');
+const landsInfo = require('./Land/landsInfo.js');
 
 module.exports = [
 
