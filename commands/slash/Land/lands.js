@@ -1,142 +1,117 @@
-require('module-alias/register');
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const database = require("@database");
+const { SlashCommandBuilder } = require('discord.js');
+const database = require('../../database.js');
+const { normalizeYesNo } = require('../../helpers/helper.js');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName("lands")
-        .setDescription("Busca lands con filtros avanzados y opción de limitar resultados.")
-        .addStringOption(option =>
-            option.setName("land_id")
-                .setDescription("Buscar por ID exacto de land"))
-        .addUserOption(option =>
-            option.setName("user")
-                .setDescription("Filtrar por usuario que registró la land"))
-        .addStringOption(option =>
-            option.setName("type")
-                .setDescription("Filtrar por tipo")
-                .addChoices(
-                    { name: "Homestead", value: "Homestead" },
-                    { name: "Settlement", value: "Settlement" },
-                    { name: "City", value: "City" },
-                    { name: "Village", value: "Village" }
-                ))
-        .addStringOption(option =>
-            option.setName("zone")
-                .setDescription("Filtrar por zona"))
-        .addStringOption(option =>
-            option.setName("blocked")
-                .setDescription("¿Está bloqueada?")
-                .addChoices(
-                    { name: "Sí", value: "true" },
-                    { name: "No", value: "false" }
-                ))
-        .addStringOption(option =>
-            option.setName("city")
-                .setDescription("Filtrar por ciudad"))
-        .addStringOption(option =>
-            option.setName("district")
-                .setDescription("Filtrar por distrito"))
-        .addStringOption(option =>
-            option.setName("resources")
-                .setDescription("Buscar recurso (coincidencia parcial)"))
-        .addStringOption(option =>
-            option.setName("structures")
-                .setDescription("Buscar estructura (coincidencia parcial)"))
-        .addIntegerOption(option =>
-            option.setName("limit")
-                .setDescription("Número máximo de resultados a mostrar (por defecto: 10)")),
+  data: new SlashCommandBuilder()
+    .setName('lands')
+    .setDescription('Busca lands por distintos campos.')
 
-    async execute(interaction) {
-        const filters = {
-            land_id: interaction.options.getString("land_id"),
-            user_id: interaction.options.getUser("user")?.id,
-            type: interaction.options.getString("type"),
-            zone: interaction.options.getString("zone"),
-            blocked: interaction.options.getString("blocked"),
-            city: interaction.options.getString("city"),
-            district: interaction.options.getString("district"),
-            resources: interaction.options.getString("resources")?.toLowerCase(),
-            structures: interaction.options.getString("structures")?.toLowerCase(),
-            limit: interaction.options.getInteger("limit") ?? 10
-        };
+    .addStringOption(option =>
+      option.setName('land_id')
+      .setDescription('ID de la land'))
 
-        const whereClauses = [];
-        const values = [];
+      .addStringOption(option =>
+        option.setName('type')
+        .setDescription('Tipo de land'))
+        .addChoices(
+            { name: 'Homestead', value: 'Homestead' },
+            { name: 'Settlement', value: 'Settlement' },
+            { name: 'City', value: 'City' },
+            { name: 'Village', value: 'Village' })
 
-        if (filters.land_id) {
-            whereClauses.push("land_id = ?");
-            values.push(filters.land_id);
-        }
-        if (filters.user_id) {
-            whereClauses.push("user_id = ?");
-            values.push(filters.user_id);
-        }
-        if (filters.type) {
-            whereClauses.push("type = ?");
-            values.push(filters.type);
-        }
-        if (filters.zone) {
-            whereClauses.push("zone = ?");
-            values.push(filters.zone);
-        }
-        if (filters.blocked !== undefined) {
-            whereClauses.push("blocked = ?");
-            values.push(filters.blocked === "true");
-        }
-        if (filters.city) {
-            whereClauses.push("city = ?");
-            values.push(filters.city);
-        }
-        if (filters.district) {
-            whereClauses.push("district = ?");
-            values.push(filters.district);
-        }
-        if (filters.resources) {
-            whereClauses.push("LOWER(resources) LIKE ?");
-            values.push(`%${filters.resources}%`);
-        }
-        if (filters.structures) {
-            whereClauses.push("LOWER(structures) LIKE ?");
-            values.push(`%${filters.structures}%`);
-        }
+    .addStringOption(option =>
+      option.setName('zone')
+      .setDescription('Zona'))
 
-        const query = `
-            SELECT * FROM Lands
-            ${whereClauses.length > 0 ? "WHERE " + whereClauses.join(" AND ") : ""}
-            LIMIT ?
-        `;
+    .addStringOption(option =>
+      option.setName('city')
+      .setDescription('Ciudad'))
 
-        values.push(filters.limit);
+    .addStringOption(option =>
+      option.setName('district')
+      .setDescription('Distrito'))
 
-        const [results] = await database.query(query, values);
+    .addStringOption(option =>
+      option.setName('resources')
+      .setDescription('Filtrar por recursos'))
 
-        if (results.length === 0) {
-            return await interaction.reply("🔍 No se encontraron lands que coincidan con los filtros especificados.");
-        }
+    .addStringOption(option =>
+      option.setName('structures')
+      .setDescription('Filtrar por estructuras'))
 
-        // Crear un embed por cada land
-        for (const land of results) {
-            const embed = new EmbedBuilder()
-                .setTitle(`🌍 Land #${land.land_id}`)
-                .setColor(0x5fb1f7)
-                .addFields(
-                    { name: "Tipo", value: land.type, inline: true },
-                    { name: "Zona", value: land.zone, inline: true },
-                    { name: "Bloqueada", value: land.blocked ? "Sí" : "No", inline: true },
-                    { name: "Ciudad", value: land.city, inline: true },
-                    { name: "Distrito", value: land.district, inline: true },
-                    { name: "Recursos", value: land.resources || "—", inline: false },
-                    { name: "Estructuras", value: land.structures || "—", inline: false },
-                    { name: "Usuario", value: `<@${land.user_id}>`, inline: false }
-                );
+    .addStringOption(option =>
+      option.setName('blocked')
+      .setDescription('¿Está bloqueada? (Sí / No)'))
+      .addChoices(
+            { name: 'Sí', value: 'Sí' },
+            { name: 'No', value: 'No' }),
 
-            await interaction.reply({ embeds: [embed], flags: 64 });
-        }
+  async execute(interaction) {
+    const filters = {
+      land_id: interaction.options.getString('land_id'),
+      type: interaction.options.getString('type'),
+      zone: interaction.options.getString('zone'),
+      city: interaction.options.getString('city'),
+      district: interaction.options.getString('district'),
+      resources: interaction.options.getString('resources'),
+      structures: interaction.options.getString('structures'),
+      blocked: normalizeYesNo(interaction.options.getString('blocked')),
+    };
 
-        await interaction.reply({
-            content: `✅ Se encontraron ${results.length} land(s) registradas.`,
-            flags: 64
-        });
+    let query = 'SELECT * FROM lands WHERE 1=1';
+    const values = [];
+
+    if (filters.land_id) {
+      query += ' AND land_id = ?';
+      values.push(filters.land_id);
     }
+    if (filters.type) {
+      query += ' AND type LIKE ?';
+      values.push(`%${filters.type}%`);
+    }
+    if (filters.zone) {
+      query += ' AND zone LIKE ?';
+      values.push(`%${filters.zone}%`);
+    }
+    if (filters.city) {
+      query += ' AND city LIKE ?';
+      values.push(`%${filters.city}%`);
+    }
+    if (filters.district) {
+      query += ' AND district LIKE ?';
+      values.push(`%${filters.district}%`);
+    }
+    if (filters.resources) {
+      query += ' AND resources LIKE ?';
+      values.push(`%${filters.resources}%`);
+    }
+    if (filters.structures) {
+      query += ' AND structures LIKE ?';
+      values.push(`%${filters.structures}%`);
+    }
+    if (filters.blocked !== null) {
+      query += ' AND blocked = ?';
+      values.push(filters.blocked ? 1 : 0);
+    }
+
+    try {
+      const [rows] = await database.query(query, values);
+
+      if (rows.length === 0) {
+        console.log('No se encontraron lands que coincidan con los filtros.');
+        return interaction.reply('No se encontraron lands que coincidan con los filtros.');
+      }
+
+      const response = rows.map(l =>
+        `**Land ID:** ${l.land_id}\n**Tipo:** ${l.type}\n**Zona:** ${l.zone}\n**Bloqueada:** ${l.blocked ? 'Sí' : 'No'}\n**Ciudad:** ${l.city}\n**Distrito:** ${l.district}\n**Recursos:** ${l.resources}\n**Estructuras:** ${l.structures}`
+      ).join('\n\n');
+
+      await interaction.reply(response.length > 2000 ? response.slice(0, 1997) + '...' : response);
+
+    } catch (err) {
+      console.error(err);
+      await interaction.reply('Ocurrió un error al buscar las lands.');
+    }
+  },
 };
