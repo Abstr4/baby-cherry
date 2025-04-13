@@ -55,7 +55,7 @@ module.exports = {
     async execute(interaction) {
         const filters = {
             land_id: interaction.options.getString('land_id'),
-            user_id: interaction.option.getString('user_id'),
+            user_id: interaction.options.getString('user_id'),
             type: interaction.options.getString('type'),
             zone: interaction.options.getString('zone'),
             city: interaction.options.getString('city'),
