@@ -109,6 +109,7 @@ module.exports = {
             for (const land of rows) {
                 const embed = new EmbedBuilder()
                     .setTitle(`🌍 Land ID: ${land.land_id}`)
+                    .setURL(`https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id}`)
                     .setColor('#4e5d94')
                     .addFields(
                         { name: '🏷️ Tipo', value: land.type || 'Sin dato', inline: true },
@@ -117,7 +118,9 @@ module.exports = {
                         { name: '🏙️ Ciudad', value: land.city || 'Sin dato', inline: true },
                         { name: '📍 Distrito', value: land.district || 'Sin dato', inline: true },
                         { name: '💎 Recursos', value: land.resources?.split(',').map(r => `• ${r.trim()}`).join('\n') || '• Ninguno', inline: false },
-                        { name: '🏗️ Estructuras', value: land.structures?.split(',').map(s => `• ${s.trim()}`).join('\n') || '• Ninguna', inline: false }
+                        { name: '🏗️ Estructuras', value: land.structures?.split(',').map(s => `• ${s.trim()}`).join('\n') || '• Ninguna', inline: false },
+                        { name: '🔗 Marketplace', value: `[Ver en el marketplace](https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id})`, inline: false }
+
                     )
                     .setFooter({ text: `LandsInfo • ${new Date().toLocaleDateString('es-AR')}` });
 
