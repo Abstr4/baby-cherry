@@ -19,7 +19,7 @@ async function handleLandMessage(message) {
     fields.forEach(field => {
         const [key, value] = field.split(':').map(item => item.trim());
         switch (key) {
-            case 'land_id':
+            case 'Land_id':
                 if (!helpers.isNumeric(value)) {
                     return sendWarningAndDelete(message, `❌ El ID de la land debe ser numérico.`);
                 }
