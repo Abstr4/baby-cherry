@@ -124,7 +124,7 @@ module.exports = {
                     )
                     .setFooter({ text: `LandsInfo • ${new Date().toLocaleDateString('es-AR')}` });
 
-                await interaction.followUp({ embeds: [embed] });
+                await interaction.followUp({ embeds: [embed], flags: 64 });
             }
 
         } catch (err) {
