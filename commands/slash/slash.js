@@ -22,9 +22,9 @@ const disallow = require('./Allow/disallow.js');
 const allowList = require('./Allow/allowlist.js');
 
 const lands = require('./Land/lands.js');
-const addLand = require('./Land/addLand.js');
-const deleteLand = require('./Land/deleteLand.js');
-const landsInfo = require('./Land/landsInfo.js');
+const addLand = require('./Land/addland.js');
+const deleteLand = require('./Land/deleteland.js');
+const landsInfo = require('./Land/landsinfo.js');
 
 module.exports = [
 
