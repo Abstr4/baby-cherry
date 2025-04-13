@@ -104,7 +104,8 @@ module.exports = {
                 console.log('No se encontraron lands que coincidan con los filtros.');
                 return interaction.reply('No se encontraron lands que coincidan con los filtros.');
             }
-            await interaction.deferReply();
+            await interaction.deferReply({ ephemeral: true });
+
 
             for (const land of rows) {
                 const embed = new EmbedBuilder()
