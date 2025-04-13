@@ -1,45 +1,51 @@
 require('module-alias/register');
 const database = require('@database')
 const { PermissionFlagsBits } = require('discord.js');
+const { isUserAllowedForCommand, isAdmin } = require('@helpers');
+const { isAdmin } = require('../../helpers/helpers');
 
 // In-memory allowlist
-let allowList = new Set(); 
+let allowList = new Set();
 
 // Load allowlist on bot startup
 const loadAllowList = async () => {
-    const result = await database.query("SELECT user_id FROM Allowlist");
-    console.log("Raw DB result:", result);
-    
     const [rows] = await database.query("SELECT user_id FROM Allowlist");
     allowList = new Set(rows.map(row => String(row.user_id)));
-
     console.log("Allowlist loaded:", allowList);
 };
 
 const handleSlashCommand = async (interaction, client) => {
-
-    if (!interaction.isCommand()) return;
-
-    console.log("Checking user:", interaction.user.id, "Allowlist has:", allowList.has(interaction.user.id));
-    
-    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) 
-    {
-        if(!allowList.has(interaction.user.id))
-        {   
-            return interaction.reply({ content: "You are not allowed to use this bot!", flags: 64 });
-        }         
-    }
+    if (!interaction.isChatInputCommand()) return;
 
     const command = client.slashCommands.get(interaction.commandName);
     if (!command) return;
+
+    const userId = interaction.user.id;
+    const roleIds = interaction.member.roles.cache.map(role => role.id);
+
+    // Admins can use all commands
+    const isAdmin = isAdmin(interaction);
+    const isGloballyAllowed = allowList.has(String(userId));
+
+    if (!isAdmin && !isGloballyAllowed) {
+        const allowed = await isUserAllowedForCommand(userId, roleIds, interaction.commandName);
+        if (!allowed) {
+            return interaction.reply({
+                content: "🚫 You are not allowed to use this command.",
+                flags: 64
+            });
+        }
+    }
 
     try {
         console.log(`/${interaction.commandName} called by ${interaction.user.id}`);
         await command.execute(interaction);
     } catch (error) {
         console.error(error);
-        await interaction.reply({ content: "There was an error executing this command!", flags: 64 });
+        await interaction.reply({
+            content: "❌ There was an error executing this command.",
+            flags: 64
+        });
     }
 };
-
 module.exports = { handleSlashCommand, loadAllowList, allowList };
