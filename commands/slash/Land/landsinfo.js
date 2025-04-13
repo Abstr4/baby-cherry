@@ -63,9 +63,9 @@ module.exports = {
 
             // Format land types as a single line: Homesteads: 4, Settlements: 8, etc.
             const landTypeSummary = `• **Homesteads**: ${landTypeCounts.Homestead}, ` +
-                                    `**Settlements**: ${landTypeCounts.Settlement}, ` +
-                                    `**Cities**: ${landTypeCounts.City}, ` +
-                                    `**Villages**: ${landTypeCounts.Village}`;
+                `**Settlements**: ${landTypeCounts.Settlement}, ` +
+                `**Cities**: ${landTypeCounts.City}, ` +
+                `**Villages**: ${landTypeCounts.Village}`;
 
             const embed = new EmbedBuilder()
                 .setTitle('⛩️ DOJO Lands Overview 📊')
