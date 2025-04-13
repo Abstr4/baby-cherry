@@ -3,49 +3,51 @@ const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
 
 module.exports = {
-  data: new SlashCommandBuilder()
+    data: new SlashCommandBuilder()
     .setName('lands')
     .setDescription('Busca lands por distintos campos.')
 
     .addStringOption(option =>
       option.setName('land_id')
-      .setDescription('ID de la land'))
+        .setDescription('ID de la land'))
 
-      .addStringOption(option =>
-        option.setName('type')
-        .setDescription('Tipo de land'))
+    .addStringOption(option =>
+      option.setName('type')
+        .setDescription('Tipo de land')
         .addChoices(
-            { name: 'Homestead', value: 'Homestead' },
-            { name: 'Settlement', value: 'Settlement' },
-            { name: 'City', value: 'City' },
-            { name: 'Village', value: 'Village' })
+          { name: 'Homestead', value: 'Homestead' },
+          { name: 'Settlement', value: 'Settlement' },
+          { name: 'City', value: 'City' },
+          { name: 'Village', value: 'Village' }
+        ))
 
     .addStringOption(option =>
       option.setName('zone')
-      .setDescription('Zona'))
+        .setDescription('Zona'))
 
     .addStringOption(option =>
       option.setName('city')
-      .setDescription('Ciudad'))
+        .setDescription('Ciudad'))
 
     .addStringOption(option =>
       option.setName('district')
-      .setDescription('Distrito'))
+        .setDescription('Distrito'))
 
     .addStringOption(option =>
       option.setName('resources')
-      .setDescription('Filtrar por recursos'))
+        .setDescription('Filtrar por recursos'))
 
     .addStringOption(option =>
       option.setName('structures')
-      .setDescription('Filtrar por estructuras'))
+        .setDescription('Filtrar por estructuras'))
 
     .addStringOption(option =>
       option.setName('blocked')
-      .setDescription('¿Está bloqueada? (Sí / No)'))
-      .addChoices(
-            { name: 'Sí', value: 'Sí' },
-            { name: 'No', value: 'No' }),
+        .setDescription('¿Está bloqueada? (Sí / No)')
+        .addChoices(
+          { name: 'Sí', value: 'Sí' },
+          { name: 'No', value: 'No' }
+        )),
 
   async execute(interaction) {
     const filters = {
