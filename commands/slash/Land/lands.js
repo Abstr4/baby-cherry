@@ -55,6 +55,7 @@ module.exports = {
     async execute(interaction) {
         const filters = {
             land_id: interaction.options.getString('land_id'),
+            user_id: interaction.option.getString('user_id'),
             type: interaction.options.getString('type'),
             zone: interaction.options.getString('zone'),
             city: interaction.options.getString('city'),
@@ -70,6 +71,10 @@ module.exports = {
         if (filters.land_id) {
             query += ' AND land_id = ?';
             values.push(filters.land_id);
+        }
+        if (filters.user_id) {
+            query += ' AND user_id = ?';
+            values.push(filters.user_id);
         }
         if (filters.type) {
             query += ' AND type LIKE ?';
@@ -99,10 +104,6 @@ module.exports = {
             query += ' AND blocked = ?';
             values.push(filters.blocked ? 1 : 0);
         }
-        if (filters.user_id) {
-            query += ' AND owner_id = ?';
-            values.push(filters.user_id);
-        }
 
         try {
             await interaction.deferReply({ flags: 64 });
@@ -116,7 +117,10 @@ module.exports = {
             await interaction.editReply('Aquí están las lands que buscaste:');
 
             for (const land of rows) {
+
                 const ownerMention = `<@${land.owner_id}>`;
+                console.log(land.user_id);
+
                 const embed = new EmbedBuilder()
                     .setTitle(`🌍 Land ID: ${land.land_id}`)
                     .setURL(`https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id}`)
