@@ -5,13 +5,11 @@ const database = require("../database.js");
 module.exports = (client) => {
 
     async function sendMessage(type, message, channelId, roleId, reminderTime, offsetMinutes) {
-        try 
-        {
+        try {
             console.log(`🔍 Fetching channel ${channelId}...`);
             const channel = await client.channels.fetch(channelId);
 
-            if (!channel) 
-            {
+            if (!channel) {
                 console.error(`❌ Error: Channel ${channelId} not found.`);
                 return;
             }
@@ -20,8 +18,7 @@ module.exports = (client) => {
 
             let timestamp = null;
 
-            if (offsetMinutes > 0) 
-            {
+            if (offsetMinutes > 0) {
                 const now = new Date();
                 const reminderDate = new Date(now.toDateString());
                 const [hours, minutes] = reminderTime.split(':').map(Number);
@@ -36,9 +33,8 @@ module.exports = (client) => {
 
             await channel.send(formattedMessage);
             console.log(`📨 Message sent successfully!`);
-        } 
-        catch (err) 
-        {
+        }
+        catch (err) {
             console.error(`❌ Error sending ${type}:`, err);
         }
     }
@@ -46,24 +42,21 @@ module.exports = (client) => {
     cron.schedule("*/10 * * * *", async () => {
         console.log("⏳ Checking for Reminders...");
 
-        try 
-        {
+        try {
             const [results] = await database.query(`
                 SELECT ID, Message, ChannelId, RoleId, Time, OffsetMinutes
                 FROM Reminder
                 WHERE TIME_FORMAT(Time, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i')
             `);
 
-            if (!results || results.length === 0) 
-            {
+            if (!results || results.length === 0) {
                 console.log("❌ No Reminders found.");
                 return;
             }
 
             console.log(`🔍 Found ${results.length} reminders.`);
 
-            for (const item of results) 
-            {
+            for (const item of results) {
                 console.log(`📢 Sending Reminder: ${item.Message} to ${item.ChannelId} (Role: ${item.RoleId})`);
                 await sendMessage(
                     "Reminder",
@@ -74,9 +67,8 @@ module.exports = (client) => {
                     item.OffsetMinutes // Puede ser null o 0 o >0
                 );
             }
-        } 
-        catch (err) 
-        {
+        }
+        catch (err) {
             console.error("❌ Database error:", err);
         }
     }, { timezone: "UTC" });
