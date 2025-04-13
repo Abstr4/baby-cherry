@@ -116,7 +116,7 @@ module.exports = {
             await interaction.editReply('Aquí están las lands que buscaste:');
 
             for (const land of rows) {
-                const ownerMention = `<@${land.owner_id}>`;
+                const ownerMention = `<@&${land.owner_id}>`;
                 const embed = new EmbedBuilder()
                     .setTitle(`🌍 Land ID: ${land.land_id}`)
                     .setURL(`https://marketplace.roninchain.com/collections/forgotten-runiverse-real-estate/${land.land_id}`)
