@@ -5,36 +5,35 @@ const database = require("../database.js");
 module.exports = (client) => {
 
     async function sendMessage(type, message, channelId, roleId, reminderTime, offsetMinutes) {
-        try 
-        {
+        try {
             console.log(`🔍 Fetching channel ${channelId}...`);
             const channel = await client.channels.fetch(channelId);
 
-            if (channel) {
-                console.log(`✅ Channel found. Sending ${type}: ${message}`);
+            if (!channel) {
+                console.error(`❌ Error: Channel ${channelId} not found.`);
+                return;
+            }
 
+            console.log(`✅ Channel found. Sending ${type}: ${message}`);
+
+            let timestamp = null;
+
+            if (offsetMinutes > 0) {
                 const now = new Date();
                 const reminderDate = new Date(now.toDateString());
                 const [hours, minutes] = reminderTime.split(':').map(Number);
-                
-                reminderDate.setUTCHours(hours, minutes + offsetMinutes, 0, 0); 
 
-                const timestamp = Math.floor(reminderDate.getTime() / 1000);
-
-                const formattedMessage = roleId 
-                    ? `🔔 ${type}: <@&${roleId}> <t:${timestamp}:R> ${message}` 
-                    : `🔔 ${type}: <t:${timestamp}:R> ${message}`;
-
-                await channel.send(formattedMessage);
-                console.log(`📨 Message sent successfully!`);
-            } 
-            else 
-            {
-                console.error(`❌ Error: Channel ${channelId} not found.`);
+                reminderDate.setUTCHours(hours, minutes + offsetMinutes, 0, 0);
+                timestamp = Math.floor(reminderDate.getTime() / 1000);
             }
-        } 
-        catch (err) 
-        {
+
+            const formattedMessage = roleId
+                ? `🔔 ${type}: <@&${roleId}>${timestamp ? ` <t:${timestamp}:R>` : ''} ${message}`
+                : `🔔 ${type}:${timestamp ? ` <t:${timestamp}:R>` : ''} ${message}`;
+
+            await channel.send(formattedMessage);
+            console.log(`📨 Message sent successfully!`);
+        } catch (err) {
             console.error(`❌ Error sending ${type}:`, err);
         }
     }
@@ -64,7 +63,7 @@ module.exports = (client) => {
                     item.ChannelId,
                     item.RoleId,
                     item.Time,
-                    item.OffsetMinutes || 0 // Si OffsetMinutes es null, usamos 0 por defecto
+                    item.OffsetMinutes // Puede ser null o 0 o >0
                 );
             }
         } catch (err) {
