@@ -61,7 +61,7 @@ module.exports = {
       blocked: interaction.options.getString('blocked')
     };
 
-    let query = 'SELECT * FROM lands WHERE 1=1';
+    let query = 'SELECT * FROM Lands WHERE 1=1';
     const values = [];
 
     if (filters.land_id) {
