@@ -43,12 +43,12 @@ client.on('messageCreate', async (message) => {
     if (message.author.bot) return; 
     
     if (message.channel.id === LAND_CHANNEL_ID) {
-        console.log(' message sent to the land thread.')
+        console.log('Message sent to the land thread.')
         await handleLandMessage(message);
         return;
     }
     if (message.content.startsWith("!")) {
-        console.log('exclamation command executed.')
+        console.log('Exclamation command executed.')
         await handleExclamationCommand(message, connection);
     }
 });

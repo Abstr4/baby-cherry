@@ -2,7 +2,7 @@
 const levelUp = require('./Misc/levelUp.js');
 
 // Command
-const addCommand = require('./Command/addcommand');
+const addCommand = require('./Command/addcommand.js');
 const deleteCommand = require('./Command/delcommand.js');
 const commands = require('./Command/commands.js');
 
