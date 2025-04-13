@@ -1,6 +1,6 @@
+require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
-const database = require('../../database.js');
-const { normalizeYesNo } = require('../../helpers/helper.js');
+const database = require('@database');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -56,7 +56,7 @@ module.exports = {
       district: interaction.options.getString('district'),
       resources: interaction.options.getString('resources'),
       structures: interaction.options.getString('structures'),
-      blocked: normalizeYesNo(interaction.options.getString('blocked')),
+      blocked: interaction.options.getString('blocked')
     };
 
     let query = 'SELECT * FROM lands WHERE 1=1';
