@@ -98,7 +98,7 @@ module.exports = {
         }
 
         try {
-            await interaction.deferReply({ ephemeral: true });
+            await interaction.deferReply({ flags: 64 });
 
             const [rows] = await database.query(query, values);
 
