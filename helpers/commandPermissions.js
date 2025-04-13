@@ -6,7 +6,7 @@ async function isUserAllowedForCommand(userId, roleIds, commandName) {
 
     const [rows] = await database.query(
         `
-        SELECT 1 FROM command_permissions
+        SELECT 1 FROM CommandPermission
         WHERE command_name = ?
         AND (
             user_id = ?
@@ -21,7 +21,7 @@ async function isUserAllowedForCommand(userId, roleIds, commandName) {
 
 async function addPermission(commandName, { userId = null, roleId = null }) {
     await database.query(
-        `INSERT IGNORE INTO command_permissions (command_name, user_id, role_id)
+        `INSERT IGNORE INTO CommandPermission (command_name, user_id, role_id)
          VALUES (?, ?, ?)`,
         [commandName, userId, roleId]
     );
@@ -29,7 +29,7 @@ async function addPermission(commandName, { userId = null, roleId = null }) {
 
 async function removePermission(commandName, { userId = null, roleId = null }) {
     await database.query(
-        `DELETE FROM command_permissions
+        `DELETE FROM CommandPermission
          WHERE command_name = ? AND user_id <=> ? AND role_id <=> ?`,
         [commandName, userId, roleId]
     );
@@ -37,7 +37,7 @@ async function removePermission(commandName, { userId = null, roleId = null }) {
 
 async function listPermissions(commandName) {
     const [rows] = await database.query(
-        `SELECT user_id, role_id FROM command_permissions WHERE command_name = ?`,
+        `SELECT user_id, role_id FROM CommandPermission WHERE command_name = ?`,
         [commandName]
     );
     return rows;
