@@ -58,7 +58,8 @@ module.exports = {
             if (msg.system) continue;
 
             // Format message content with author and timestamp
-            let content = `**${msg.author.tag}** (${msg.createdAt.toISOString()}):\n${msg.content || ''}`;
+            let content = `**${msg.author.tag}**:\n${msg.content || ''}`;
+
             if (content.length > 2000) {
                 content = content.slice(0, 1997) + '...';
             }
