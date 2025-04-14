@@ -23,7 +23,9 @@ const handleSlashCommand = async (interaction, client) => {
 
     // Admins can use all commands
     const isAdminCheck = isAdmin(interaction);
+    console.log(isAdminCheck);
     const isGloballyAllowed = allowList.has(String(userId));
+    console.log(isGloballyAllowed);
 
     console.log("handle guard 1.");
 
