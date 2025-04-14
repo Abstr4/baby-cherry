@@ -1,6 +1,6 @@
 const { PermissionFlagsBits } = require('discord.js');
 const database = require('@database');
-const helpers = require('../../helpers/helpers.js');
+const helpers = require('@helpers/helpers.js');
 
 async function handleLandMessage(message) {
 
@@ -27,8 +27,7 @@ async function handleLandMessage(message) {
                 break;
 
             case 'Type':
-                if(!helpers.isLand(value))
-                {
+                if (!helpers.isLand(value)) {
                     return sendWarningAndDelete(message, `❌ El Tipo de land debe ser Homestead, Settlement, City o Village.`);
                 }
                 type = value;
@@ -39,8 +38,7 @@ async function handleLandMessage(message) {
                 break;
 
             case 'Blocked':
-                if(!helpers.isValidYesNo(value))
-                {
+                if (!helpers.isValidYesNo(value)) {
                     return sendWarningAndDelete(message, `❌ El valor debe ser "si" o "no".`);
                 }
                 blocked = helpers.isYes(value.toLowerCase());
@@ -63,7 +61,7 @@ async function handleLandMessage(message) {
                 // Convert each structure to lowercase
                 structures = value ? value.split(',').map(item => item.trim().toLowerCase()) : [];
                 break;
-                
+
             default:
                 break;
         }
@@ -106,9 +104,9 @@ async function handleLandMessage(message) {
                     land_id
                 ]
             );
-        
+
             message.reply('✅ La land fue actualizada correctamente!');
-        } 
+        }
         // If the land doesn't exist, insert a new record
         else if (existingLand.length === 0) {
             await database.query(
@@ -128,7 +126,7 @@ async function handleLandMessage(message) {
             );
             console.log(`User with ID: ${message.author.id} successfully registered a land.`)
             message.reply('✅ La land fue registrada correctamente!');
-        } 
+        }
         // If the land exists but doesn't belong to the user, send an error
         else {
             console.log(`User with ID: ${message.author.id} tried to modified anothers land.`)
