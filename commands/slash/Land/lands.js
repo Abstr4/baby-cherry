@@ -66,11 +66,12 @@ module.exports = {
         };
         console.log("test");
         console.log(filters.land_id);
-        // Check if no parameters were given
-        if (filters.land_id === null && filters.user_id === null && filters.type === null && filters.zone === null && filters.city === null && filters.district === null && filters.resources === null && filters.structures === null && filters.blocked === null) {
+
+        // Check if all parameters are missing
+        if (![land_id, user_id, type, zone, city, district, resources, structures, blocked].some(value => value && value.trim() !== '')) {
             return interaction.reply({
-                content: '⚠️ Please specify at least one search parameter.',
-                flags: 64 // Use ephemeral message
+                content: '⚠️ Porfavor especifica al menos un parámetro de búsqueda.',
+                flags: 64
             });
         }
 
