@@ -65,7 +65,7 @@ module.exports = {
             blocked: interaction.options.getString('blocked')
         };
         // Check if no parameters were given
-        if (land_id === null && user_id === null && type === null && zone === null && city === null && district === null && resources === null && structures === null && blocked === null) {
+        if (filters.land_id === null && filters.user_id === null && filters.type === null && filters.zone === null && filters.city === null && filters.district === null && filters.resources === null && filters.structures === null && filters.blocked === null) {
             return interaction.reply({
                 content: '⚠️ Please specify at least one search parameter.',
                 flags: 64 // Use ephemeral message
