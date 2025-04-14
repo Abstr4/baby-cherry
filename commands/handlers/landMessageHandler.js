@@ -9,7 +9,8 @@ async function handleLandMessage(message) {
 
     if (!member.permissions.has(PermissionFlagsBits.Administrator)) {
         if (!member.roles.cache.has(REQUIRED_ROLE_ID)) {
-            return sendWarningAndDelete(message, `❌ No tienes permisos para registrar una land.`);
+            await sendWarningAndDelete(message, `❌ No tienes permisos para registrar una land.`);
+            return;
         }
     }
 
