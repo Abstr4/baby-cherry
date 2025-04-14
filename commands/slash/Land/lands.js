@@ -110,14 +110,17 @@ module.exports = {
         }
 
         if (filters.resources) {
+            const normalizedResource = filters.resources.toLowerCase().trim().replace(/\s+/g, '');
             query += " AND FIND_IN_SET(?, REPLACE(LOWER(resources), ' ', ''))";
-            values.push(filters.resources.toLowerCase().trim());
+            values.push(normalizedResource);
         }
 
         if (filters.structures) {
+            const normalizedStructure = filters.structures.toLowerCase().trim().replace(/\s+/g, '');
             query += " AND FIND_IN_SET(?, REPLACE(LOWER(structures), ' ', ''))";
-            values.push(filters.structures.toLowerCase().trim());
+            values.push(normalizedStructure);
         }
+
 
 
         if (filters.blocked !== null) {
