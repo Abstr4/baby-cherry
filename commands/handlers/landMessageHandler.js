@@ -141,9 +141,6 @@ async function handleLandMessage(message) {
 }
 
 async function sendWarningAndDelete(message, warningText) {
-    const member = await message.guild.members.fetch(message.author.id);
-    if (!member.permissions.has(PermissionFlagsBits.Administrator)) return;
-
     const warningMessage = await message.reply(warningText);
     setTimeout(() => {
         warningMessage.delete();
