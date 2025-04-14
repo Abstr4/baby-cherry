@@ -54,15 +54,15 @@ module.exports = {
 
     async execute(interaction) {
         const filters = {
-            land_id: interaction.options.getString('land_id').trim(),
+            land_id: interaction.options.getString('land_id'),
             user_id: interaction.options.getUser('user')?.id,
-            type: interaction.options.getString('type').trim(),
-            zone: interaction.options.getString('zone').trim(),
-            city: interaction.options.getString('city').trim(),
-            district: interaction.options.getString('district').trim(),
-            resources: interaction.options.getString('resources').trim(),
-            structures: interaction.options.getString('structures').trim(),
-            blocked: interaction.options.getString('blocked').trim()
+            type: interaction.options.getString('type'),
+            zone: interaction.options.getString('zone'),
+            city: interaction.options.getString('city'),
+            district: interaction.options.getString('district'),
+            resources: interaction.options.getString('resources'),
+            structures: interaction.options.getString('structures'),
+            blocked: interaction.options.getString('blocked')
         };
 
         const allEmpty = Object.values(filters).every(
@@ -80,43 +80,43 @@ module.exports = {
         const values = [];
 
         if (filters.land_id) {
-            query += ' AND land_id = ?';
-            values.push(filters.land_id);
+            query += ' AND LOWER(land_id) = LOWER(?)';
+            values.push(filters.land_id?.trim());
         }
 
         if (filters.user_id) {
-            query += ' AND user_id = ?';
-            values.push(filters.user_id);
+            query += ' AND LOWER(user_id) = LOWER(?)';
+            values.push(filters.user_id?.trim());
         }
 
         if (filters.type) {
             query += ' AND LOWER(type) = LOWER(?)';
-            values.push(filters.type.trim());
+            values.push(filters.type?.trim());
         }
 
         if (filters.zone) {
             query += ' AND LOWER(zone) = LOWER(?)';
-            values.push(filters.zone.trim());
+            values.push(filters.zone?.trim());
         }
 
         if (filters.city) {
             query += ' AND LOWER(city) = LOWER(?)';
-            values.push(filters.city.trim());
+            values.push(filters.city?.trim());
         }
 
         if (filters.district) {
             query += ' AND LOWER(district) = LOWER(?)';
-            values.push(filters.district.trim());
+            values.push(filters.district?.trim());
         }
 
         if (filters.resources) {
             query += ' AND LOWER(resources) = LOWER(?)';
-            values.push(filters.resources.trim());
+            values.push(filters.resources?.trim());
         }
 
         if (filters.structures) {
             query += ' AND LOWER(structures) = LOWER(?)';
-            values.push(filters.structures.trim());
+            values.push(filters.structures?.trim());
         }
 
         if (filters.blocked !== null) {
