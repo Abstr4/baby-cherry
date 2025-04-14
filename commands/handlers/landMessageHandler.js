@@ -5,7 +5,6 @@ const helpers = require('@helpers');
 const REQUIRED_ROLE_ID = '1263974586530402466';
 
 async function handleLandMessage(message) {
-
     const member = await message.guild.members.fetch(message.author.id);
 
     if (!member.permissions.has(PermissionFlagsBits.Administrator)) {
@@ -15,24 +14,30 @@ async function handleLandMessage(message) {
     }
 
     const landMessage = message.content.trim();
-
     const fields = landMessage.split('\n');
 
     let land_id, type, zone, blocked, city, district, resources, structures, user_id;
 
-    fields.forEach(field => {
-        const [key, value] = field.split(':').map(item => item.trim());
+    for (const field of fields) {
+        const [keyRaw, valueRaw] = field.split(':');
+        if (!keyRaw || !valueRaw) continue;
+
+        const key = keyRaw.trim();
+        const value = valueRaw.trim();
+
         switch (key) {
             case 'Land_id':
                 if (!helpers.isNumeric(value)) {
-                    return sendWarningAndDelete(message, `❌ El ID de la land debe ser numérico.`);
+                    await sendWarningAndDelete(message, `❌ El ID de la land debe ser numérico.`);
+                    return;
                 }
                 land_id = value;
                 break;
 
             case 'Type':
                 if (!helpers.isLand(value)) {
-                    return sendWarningAndDelete(message, `❌ El Tipo de land debe ser Homestead, Settlement, City o Village.`);
+                    await sendWarningAndDelete(message, `❌ El Tipo de land debe ser Homestead, Settlement, City o Village.`);
+                    return;
                 }
                 type = value;
                 break;
@@ -43,7 +48,8 @@ async function handleLandMessage(message) {
 
             case 'Blocked':
                 if (!helpers.isValidYesNo(value)) {
-                    return sendWarningAndDelete(message, `❌ El valor debe ser "si" o "no".`);
+                    await sendWarningAndDelete(message, `❌ El valor debe ser "si" o "no".`);
+                    return;
                 }
                 blocked = helpers.isYes(value.toLowerCase());
                 break;
@@ -57,21 +63,30 @@ async function handleLandMessage(message) {
                 break;
 
             case 'Resources':
-                // Convert each resource to lowercase
-                resources = value ? value.split(',').map(item => item.trim().toLowerCase()) : [];
+                resources = value
+                    ? value.split(',').map(item => item.trim().toLowerCase())
+                    : [];
                 break;
 
             case 'Structures':
-                // Convert each structure to lowercase
-                structures = value ? value.split(',').map(item => item.trim().toLowerCase()) : [];
+                structures = value
+                    ? value.split(',').map(item => item.trim().toLowerCase())
+                    : [];
                 break;
 
             default:
                 break;
         }
-    });
+    }
 
     user_id = message.author.id;
+
+    // Sanity check before hitting the DB
+    if (!land_id || !user_id || !type || !zone || typeof blocked !== 'boolean') {
+        await sendWarningAndDelete(message, '❌ Faltan campos obligatorios o están mal formateados.');
+        return;
+    }
+
     const landData = [
         land_id,
         user_id,
@@ -80,22 +95,16 @@ async function handleLandMessage(message) {
         blocked,
         city,
         district,
-        resources,
-        structures
+        resources.join(', '),
+        structures.join(', ')
     ];
 
-    console.log(landData);
-
     try {
-        // Check if the land already exists in the database
         const [existingLand] = await database.query(
             'SELECT * FROM Lands WHERE land_id = ?',
             [land_id]
         );
 
-        console.log(existingLand);
-
-        // If it exists, update it
         if (existingLand.length > 0 && existingLand[0].user_id === user_id) {
             await database.query(
                 `UPDATE Lands 
@@ -110,49 +119,35 @@ async function handleLandMessage(message) {
             );
 
             message.reply('✅ La land fue actualizada correctamente!');
-        }
-        // If the land doesn't exist, insert a new record
-        else if (existingLand.length === 0) {
+        } else if (existingLand.length === 0) {
             await database.query(
                 `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                    land_id,
-                    user_id,
-                    type,
-                    zone,
-                    blocked,
-                    city,
-                    district,
-                    resources.join(', '),
-                    structures.join(', ')
-                ]
+                landData
             );
-            console.log(`User with ID: ${message.author.id} successfully registered a land.`)
+
+            console.log(`User with ID: ${message.author.id} successfully registered a land.`);
             message.reply('✅ La land fue registrada correctamente!');
+        } else {
+            console.log(`User with ID: ${message.author.id} tried to modify another user's land.`);
+            await sendWarningAndDelete(message, '❌ No tienes permisos para modificar esta land.');
         }
-        // If the land exists but doesn't belong to the user, send an error
-        else {
-            console.log(`User with ID: ${message.author.id} tried to modified anothers land.`)
-            await sendWarningAndDelete(message, '❌ No tienes permisos para modificar esta land.')
-        }
+
     } catch (error) {
         console.error('Error adding or updating land:', error);
-        await sendWarningAndDelete(message, '❌ Hubo un error al registrar o actualizar la land. Intenta de nuevo más tarde.')
+        await sendWarningAndDelete(message, '❌ Hubo un error al registrar o actualizar la land. Intenta de nuevo más tarde.');
     }
 }
 
 async function sendWarningAndDelete(message, warningText) {
-
     const member = await message.guild.members.fetch(message.author.id);
-
     if (!member.permissions.has(PermissionFlagsBits.Administrator)) return;
 
     const warningMessage = await message.reply(warningText);
     setTimeout(() => {
         warningMessage.delete();
         message.delete();
-    }, 120000); // 2 minutes = 120000 ms
+    }, 120000); // 2 minutes
 }
 
 module.exports = { handleLandMessage };
