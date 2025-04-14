@@ -145,7 +145,7 @@ async function sendWarningAndDelete(message, warningText) {
     setTimeout(() => {
         warningMessage.delete();
         message.delete();
-    }, 120000); // 2 minutes
+    }, 30000); // 30 seconds
 }
 
 module.exports = { handleLandMessage };
