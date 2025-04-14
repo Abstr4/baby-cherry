@@ -64,11 +64,12 @@ module.exports = {
             structures: interaction.options.getString('structures'),
             blocked: interaction.options.getString('blocked')
         };
-        console.log("test");
-        console.log(filters.land_id);
 
-        // Check if all parameters are missing
-        if (![land_id, user_id, type, zone, city, district, resources, structures, blocked].some(value => value && value.trim() !== '')) {
+        const allEmpty = Object.values(filters).every(
+            value => value == null || value.toString().trim() === ''
+        );
+
+        if (allEmpty) {
             return interaction.reply({
                 content: '⚠️ Porfavor especifica al menos un parámetro de búsqueda.',
                 flags: 64
