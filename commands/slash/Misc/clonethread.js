@@ -32,7 +32,7 @@ module.exports = {
 
         // Create the new thread
         const newThread = await targetChannel.threads.create({
-            name: `Cloned - ${thread.name}`,
+            name: `${thread.name}`,
             autoArchiveDuration: thread.autoArchiveDuration,
             reason: `Cloned from thread ID ${thread.id}`
         });
