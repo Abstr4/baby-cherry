@@ -25,7 +25,10 @@ const handleSlashCommand = async (interaction, client) => {
     const isAdminCheck = isAdmin(interaction);
     const isGloballyAllowed = allowList.has(String(userId));
 
+    console.log("handle guard 1.");
+
     if (!isAdminCheck && !isGloballyAllowed) {
+        console.log("handle guard 2");
 
         console.log(`userId: ${userId}, roleIds: ${roleIds}, commandName: ${interaction.commandName}`);
 
@@ -41,6 +44,7 @@ const handleSlashCommand = async (interaction, client) => {
         }
     }
 
+    console.log("handle guard 2");
     try {
         console.log(`/${interaction.commandName} called by ${interaction.user.id}`);
         await command.execute(interaction);
