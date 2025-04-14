@@ -1,6 +1,5 @@
 require('module-alias/register');
 const database = require('@database')
-const { PermissionFlagsBits } = require('discord.js');
 const { isUserAllowedForCommand, isAdmin } = require('@helpers');
 
 // In-memory allowlist

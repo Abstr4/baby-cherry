@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, AttachmentBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,7 +20,7 @@ module.exports = {
         const thread = await interaction.client.channels.fetch(threadId).catch(() => null);
         const targetChannel = await interaction.client.channels.fetch(targetChannelId).catch(() => null);
 
-        if (!thread || thread.type !== ChannelType.PublicThread && thread.type !== ChannelType.PrivateThread) {
+        if (!thread || ![ChannelType.PublicThread, ChannelType.PrivateThread].includes(thread.type)) {
             return interaction.reply({ content: '❌ Invalid thread ID.', flags: 64 });
         }
 
@@ -30,21 +30,58 @@ module.exports = {
 
         await interaction.reply({ content: `🔁 Cloning thread **${thread.name}**...`, flags: 64 });
 
+        // Create the new thread
         const newThread = await targetChannel.threads.create({
             name: `Cloned - ${thread.name}`,
             autoArchiveDuration: thread.autoArchiveDuration,
             reason: `Cloned from thread ID ${thread.id}`
         });
 
-        const messages = await thread.messages.fetch({ limit: 100 });
-        const sortedMessages = Array.from(messages.values()).reverse(); // Oldest to newest
+        // Fetch messages from the original thread
+        let allMessages = [];
+        let lastId;
+        while (true) {
+            const options = { limit: 100 };
+            if (lastId) options.before = lastId;
 
-        for (const msg of sortedMessages) {
-            const content = `**${msg.author.tag}** (${msg.createdAt.toISOString()}):\n${msg.content}`;
-            if (content.length <= 2000) {
-                await newThread.send(content);
-            } else {
-                await newThread.send(content.slice(0, 1997) + '...');
+            const fetched = await thread.messages.fetch(options);
+            if (fetched.size === 0) break;
+
+            allMessages = allMessages.concat(Array.from(fetched.values()));
+            lastId = fetched.last().id;
+        }
+
+        allMessages.reverse(); // From oldest to newest
+
+        for (const msg of allMessages) {
+            // Skip system messages
+            if (msg.system) continue;
+
+            // Format message content with author and timestamp
+            let content = `**${msg.author.tag}** (${msg.createdAt.toISOString()}):\n${msg.content || ''}`;
+            if (content.length > 2000) {
+                content = content.slice(0, 1997) + '...';
+            }
+
+            // Prepare attachments
+            const files = [];
+            for (const [, attachment] of msg.attachments) {
+                // Reattach files (Discord auto-detects file types from URLs)
+                try {
+                    files.push(new AttachmentBuilder(attachment.url));
+                } catch (err) {
+                    console.warn(`⚠️ Failed to clone attachment: ${attachment.url}`);
+                }
+            }
+
+            try {
+                await newThread.send({
+                    content: content.trim().length > 0 ? content : undefined,
+                    files: files.length > 0 ? files : undefined,
+                });
+            } catch (err) {
+                console.error(`Failed to send message from ${msg.author.tag}:`, err);
+                await newThread.send(`⚠️ Could not clone a message from ${msg.author.tag}`);
             }
         }
 
