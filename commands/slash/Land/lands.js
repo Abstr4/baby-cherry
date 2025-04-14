@@ -64,6 +64,13 @@ module.exports = {
             structures: interaction.options.getString('structures'),
             blocked: interaction.options.getString('blocked')
         };
+        // Check if no parameters were given
+        if (!land_id && !user_id && !type && !zone && !city && !district && !resources && !structures && blocked === null) {
+            return interaction.reply({
+                content: '⚠️ Please specify at least one search parameter.',
+                flags: 64 // Use ephemeral message
+            });
+        }
 
         let query = 'SELECT * FROM Lands WHERE 1=1';
         const values = [];
