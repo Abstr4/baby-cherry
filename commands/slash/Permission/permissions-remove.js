@@ -1,7 +1,6 @@
-// commands/permissions/remove.js
 require('module-alias/register');
-const { removePermission } = require("@helpers");
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder } = require("discord.js");
+const { removePermission } = require("@root/helpers/commandPermissions.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
