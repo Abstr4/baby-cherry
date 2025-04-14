@@ -1,7 +1,6 @@
 require('module-alias/register');
 const database = require('@database')
 const { isUserAllowedForCommand, isAdmin } = require('@helpers');
-const { addPermission, removePermission, listPermissions } = require('../../helpers/commandPermissions.js');
 
 // In-memory allowlist
 let allowList = new Set();
@@ -27,7 +26,13 @@ const handleSlashCommand = async (interaction, client) => {
     const isGloballyAllowed = allowList.has(String(userId));
 
     if (!isAdminCheck && !isGloballyAllowed) {
+
+        console.log(`userId: ${userId}, roleIds: ${roleIds}, commandName: ${interaction.commandName}`);
+
         const allowed = await isUserAllowedForCommand(userId, roleIds, interaction.commandName);
+
+        console.log(allowed);
+
         if (!allowed) {
             return interaction.reply({
                 content: "🚫 You are not allowed to use this command.",
