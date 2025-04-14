@@ -44,7 +44,7 @@ const handleSlashCommand = async (interaction, client) => {
         }
     }
 
-    console.log("handle guard 2");
+    console.log("handle guard 3");
     try {
         console.log(`/${interaction.commandName} called by ${interaction.user.id}`);
         await command.execute(interaction);
