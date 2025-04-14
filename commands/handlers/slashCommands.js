@@ -2,7 +2,6 @@ require('module-alias/register');
 const database = require('@database')
 const { PermissionFlagsBits } = require('discord.js');
 const { isUserAllowedForCommand, isAdmin } = require('@helpers');
-const { isAdmin } = require('../../helpers/helpers');
 
 // In-memory allowlist
 let allowList = new Set();
@@ -24,10 +23,10 @@ const handleSlashCommand = async (interaction, client) => {
     const roleIds = interaction.member.roles.cache.map(role => role.id);
 
     // Admins can use all commands
-    const isAdmin = isAdmin(interaction);
+    const isAdminCheck = isAdmin(interaction);
     const isGloballyAllowed = allowList.has(String(userId));
 
-    if (!isAdmin && !isGloballyAllowed) {
+    if (!isAdminCheck && !isGloballyAllowed) {
         const allowed = await isUserAllowedForCommand(userId, roleIds, interaction.commandName);
         if (!allowed) {
             return interaction.reply({
