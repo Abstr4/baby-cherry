@@ -4,12 +4,6 @@ const helpers = require('@helpers');
 
 async function handleLandMessage(message) {
 
-    const member = await message.guild.members.fetch(message.author.id);
-
-    if (!member.permissions.has(PermissionFlagsBits.Administrator) && !member.roles.cache.has(REQUIRED_ROLE_ID)) {
-        return sendWarningAndDelete(message, `❌ No tienes permisos para registrar una land.`);
-    }
-
     const landMessage = message.content.trim();
 
     const fields = landMessage.split('\n');
