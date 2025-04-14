@@ -64,6 +64,8 @@ module.exports = {
             structures: interaction.options.getString('structures'),
             blocked: interaction.options.getString('blocked')
         };
+        console.log("test");
+        console.log(filters.land_id);
         // Check if no parameters were given
         if (filters.land_id === null && filters.user_id === null && filters.type === null && filters.zone === null && filters.city === null && filters.district === null && filters.resources === null && filters.structures === null && filters.blocked === null) {
             return interaction.reply({
