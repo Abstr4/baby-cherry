@@ -1,5 +1,6 @@
 const fs = require("fs");
 const axios = require("axios");
+const { PermissionFlagsBits } = require('discord.js');
 
 // Function to load the saved token symbol-to-ID mapping from the file
 const loadTokenList = () => {
