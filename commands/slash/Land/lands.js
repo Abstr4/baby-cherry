@@ -110,14 +110,15 @@ module.exports = {
         }
 
         if (filters.resources) {
-            query += ' AND LOWER(resources) = LOWER(?)';
-            values.push(filters.resources?.trim());
+            query += " AND FIND_IN_SET(?, REPLACE(LOWER(resources), ' ', ''))";
+            values.push(filters.resources.toLowerCase().trim());
         }
 
         if (filters.structures) {
-            query += ' AND LOWER(structures) = LOWER(?)';
-            values.push(filters.structures?.trim());
+            query += " AND FIND_IN_SET(?, REPLACE(LOWER(structures), ' ', ''))";
+            values.push(filters.structures.toLowerCase().trim());
         }
+
 
         if (filters.blocked !== null) {
             query += ' AND blocked = ?';
