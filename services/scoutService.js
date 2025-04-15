@@ -22,8 +22,18 @@ async function deleteScout(id) {
     await connection.query("DELETE FROM Scouts WHERE id = ?", [id]);
 }
 
+// 🔢 Count scouts for a specific user
+async function countScoutsByUser(userId) {
+    const [rows] = await connection.query(
+        "SELECT COUNT(*) as count FROM scouts WHERE user_id = ?",
+        [userId]
+    );
+    return rows[0].count;
+}
+
 module.exports = {
     insertScout,
     getExpiredScouts,
-    deleteScout
+    deleteScout,
+    countScoutsByUser
 };

@@ -1,7 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const moment = require('moment');
-const { insertScout } = require('@root/services/scoutService.js');
+const { insertScout, countScoutsByUser } = require('@root/services/scoutService.js');
 
 const SCOUT_DURATIONS = {
     common: 60 * 60,       // 1 hour
@@ -35,6 +35,13 @@ module.exports = {
         const endsAt = moment.unix(endsAtUnix).utc();
 
         try {
+            const currentCount = await countScoutsByUser(userId);
+            if (currentCount >= 5) {
+                return interaction.reply({
+                    content: "❌ You already have 5 scouts active. Delete one before adding another.",
+                    flags: 64
+                });
+            }
             await insertScout(userId, grade, endsAt.format("YYYY-MM-DD HH:mm:ss"));
 
             await interaction.reply({
