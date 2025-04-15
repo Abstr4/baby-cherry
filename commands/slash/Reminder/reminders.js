@@ -4,53 +4,53 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-      .setName('reminders')
-      .setDescription('Lista todos los recordatorios configurados'),
-  
+        .setName('reminders')
+        .setDescription('Lista todos los recordatorios configurados'),
+
     async execute(interaction) {
-      const [reminders] = await database.query("SELECT * FROM Reminder ORDER BY ID");
-  
-      if (reminders.length === 0)
-        return await interaction.reply({ content: 'No hay recordatorios configurados.', flags: 64 });
-  
-      const embeds = [];
-      let currentDescription = '';
-      let page = 1;
-  
-      for (let i = 0; i < reminders.length; i++) {
-        const r = reminders[i];
-        const line = `ID: \`${r.ID}\` | ${r.Message}\n`;
-  
-        if (currentDescription.length + line.length > 4000) {
-          embeds.push(
-            new EmbedBuilder()
-              .setTitle('📅 Lista de Recordatorios')
-              .setColor('#4e5d94')
-              .setDescription(currentDescription)
-              .setFooter({ text: `Página ${page}` })
-          );
-  
-          currentDescription = '';
-          page++;
+        const [reminders] = await database.connection.query("SELECT * FROM Reminder ORDER BY ID");
+
+        if (reminders.length === 0)
+            return await interaction.reply({ content: 'No hay recordatorios configurados.', flags: 64 });
+
+        const embeds = [];
+        let currentDescription = '';
+        let page = 1;
+
+        for (let i = 0; i < reminders.length; i++) {
+            const r = reminders[i];
+            const line = `ID: \`${r.ID}\` | ${r.Message}\n`;
+
+            if (currentDescription.length + line.length > 4000) {
+                embeds.push(
+                    new EmbedBuilder()
+                        .setTitle('📅 Lista de Recordatorios')
+                        .setColor('#4e5d94')
+                        .setDescription(currentDescription)
+                        .setFooter({ text: `Página ${page}` })
+                );
+
+                currentDescription = '';
+                page++;
+            }
+
+            currentDescription += line;
         }
-  
-        currentDescription += line;
-      }
-  
-      if (currentDescription) {
-        embeds.push(
-          new EmbedBuilder()
-            .setTitle('📅 Lista de Recordatorios')
-            .setColor('#4e5d94')
-            .setDescription(currentDescription)
-            .setFooter({ text: `Página ${page}` })
-        );
-      }
-  
-      await interaction.reply({ embeds: [embeds[0]], flags: 64 });
-  
-      for (let i = 1; i < embeds.length; i++) {
-        await interaction.followUp({ embeds: [embeds[i]], flags: 64 });
-      }
+
+        if (currentDescription) {
+            embeds.push(
+                new EmbedBuilder()
+                    .setTitle('📅 Lista de Recordatorios')
+                    .setColor('#4e5d94')
+                    .setDescription(currentDescription)
+                    .setFooter({ text: `Página ${page}` })
+            );
+        }
+
+        await interaction.reply({ embeds: [embeds[0]], flags: 64 });
+
+        for (let i = 1; i < embeds.length; i++) {
+            await interaction.followUp({ embeds: [embeds[i]], flags: 64 });
+        }
     }
-  };
+};
