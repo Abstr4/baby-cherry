@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, ChannelType, AttachmentBuilder } = require('discord.js');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -21,11 +22,11 @@ module.exports = {
         const targetChannel = await interaction.client.channels.fetch(targetChannelId).catch(() => null);
 
         if (!thread || ![ChannelType.PublicThread, ChannelType.PrivateThread].includes(thread.type)) {
-            return interaction.reply({ content: '❌ Invalid thread ID.', flags: 64 });
+            return sendEphemeralMessage(interaction, '❌ Invalid thread ID.');
         }
 
         if (!targetChannel || targetChannel.type !== ChannelType.GuildText) {
-            return interaction.reply({ content: '❌ Invalid target channel ID.', flags: 64 });
+            return sendEphemeralMessage(interaction, '❌ Invalid target channel ID.');
         }
 
         await interaction.reply({ content: `🔁 Cloning thread **${thread.name}**...`, flags: 64 });
@@ -51,9 +52,11 @@ module.exports = {
             lastId = fetched.last().id;
         }
 
-        allMessages.reverse(); // From oldest to newest
+        // From oldest to newest
+        allMessages.reverse();
 
         for (const msg of allMessages) {
+
             // Skip system messages
             if (msg.system) continue;
 

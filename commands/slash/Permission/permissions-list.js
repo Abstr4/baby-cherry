@@ -1,6 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require("discord.js");
 const { listPermissions } = require("@root/services/permissionService.js");
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,10 +17,7 @@ module.exports = {
         const permissions = await listPermissions(command);
 
         if (permissions.length === 0) {
-            return interaction.reply({
-                content: `No permissions found for \`${command}\`.`,
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, `No permissions found for \`${command}\`.`);
         }
 
         const output = permissions.map(p => {
@@ -27,9 +25,6 @@ module.exports = {
             if (p.role_id) return `🎭 <@&${p.role_id}>`;
         }).join("\n");
 
-        await interaction.reply({
-            content: `**Allowed for \`${command}\`:**\n${output}`,
-            flags: 64
-        });
+        return sendEphemeralMessage(interaction, `**Allowed for \`${command}\`:**\n${output}`);
     }
 };

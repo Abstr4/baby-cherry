@@ -1,6 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require("discord.js");
 const { removePermission } = require("@root/services/permissionService.js");
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -23,20 +24,12 @@ module.exports = {
         const role = interaction.options.getRole("role");
 
         if (!user && !role) {
-            return interaction.reply({
-                content: "You must provide either a user or a role.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "You must provide either a user or a role.");
         }
-
         await removePermission(command, {
             userId: user?.id || null,
             roleId: role?.id || null
         });
-
-        await interaction.reply({
-            content: `Permission removed for \`${command}\` (${user ? `user: ${user.username}` : `role: ${role.name}`}).`,
-            flags: 64
-        });
+        return sendEphemeralMessage(interaction, `Permission removed for \`${command}\` (${user ? `user: ${user.username}` : `role: ${role.name}`}).`);
     }
 };
