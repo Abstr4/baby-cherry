@@ -32,31 +32,18 @@ module.exports = {
                 "SELECT * FROM ExclamationCommand WHERE Command = ?",
                 [commandName]
             );
-
             if (existing.length > 0) {
-                return interaction.reply({
-                    content: `❌ The command \`${commandName}\` already exists.`,
-                    flags: 64
-                });
+                return sendEphemeralMessage(interaction, `❌ The command \`${commandName}\` already exists.`);
             }
-
-            // Insert the new command
             await database.query(
                 "INSERT INTO ExclamationCommand (Command, Response) VALUES (?, ?)",
                 [commandName, response]
             );
-
-            return interaction.reply({
-                content: `✅ Command \`${commandName}\` has been added successfully!`,
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, `✅ Command \`${commandName}\` has been added successfully!`);
 
         } catch (err) {
             console.error("❌ Database error:", err);
-            return interaction.reply({
-                content: "❌ Failed to add the command due to a database error.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Failed to add the command due to a database error.");
         }
     }
 };
