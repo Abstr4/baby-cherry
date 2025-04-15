@@ -26,13 +26,12 @@ module.exports = {
             // Check if the user is already allowed
             const [rows] = await database.execute("SELECT 1 FROM Allowlist WHERE user_id = ?", [user.id]);
             if (rows.length > 0) {
-                return interaction.reply({ content: `${user} is already in the allowlist.`, flags: 64 });
+                return sendEphemeralMessage(interaction, `${user} is already in the allowlist.`);
+                // return interaction.reply({ content: `${user} is already in the allowlist.`, flags: 64 });
             }
 
             // Add it
             await database.execute("INSERT IGNORE INTO Allowlist (user_id) VALUES (?)", [user.id]);
-
-            // Ensure allowlist is updated
             allowList.add(user.id);
 
             return sendEphemeralMessage(interaction, `${user.username} is now allowed to use commands!`);
