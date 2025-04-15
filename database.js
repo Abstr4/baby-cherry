@@ -1,10 +1,10 @@
 require('dotenv').config();
 const mysql = require('mysql2');
 
-// Ensure the pool uses a valid MySQL connection string
+// ✅ Create the pool with a promise wrapper
 const connection = mysql.createPool(process.env.MYSQL).promise();
 
-// Test connection
+// 🔌 Test connection
 connection.getConnection()
     .then(conn => {
         console.log("✅ Connected to MySQL database!");
@@ -16,7 +16,7 @@ connection.getConnection()
 
 // 🟢 Add a new scout timer
 async function insertScout(userId, grade, endsAt) {
-    await pool.query(
+    await connection.query(
         "INSERT INTO scouts (user_id, grade, ends_at) VALUES (?, ?, ?)",
         [userId, grade, endsAt]
     );
@@ -24,7 +24,7 @@ async function insertScout(userId, grade, endsAt) {
 
 // 🔍 Get all expired scouts
 async function getExpiredScouts() {
-    const [rows] = await pool.query(
+    const [rows] = await connection.query(
         "SELECT * FROM scouts WHERE ends_at <= ?",
         [Date.now()]
     );
@@ -33,11 +33,10 @@ async function getExpiredScouts() {
 
 // ❌ Delete scout after sending DM
 async function deleteScout(id) {
-    await pool.query("DELETE FROM scouts WHERE id = ?", [id]);
+    await connection.query("DELETE FROM scouts WHERE id = ?", [id]);
 }
 
 module.exports = {
-    connection,
     insertScout,
     getExpiredScouts,
     deleteScout
