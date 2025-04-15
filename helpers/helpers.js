@@ -2,6 +2,15 @@ const fs = require("fs");
 const axios = require("axios");
 const { PermissionFlagsBits } = require('discord.js');
 
+/**
+ * Converts any valid date input to MySQL DATETIME format
+ * @param {string | Date} input
+ * @returns {string} Formatted date
+ */
+function formatToMySQLDate(input) {
+    return moment.utc(input).format("YYYY-MM-DD HH:mm:ss");
+}
+
 // Function to load the saved token symbol-to-ID mapping from the file
 const loadTokenList = () => {
     try {
@@ -82,4 +91,4 @@ function isAdmin(interaction) {
     return interaction.memberPermissions.has(PermissionFlagsBits.Administrator);
 }
 
-module.exports = { loadTokenList, fetchTokenPrice, cleanList, validateResourcesOrStructures, isNumeric, isLand, isValidYesNo, isYes, isAdmin };
+module.exports = { loadTokenList, fetchTokenPrice, cleanList, validateResourcesOrStructures, isNumeric, isLand, isValidYesNo, isYes, isAdmin, formatToMySQLDate };

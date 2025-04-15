@@ -1,52 +1,52 @@
-const { SlashCommandBuilder } = require("discord.js");
-const { insertScout } = require("@root/services/scoutService.js");
+require('module-alias/register');
+const { SlashCommandBuilder } = require('discord.js');
+const moment = require('moment');
+const { insertScout } = require('@services/scoutService.js');
 
-const gradeDurations = {
-    common: 2,
-    rare: 4,
-    epic: 8,
-    legendary: 12,
-    mythic: 16,
+const SCOUT_DURATIONS = {
+    common: 60 * 60,       // 1 hour
+    rare: 2 * 60 * 60,     // 2 hours
+    epic: 4 * 60 * 60,     // 4 hours
+    legendary: 8 * 60 * 60 // 8 hours
 };
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("scout")
-        .setDescription("Start a scout and get notified when it ends.")
+        .setDescription("Start a scout timer based on grade.")
         .addStringOption(option =>
             option.setName("grade")
                 .setDescription("Scout grade")
                 .setRequired(true)
                 .addChoices(
-                    { name: "Common", value: "common" },
-                    { name: "Rare", value: "rare" },
-                    { name: "Epic", value: "epic" },
-                    { name: "Legendary", value: "legendary" },
-                    { name: "Mythic", value: "mythic" }
+                    { name: 'Common', value: 'common' },
+                    { name: 'Rare', value: 'rare' },
+                    { name: 'Epic', value: 'epic' },
+                    { name: 'Legendary', value: 'legendary' }
                 )
         ),
 
     async execute(interaction) {
+        const userId = interaction.user.id;
         const grade = interaction.options.getString("grade");
-        const duration = gradeDurations[grade];
 
-        if (!duration) {
-            await interaction.reply({ content: "❌ Invalid scout grade.", flags: 64 });
-            return;
-        }
-
-        const now = new Date();
-        const endTime = new Date(now.getTime() + duration * 60 * 60 * 1000);
+        const durationSeconds = SCOUT_DURATIONS[grade];
+        const endsAtUnix = Math.floor(Date.now() / 1000) + durationSeconds;
+        const endsAt = moment.unix(endsAtUnix).utc();
 
         try {
-            await insertScout(interaction.user.id, grade, endTime);
+            await insertScout(userId, grade, endsAt.format("YYYY-MM-DD HH:mm:ss"));
+
             await interaction.reply({
-                content: `🕵️ Scout of grade **${grade}** started. You’ll be notified in ${duration} hours.`,
+                content: `✅ Scout of grade **${grade}** will end at <t:${endsAt.unix()}:F> (${endsAt.format("YYYY-MM-DD HH:mm")} UTC).`,
                 flags: 64
             });
-        } catch (error) {
-            console.error("❌ Error inserting scout:", error);
-            await interaction.reply({ content: "❌ Failed to register scout.", flags: 64 });
+        } catch (err) {
+            console.error("❌ Error inserting scout:", err);
+            return interaction.reply({
+                content: "❌ Failed to save scout timer.",
+                flags: 64
+            });
         }
     }
 };
