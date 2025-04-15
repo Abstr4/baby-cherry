@@ -1,6 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
+const { sendEphemeralMessage } = require('@messageService');
 
 // Limpia listas tipo: "wood,berries, water" → "wood, berries, water"
 function cleanList(input) {
@@ -70,10 +71,7 @@ module.exports = {
 
         // Validar que el land_id contenga solo números
         if (!/^\d+$/.test(landId)) {
-            return await interaction.reply({
-                content: "❌ El `land_id` debe contener **solo números**. No se permiten letras, espacios ni símbolos.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ El `land_id` debe contener **solo números**. No se permiten letras, espacios ni símbolos.")
         }
 
         // Validar unicidad de land_id
@@ -95,18 +93,12 @@ module.exports = {
 
         // Validar recursos
         if (!validateResourcesOrStructures(rawResources)) {
-            return await interaction.reply({
-                content: "❌ Los `recursos` solo pueden contener letras, comas y espacios (sin números).",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Los `recursos` solo pueden contener letras, comas y espacios (sin números).")
         }
 
         // Validar estructuras
         if (!validateResourcesOrStructures(rawStructures)) {
-            return await interaction.reply({
-                content: "❌ Las `estructuras` solo pueden contener letras, comas y espacios (sin números).",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Las `estructuras` solo pueden contener letras, comas y espacios (sin números).")
         }
 
         // Limpiar listas
@@ -132,7 +124,6 @@ module.exports = {
                 structures
             ]
         );
-
-        await interaction.reply("✅ Tu land fue registrada correctamente.");
+        return sendEphemeralMessage(interaction, "✅ Tu land fue registrada correctamente.")
     }
 };

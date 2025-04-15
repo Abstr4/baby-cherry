@@ -1,6 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const database = require('@database');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -70,10 +71,7 @@ module.exports = {
         );
 
         if (allEmpty) {
-            return interaction.reply({
-                content: '⚠️ Porfavor especifica al menos un parámetro de búsqueda.',
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, '⚠️ Porfavor especifica al menos un parámetro de búsqueda.')
         }
 
         let query = 'SELECT * FROM Lands WHERE 1=1';
@@ -165,7 +163,7 @@ module.exports = {
 
         } catch (err) {
             console.error(err);
-            await interaction.reply('Ocurrió un error al buscar las lands.');
+            return sendEphemeralMessage(interaction, '❌ Ocurrió un error al buscar las lands.');
         }
     },
 };

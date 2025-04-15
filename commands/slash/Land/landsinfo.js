@@ -1,6 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const database = require("@database");
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -82,7 +83,7 @@ module.exports = {
 
         } catch (err) {
             console.error(err);
-            await interaction.reply({ content: '❌ Hubo un error al obtener la información de lands.', flags: 64 });
+            return sendEphemeralMessage(interaction, '❌ Hubo un error al obtener la información de lands.');
         }
     }
 };

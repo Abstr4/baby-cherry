@@ -1,6 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,12 +23,8 @@ module.exports = {
         );
 
         if (result.affectedRows === 0) {
-            return await interaction.reply({
-                content: "❌ No se encontró ninguna land con ese ID asociada a tu usuario.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ No se encontró ninguna land con ese ID asociada a tu usuario.");
         }
-
-        await interaction.reply(`🗑️ Land con ID \`${landId}\` eliminada correctamente.`);
+        return sendEphemeralMessage(interaction, `🗑️ Land con ID \`${landId}\` eliminada correctamente.`);
     }
 };

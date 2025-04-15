@@ -1,6 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
+const { sendEphemeralMessage } = require('@messageService');
 
 // Limpia listas tipo: "wood,berries, water" → "wood, berries, water"
 function cleanList(input) {
@@ -75,18 +76,12 @@ module.exports = {
 
         // Validar recursos
         if (rawResources && !validateResourcesOrStructures(rawResources)) {
-            return await interaction.reply({
-                content: "❌ Los `recursos` solo pueden contener letras, comas y espacios (sin números).",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Los `recursos` solo pueden contener letras, comas y espacios (sin números).");
         }
 
         // Validar estructuras
         if (rawStructures && !validateResourcesOrStructures(rawStructures)) {
-            return await interaction.reply({
-                content: "❌ Las `estructuras` solo pueden contener letras, comas y espacios (sin números).",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Las `estructuras` solo pueden contener letras, comas y espacios (sin números).");
         }
 
         // Limpiar listas
@@ -108,7 +103,7 @@ module.exports = {
         }
 
         if (updates.length === 0) {
-            return interaction.reply({ content: '❌ Debes proporcionar al menos un campo para editar.', flags: 64 });
+            return sendEphemeralMessage(interaction, '❌ Debes proporcionar al menos un campo para editar.');
         }
 
         values.push(land_id);
@@ -120,13 +115,12 @@ module.exports = {
             );
 
             if (result.affectedRows === 0) {
-                return interaction.reply({ content: '❌ No se encontró ninguna land con ese ID.', flags: 64 });
+                return sendEphemeralMessage(interaction, '❌ No se encontró ninguna land con ese ID.');
             }
-
-            return interaction.reply({ content: '✅ Land actualizada correctamente.', flags: 64 });
+            return sendEphemeralMessage(interaction, '✅ Land actualizada correctamente.');
         } catch (error) {
             console.error(error);
-            return interaction.reply({ content: '❌ Error al actualizar la land.', flags: 64 });
+            return sendEphemeralMessage(interaction, '❌ Error al actualizar la land.');
         }
     }
 };
