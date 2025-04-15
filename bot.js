@@ -21,7 +21,7 @@ const client = new Client({
     ],
 });
 
-require('./helpers/reminderScheduler.js')(client);
+require('./cron')(client);
 
 // Load slash commands
 client.slashCommands = new Collection();
@@ -30,7 +30,7 @@ loadSlashCommands(client, slashCommands);
 client.once('ready', async () => {
     console.log(`Logged in as ${client.user.tag}`);
     // Load allowlist for slash commands
-    await loadAllowList(); 
+    await loadAllowList();
     // Register Slash Commands
     await registerCommands(client, slashCommands);
 });
@@ -40,8 +40,8 @@ client.on('messageCreate', async (message) => {
 
     const LAND_CHANNEL_ID = '1360626314993860818';
 
-    if (message.author.bot) return; 
-    
+    if (message.author.bot) return;
+
     if (message.channel.id === LAND_CHANNEL_ID) {
         console.log('Message sent to the land thread.')
         await handleLandMessage(message);
@@ -54,7 +54,7 @@ client.on('messageCreate', async (message) => {
 });
 // Slash Command Handler
 client.on('interactionCreate', async (interaction) => {
-    if(interaction.user.bot) return;
+    if (interaction.user.bot) return;
     await handleSlashCommand(interaction, client);
 });
 

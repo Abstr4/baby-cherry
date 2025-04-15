@@ -14,4 +14,31 @@ connection.getConnection()
         console.error("❌ Database connection failed:", err.message);
     });
 
-module.exports = connection;
+// 🟢 Add a new scout timer
+async function insertScout(userId, grade, endsAt) {
+    await pool.query(
+        "INSERT INTO scouts (user_id, grade, ends_at) VALUES (?, ?, ?)",
+        [userId, grade, endsAt]
+    );
+}
+
+// 🔍 Get all expired scouts
+async function getExpiredScouts() {
+    const [rows] = await pool.query(
+        "SELECT * FROM scouts WHERE ends_at <= ?",
+        [Date.now()]
+    );
+    return rows;
+}
+
+// ❌ Delete scout after sending DM
+async function deleteScout(id) {
+    await pool.query("DELETE FROM scouts WHERE id = ?", [id]);
+}
+
+module.exports = {
+    connection,
+    insertScout,
+    getExpiredScouts,
+    deleteScout
+};
