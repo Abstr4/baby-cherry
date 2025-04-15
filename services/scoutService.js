@@ -10,9 +10,11 @@ async function insertScout(userId, grade, endsAt) {
 
 // Get all expired scouts
 async function getExpiredScouts() {
+    const nowUtc = moment.utc().format("YYYY-MM-DD HH:mm:ss");
+
     const [rows] = await connection.query(
         "SELECT * FROM Scouts WHERE ends_at <= ?",
-        [Date.now()]
+        [nowUtc]
     );
     return rows;
 }
