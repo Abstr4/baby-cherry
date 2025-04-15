@@ -2,11 +2,11 @@ require('module-alias/register');
 const { getExpiredScouts, deleteScout } = require('@root/services/scoutService.js');
 
 const gradeColors = {
-    common: "#C0C0C0", // Silver
-    rare: "#008000",   // Green
-    epic: "#800080",   // Purple
-    legendary: "#FFD700", // Gold
-    mythic: "#FF0000"  // Red
+    common: 0xC0C0C0,   // Silver
+    rare: 0x008000,     // Green
+    epic: 0x800080,     // Purple
+    legendary: 0xFFD700, // Gold
+    mythic: 0xFF0000    // Red
 };
 
 async function checkScouts(client) {
@@ -27,7 +27,7 @@ async function checkScouts(client) {
                 const user = await client.users.fetch(scout.user_id);
 
                 // Choose the color based on grade
-                const gradeColor = gradeColors[scout.grade] || "#808080"; // Default to gray if not found
+                const gradeColor = gradeColors[scout.grade] || 0x808080; // Default to gray if not found
 
                 // Send a message with an embed that highlights the grade in color
                 await user.send({
