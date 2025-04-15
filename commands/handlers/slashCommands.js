@@ -15,30 +15,23 @@ const loadAllowList = async () => {
 
 const handleSlashCommand = async (interaction, client) => {
     if (!interaction.isChatInputCommand()) return;
-
     const command = client.slashCommands.get(interaction.commandName);
+    console.log(`handleSlashCommand called with command name: ${command}`)
+
     if (!command) return;
 
     const userId = interaction.user.id;
-    const roleIds = interaction.member.roles.cache.map(role => role.id);
+    const rolesId = interaction.member.roles.cache.map(role => role.id);
 
     // Admins can use all commands
     const isAdminCheck = isAdmin(interaction);
-    console.log(isAdminCheck);
     const isGloballyAllowed = allowList.has(String(userId));
-    console.log(isGloballyAllowed);
 
-    console.log("handle guard 1.");
+    console.log(`UserId: ${userId}, rolesId: ${rolesId}, isAdmin: ${isAdminCheck}, isGloballyAllowed: ${isGloballyAllowed}.`)
 
     if (!isAdminCheck && !isGloballyAllowed) {
-        console.log("handle guard 2");
-
-        console.log(`userId: ${userId}, roleIds: ${roleIds}, commandName: ${interaction.commandName}`);
-
-        const allowed = await isUserAllowedForCommand(userId, roleIds, interaction.commandName);
-
-        console.log(allowed);
-
+        const allowed = await isUserAllowedForCommand(userId, rolesId, interaction.commandName);
+        console.log(`User is allowed for command ${command}: ${allowed}.`);
         if (!allowed) {
             return interaction.reply({
                 content: "🚫 You are not allowed to use this command.",
@@ -46,10 +39,8 @@ const handleSlashCommand = async (interaction, client) => {
             });
         }
     }
-
-    console.log("handle guard 3");
     try {
-        console.log(`/${interaction.commandName} called by ${interaction.user.id}`);
+        console.log(`Command ${command} executed.`)
         await command.execute(interaction);
     } catch (error) {
         console.error(error);
