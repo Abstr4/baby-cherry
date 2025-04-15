@@ -2,6 +2,7 @@ require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
 const moment = require('moment');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -29,16 +30,13 @@ module.exports = {
         const message = interaction.options.getString("message");
         const channel = interaction.options.getChannel("channel") || interaction.channel;
         const channelId = channel.id;
-        const role = interaction.options.getRole("role"); 
+        const role = interaction.options.getRole("role");
         const roleId = role ? role.id : null; // Set RoleId to NULL if no role is provided
 
         // Validate date format
         const remindAt = moment.utc(dateStr, "YYYY-MM-DD HH:mm", true);
         if (!remindAt.isValid()) {
-            return interaction.reply({
-                content: "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Invalid date format. Use `YYYY-MM-DD HH:mm` in UTC.");
         }
 
         try {
@@ -49,14 +47,10 @@ module.exports = {
             );
 
             const eventId = result.insertId; // ✅ Get the inserted event ID
-
-            await interaction.reply({
-                content: `✅ Event **#${eventId}**: **${message}** set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`,
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, `✅ Event **#${eventId}**: **${message}** set for <t:${Math.floor(remindAt.unix())}:F> in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}.`);
         } catch (err) {
             console.error("❌ Database error:", err);
-            return interaction.reply({ content: "❌ Failed to save event.", flags: 64 });
+            return sendEphemeralMessage(interaction, "❌ Failed to save event.");
         }
     }
 };

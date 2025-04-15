@@ -1,6 +1,7 @@
 require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,18 +15,16 @@ module.exports = {
 
     async execute(interaction) {
         const id = interaction.options.getInteger('id');
-
         try {
             const [result] = await database.execute("DELETE FROM Event WHERE ID = ?", [id]);
 
             if (result.affectedRows === 0) {
-                return interaction.reply({ content: 'No event found with that ID.', flags: 64 });
+                return sendEphemeralMessage(interaction, 'No event found with that ID.');
             }
-
-            await interaction.reply({ content: `event with ID **${id}** deleted.`, flags: 64 });
+            return sendEphemeralMessage(interaction, `event with ID **${id}** deleted.`);
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'An error occurred while deleting the event.', flags: 64 });
+            return sendEphemeralMessage(interaction, 'An error occurred while deleting the event.');
         }
     }
 };

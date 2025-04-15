@@ -2,6 +2,7 @@ require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder, ChannelType } = require('discord.js');
 const moment = require('moment');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -39,18 +40,12 @@ module.exports = {
         // Validate time format
         const eventAt = moment.utc(timeStr, "HH:mm", true);
         if (!eventAt.isValid()) {
-            return interaction.reply({
-                content: "❌ Invalid time format. Use `HH:mm` in UTC.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Invalid time format. Use `HH:mm` in UTC.");
         }
 
         const now = moment.utc();
         if (eventAt.isBefore(now)) {
-            return interaction.reply({
-                content: "❌ Time must be in the future (UTC).",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Time must be in the future (UTC).");
         }
 
         try {
@@ -60,22 +55,13 @@ module.exports = {
             );
 
             if (result.affectedRows === 0) {
-                return interaction.reply({
-                    content: `❌ No event found with ID \`${id}\`.`,
-                    flags: 64
-                });
+                return sendEphemeralMessage(interaction, `❌ No event found with ID \`${id}\`.`);
             }
+            return sendEphemeralMessage(interaction, `✅ Event \`${id}\` updated successfully.`);
 
-            return interaction.reply({
-                content: `✅ Event \`${id}\` updated successfully.`,
-                flags: 64
-            });
         } catch (error) {
             console.error(error);
-            return interaction.reply({
-                content: '❌ An error occurred while updating the event.',
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, '❌ An error occurred while updating the event.');
         }
     }
 };

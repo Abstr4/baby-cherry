@@ -1,6 +1,7 @@
 require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,7 +13,7 @@ module.exports = {
             const [rows] = await database.execute("SELECT ID, Message, EventAt, ChannelId, RoleId FROM Event");
 
             if (rows.length === 0) {
-                return interaction.reply({ content: '📭 No events found.', flags: 64 });
+                return sendEphemeralMessage(interaction, '📭 No events found.');
             }
 
             const embeds = [];
@@ -56,7 +57,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: '❌ An error occurred while retrieving the events.', flags: 64 });
+            return sendEphemeralMessage(interaction, '❌ An error occurred while retrieving the events.');
         }
     }
 };
