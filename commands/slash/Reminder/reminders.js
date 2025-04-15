@@ -1,6 +1,7 @@
 require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,9 +11,9 @@ module.exports = {
     async execute(interaction) {
         const [reminders] = await database.query("SELECT * FROM Reminder ORDER BY ID");
 
-        if (reminders.length === 0)
-            return await interaction.reply({ content: 'No hay recordatorios configurados.', flags: 64 });
-
+        if (reminders.length === 0) {
+            return sendEphemeralMessage(interaction, 'No hay recordatorios configurados.');
+        }
         const embeds = [];
         let currentDescription = '';
         let page = 1;
@@ -29,14 +30,11 @@ module.exports = {
                         .setDescription(currentDescription)
                         .setFooter({ text: `Página ${page}` })
                 );
-
                 currentDescription = '';
                 page++;
             }
-
             currentDescription += line;
         }
-
         if (currentDescription) {
             embeds.push(
                 new EmbedBuilder()
@@ -46,9 +44,7 @@ module.exports = {
                     .setFooter({ text: `Página ${page}` })
             );
         }
-
         await interaction.reply({ embeds: [embeds[0]], flags: 64 });
-
         for (let i = 1; i < embeds.length; i++) {
             await interaction.followUp({ embeds: [embeds[i]], flags: 64 });
         }

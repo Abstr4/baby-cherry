@@ -2,6 +2,7 @@ require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
 const moment = require('moment');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -35,10 +36,7 @@ module.exports = {
         // Validate time format with moment
         const remindAt = moment.utc(timeStr, "HH:mm", true);
         if (!remindAt.isValid()) {
-            return interaction.reply({
-                content: "❌ Invalid time format. Use `HH:mm` in UTC.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Invalid time format. Use `HH:mm` in UTC.");
         }
 
         try {
@@ -49,7 +47,7 @@ module.exports = {
             );
 
             if (result.affectedRows === 0) {
-                return interaction.reply({ content: `❌ No se encontró un recordatorio con ID ${id}.`, flags: 64 });
+                return sendEphemeralMessage(interaction, `❌ No se encontró un recordatorio con ID ${id}.`);
             }
 
             // Send response with updated reminder details
@@ -61,11 +59,11 @@ module.exports = {
                 ? `${responseMessage} El recordatorio aparecerá en **${offsetMinutes} minuto${offsetMinutes === 1 ? '' : 's'}**.`
                 : responseMessage;
 
-            await interaction.reply({ content: formattedMessage, flags: 64 });
+            return sendEphemeralMessage(interaction, formattedMessage);
 
         } catch (err) {
             console.error("❌ Database error:", err);
-            return interaction.reply({ content: "❌ Failed to update reminder.", flags: 64 });
+            return sendEphemeralMessage(interaction, "❌ Failed to update reminder.");
         }
     }
 };

@@ -2,6 +2,7 @@ require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
 const moment = require('moment');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -40,18 +41,12 @@ module.exports = {
         // Validate time format
         const remindAt = moment.utc(timeStr, "HH:mm", true);
         if (!remindAt.isValid()) {
-            return interaction.reply({
-                content: "❌ Invalid time format. Use `HH:mm` in UTC.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Invalid time format. Use `HH:mm` in UTC.");
         }
 
         // Validate offsetMinutes only if it's provided
         if (offsetMinutes !== null && (offsetMinutes < 1 || offsetMinutes > 10)) {
-            return interaction.reply({
-                content: "❌ Offset must be between 1 and 10 minutes.",
-                flags: 64
-            });
+            return sendEphemeralMessage(interaction, "❌ Offset must be between 1 and 10 minutes.");
         }
 
         try {
@@ -68,7 +63,7 @@ module.exports = {
             });
         } catch (err) {
             console.error("❌ Database error:", err);
-            return interaction.reply({ content: "❌ Failed to save reminder.", flags: 64 });
+            return sendEphemeralMessage(interaction, "❌ Failed to save reminder.");
         }
     }
 };

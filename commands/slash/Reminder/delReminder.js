@@ -1,6 +1,7 @@
 require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,13 +20,12 @@ module.exports = {
             const [result] = await database.execute("DELETE FROM Reminder WHERE ID = ?", [id]);
 
             if (result.affectedRows === 0) {
-                return interaction.reply({ content: 'No reminder found with that ID.', flags: 64 });
+                return sendEphemeralMessage(interaction, 'No reminder found with that ID.');
             }
-
-            await interaction.reply({ content: `Reminder with ID **${id}** deleted.`, flags: 64 });
+            return sendEphemeralMessage(interaction, `Reminder with ID **${id}** deleted.`);
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'An error occurred while deleting the reminder.', flags: 64 });
+            return sendEphemeralMessage(interaction, 'An error occurred while deleting the reminder.');
         }
     }
 };
