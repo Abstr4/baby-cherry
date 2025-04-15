@@ -101,7 +101,7 @@ async function handleLandMessage(message) {
     ];
 
     try {
-        const [existingLand] = await .query(
+        const [existingLand] = await database.query(
             'SELECT * FROM Lands WHERE land_id = ?',
             [land_id]
         );
