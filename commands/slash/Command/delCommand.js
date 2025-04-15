@@ -21,7 +21,7 @@ module.exports = {
 
         try {
             // Delete the command from the database
-            const result = await database.query(
+            const result = await database.connection.query(
                 "DELETE FROM ExclamationCommand WHERE Command = ?",
                 [command]
             );
@@ -38,7 +38,7 @@ module.exports = {
                 flags: 64
             });
 
-        } 
+        }
         catch (err) {
             console.error("❌ Database error:", err);
             return interaction.reply({

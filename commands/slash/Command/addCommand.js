@@ -4,30 +4,30 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-            .setName('addcommand')
-            .setDescription('Add a static exclamation command')
-            .addStringOption(option =>
-                option
-                    .setName('command')
-                    .setDescription('The exclamation command name (e.g., !hello)')
-                    .setRequired(true))
-            .addStringOption(option =>
-                option
-                    .setName('response')
-                    .setDescription('The response of the command')
-                    .setRequired(true)),
+        .setName('addcommand')
+        .setDescription('Add a static exclamation command')
+        .addStringOption(option =>
+            option
+                .setName('command')
+                .setDescription('The exclamation command name (e.g., !hello)')
+                .setRequired(true))
+        .addStringOption(option =>
+            option
+                .setName('response')
+                .setDescription('The response of the command')
+                .setRequired(true)),
 
     async execute(interaction) {
         const commandName = interaction.options.getString("command");
         const response = interaction.options.getString("response");
 
-            // Ensure command starts with "!"
+        // Ensure command starts with "!"
         if (!commandName.startsWith("!")) {
             return interaction.reply({ content: "❌ Commands must start with `!`. Example: `!hello`", flags: 64 });
         }
         try {
             // Check if the command already exists
-            const [existing] = await database.query(
+            const [existing] = await database.connection.query(
                 "SELECT * FROM ExclamationCommand WHERE Command = ?",
                 [commandName]
             );
@@ -38,9 +38,9 @@ module.exports = {
                     flags: 64
                 });
             }
-            
+
             // Insert the new command
-            await database.query(
+            await database.connection.query(
                 "INSERT INTO ExclamationCommand (Command, Response) VALUES (?, ?)",
                 [commandName, response]
             );

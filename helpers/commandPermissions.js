@@ -4,7 +4,7 @@ const database = require('@database');
 async function isUserAllowedForCommand(userId, roleIds, commandName) {
     const placeholders = roleIds.map(() => "?").join(", ");
 
-    const [rows] = await database.query(
+    const [rows] = await database.connection.query(
         `
         SELECT 1 FROM CommandPermission
         WHERE command_name = ?
@@ -20,7 +20,7 @@ async function isUserAllowedForCommand(userId, roleIds, commandName) {
 }
 
 async function addPermission(commandName, { userId = null, roleId = null }) {
-    await database.query(
+    await database.connection.query(
         `INSERT IGNORE INTO CommandPermission (command_name, user_id, role_id)
          VALUES (?, ?, ?)`,
         [commandName, userId, roleId]
@@ -28,7 +28,7 @@ async function addPermission(commandName, { userId = null, roleId = null }) {
 }
 
 async function removePermission(commandName, { userId = null, roleId = null }) {
-    await database.query(
+    await database.connection.query(
         `DELETE FROM CommandPermission
          WHERE command_name = ? AND user_id <=> ? AND role_id <=> ?`,
         [commandName, userId, roleId]
@@ -36,7 +36,7 @@ async function removePermission(commandName, { userId = null, roleId = null }) {
 }
 
 async function listPermissions(commandName) {
-    const [rows] = await database.query(
+    const [rows] = await database.connection.query(
         `SELECT user_id, role_id FROM CommandPermission WHERE command_name = ?`,
         [commandName]
     );
