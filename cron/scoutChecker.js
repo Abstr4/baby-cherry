@@ -34,7 +34,7 @@ async function checkScouts(client) {
                     embeds: [
                         {
                             color: gradeColor,  // Sidebar color of the embed
-                            description: `Your Pixel Heroes adventure **\`${scout.grade.toUpperCase()}\`** scout has ended, go get those elementals!`
+                            description: `Your Pixel Heroes Adventure **\`${scout.grade.toUpperCase()}\`** scout has ended, go get those elementals!`
                         }
                     ]
                 });
