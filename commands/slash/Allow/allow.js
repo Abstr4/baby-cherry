@@ -3,6 +3,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
 const { allowList } = require('@root/commands/handlers/slashCommands.js');
 const { sendNoPermissionMessage, isAdmin } = require('@helpers');
+const { sendEphemeralMessage, sendMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -34,11 +35,13 @@ module.exports = {
             // Ensure allowlist is updated
             allowList.add(user.id);
 
-            return interaction.reply({ content: `${user.username} is now allowed to use commands!`, flags: 64 });
+            return sendEphemeralMessage(`${user.username} is now allowed to use commands!`);
+            // return interaction.reply({ content: `${user.username} is now allowed to use commands!`, flags: 64 });
         }
         catch (error) {
             console.error(error);
-            return interaction.reply({ content: "An error occurred while allowing the user.", flags: 64 });
+            return sendEphemeralMessage("An error occurred while allowing the user.");
+            // return interaction.reply({ content: "An error occurred while allowing the user.", flags: 64 });
         }
     }
 };

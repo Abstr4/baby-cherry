@@ -1,5 +1,6 @@
 {
     "_moduleAliases": {
+        "@messageService": "./services/messageService.js",
         "@database": "./database.js",
         "@helpers": "./helpers/helpers.js",
         "@root": "."
