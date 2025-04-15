@@ -3,7 +3,7 @@ const connection = require('../database');
 // Add a new scout timer
 async function insertScout(userId, grade, endsAt) {
     await connection.query(
-        "INSERT INTO scouts (user_id, grade, ends_at) VALUES (?, ?, ?)",
+        "INSERT INTO Scouts (user_id, grade, ends_at) VALUES (?, ?, ?)",
         [userId, grade, endsAt]
     );
 }
@@ -11,7 +11,7 @@ async function insertScout(userId, grade, endsAt) {
 // Get all expired scouts
 async function getExpiredScouts() {
     const [rows] = await connection.query(
-        "SELECT * FROM scouts WHERE ends_at <= ?",
+        "SELECT * FROM Scouts WHERE ends_at <= ?",
         [Date.now()]
     );
     return rows;
@@ -19,7 +19,7 @@ async function getExpiredScouts() {
 
 // Delete scout after sending DM
 async function deleteScout(id) {
-    await connection.query("DELETE FROM scouts WHERE id = ?", [id]);
+    await connection.query("DELETE FROM Scouts WHERE id = ?", [id]);
 }
 
 module.exports = {
