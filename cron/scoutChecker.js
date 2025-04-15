@@ -2,7 +2,7 @@ require('module-alias/register');
 const { getExpiredScouts, deleteScout } = require('@root/services/scoutService.js');
 
 
-async function checkScouts() {
+async function checkScouts(client) {
     console.log("⏳ Checking for expired scouts...");
 
     try {
