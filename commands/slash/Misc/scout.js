@@ -1,7 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const moment = require('moment');
-const { insertScout } = require('@services/scoutService.js');
+const { insertScout } = require('@root/services/scoutService.js');
 
 const SCOUT_DURATIONS = {
     common: 60 * 60,       // 1 hour
