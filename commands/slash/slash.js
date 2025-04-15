@@ -1,6 +1,7 @@
 // Misc
 const levelUp = require('./Misc/levelUp.js');
 const clonethread = require('./Misc/clonethread.js')
+const scout = require('./Misc/scout.js');
 
 // Command
 const addCommand = require('./Command/addCommand.js');
@@ -38,6 +39,7 @@ module.exports = [
     // Misc
     levelUp,
     clonethread,
+    scout,
 
     // Command
     addCommand,
