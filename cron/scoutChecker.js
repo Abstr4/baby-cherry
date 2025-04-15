@@ -25,11 +25,7 @@ async function checkScouts(client) {
         for (const scout of expiredScouts) {
             try {
                 const user = await client.users.fetch(scout.user_id);
-
-                // Choose the color based on grade
-                const gradeColor = gradeColors[scout.grade] || 0x808080; // Default to gray if not found
-
-                // Send a message with an embed that highlights the grade in color
+                const gradeColor = gradeColors[scout.grade] || 0x808080;
                 await user.send({
                     embeds: [
                         {

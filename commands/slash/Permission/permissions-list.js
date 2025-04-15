@@ -1,6 +1,6 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require("discord.js");
-const { listPermissions } = require("@root/helpers/commandPermissions.js");
+const { listPermissions } = require("@root/services/permissionService.js");
 
 module.exports = {
     data: new SlashCommandBuilder()

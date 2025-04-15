@@ -1,7 +1,7 @@
 require('module-alias/register');
 const database = require('@database')
 const { isAdmin } = require('@helpers');
-const { isUserAllowedForCommand } = require('@root/helpers/commandPermissions.js');
+const { isUserAllowedForCommand } = require('@root/services/permissionService.js');
 
 // In-memory allowlist
 let allowList = new Set();
