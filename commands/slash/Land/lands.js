@@ -131,7 +131,7 @@ module.exports = {
         try {
             await interaction.deferReply({ flags: 64 });
 
-            const [rows] = await database.connection.query(query, values);
+            const [rows] = await database.query(query, values);
 
             if (rows.length === 0) {
                 return await interaction.editReply('No se encontraron lands que coincidan con los filtros.');

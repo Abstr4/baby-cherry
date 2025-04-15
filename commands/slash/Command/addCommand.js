@@ -27,7 +27,7 @@ module.exports = {
         }
         try {
             // Check if the command already exists
-            const [existing] = await database.connection.query(
+            const [existing] = await database.query(
                 "SELECT * FROM ExclamationCommand WHERE Command = ?",
                 [commandName]
             );
@@ -40,7 +40,7 @@ module.exports = {
             }
 
             // Insert the new command
-            await database.connection.query(
+            await database.query(
                 "INSERT INTO ExclamationCommand (Command, Response) VALUES (?, ?)",
                 [commandName, response]
             );

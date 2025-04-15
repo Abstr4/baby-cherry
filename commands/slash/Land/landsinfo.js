@@ -9,7 +9,7 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            const [lands] = await database.connection.query("SELECT * FROM Lands");
+            const [lands] = await database.query("SELECT * FROM Lands");
 
             const totalLands = lands.length;
             const blockedLands = lands.filter(l => l.blocked).length;

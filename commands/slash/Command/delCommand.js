@@ -21,7 +21,7 @@ module.exports = {
 
         try {
             // Delete the command from the database
-            const result = await database.connection.query(
+            const result = await database.query(
                 "DELETE FROM ExclamationCommand WHERE Command = ?",
                 [command]
             );

@@ -101,13 +101,13 @@ async function handleLandMessage(message) {
     ];
 
     try {
-        const [existingLand] = await database.connection.query(
+        const [existingLand] = await .query(
             'SELECT * FROM Lands WHERE land_id = ?',
             [land_id]
         );
 
         if (existingLand.length > 0 && existingLand[0].user_id === user_id) {
-            await database.connection.query(
+            await database.query(
                 `UPDATE Lands 
                 SET type = ?, zone = ?, blocked = ?, city = ?, district = ?, resources = ?, structures = ?
                 WHERE land_id = ?`,
@@ -121,7 +121,7 @@ async function handleLandMessage(message) {
 
             message.reply('✅ La land fue actualizada correctamente!');
         } else if (existingLand.length === 0) {
-            await database.connection.query(
+            await database.query(
                 `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 landData

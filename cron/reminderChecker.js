@@ -32,7 +32,7 @@ async function checkReminders(client) {
     console.log("⏳ Checking for Reminders...");
 
     try {
-        const [results] = await database.connection.query(`
+        const [results] = await database.query(`
             SELECT ID, Message, ChannelId, RoleId, Time, OffsetMinutes
             FROM Reminder
             WHERE TIME_FORMAT(Time, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i')

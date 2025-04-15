@@ -43,7 +43,7 @@ module.exports = {
 
         try {
             // Update the reminder in the database with the new time and message
-            const [result] = await database.connection.query(
+            const [result] = await database.query(
                 "UPDATE Reminders SET time = ?, message = ?, offsetMinutes = ? WHERE id = ?",
                 [timeStr, message, offsetMinutes, id]
             );

@@ -16,7 +16,7 @@ module.exports = {
         const landId = interaction.options.getString("land_id").trim();
         const userId = interaction.user.id;
 
-        const [result] = await database.connection.query(
+        const [result] = await database.query(
             "DELETE FROM Lands WHERE land_id = ? AND user_id = ?",
             [landId, userId]
         );

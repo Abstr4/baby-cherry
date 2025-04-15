@@ -8,7 +8,7 @@ module.exports = {
         .setDescription('Lista todos los recordatorios configurados'),
 
     async execute(interaction) {
-        const [reminders] = await database.connection.query("SELECT * FROM Reminder ORDER BY ID");
+        const [reminders] = await database.query("SELECT * FROM Reminder ORDER BY ID");
 
         if (reminders.length === 0)
             return await interaction.reply({ content: 'No hay recordatorios configurados.', flags: 64 });

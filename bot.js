@@ -1,9 +1,10 @@
 require('dotenv').config();
+require('module-alias/register');
 const express = require("express");
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 
 const TOKEN = process.env.BOT_TOKEN;
-const connection = require('./database.js');
+const connection = require('@database');
 
 const handleExclamationCommand = require('./commands/handlers/exclamationCommands.js');
 

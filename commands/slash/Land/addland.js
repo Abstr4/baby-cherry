@@ -77,7 +77,7 @@ module.exports = {
         }
 
         // Validar unicidad de land_id
-        const [existing] = await database.connection.query(
+        const [existing] = await database.query(
             "SELECT id FROM Lands WHERE land_id = ?",
             [landId]
         );
@@ -117,7 +117,7 @@ module.exports = {
         const blocked = interaction.options.getString("blocked") === "true";
 
         // Insertar en base de datos
-        await database.connection.query(
+        await database.query(
             `INSERT INTO Lands (land_id, user_id, type, zone, blocked, city, district, resources, structures)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [

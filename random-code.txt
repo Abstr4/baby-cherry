@@ -2,7 +2,7 @@
     
     /** (async () => {
         try {
-            await database.connection.query("SELECT 1");
+            await database.query("SELECT 1");
             console.log("✅ Database connection successful");
         } catch (err) {
             console.error("🚨 Database connection failed:", err);
