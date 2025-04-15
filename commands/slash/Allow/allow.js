@@ -35,12 +35,12 @@ module.exports = {
             // Ensure allowlist is updated
             allowList.add(user.id);
 
-            return sendEphemeralMessage(`${user.username} is now allowed to use commands!`);
+            return sendEphemeralMessage(interaction, `${user.username} is now allowed to use commands!`);
             // return interaction.reply({ content: `${user.username} is now allowed to use commands!`, flags: 64 });
         }
         catch (error) {
             console.error(error);
-            return sendEphemeralMessage("An error occurred while allowing the user.");
+            return sendEphemeralMessage(interaction, "An error occurred while allowing the user.");
             // return interaction.reply({ content: "An error occurred while allowing the user.", flags: 64 });
         }
     }

@@ -1,7 +1,7 @@
 require('module-alias/register');
 const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
-const { allowList } = require('../../handlers/slashCommands.js');
+const { allowList } = require('@root/commands/handlers/slashCommands.js');
 const { sendNoPermissionMessage, isAdmin } = require('@helpers');
 
 module.exports = {
