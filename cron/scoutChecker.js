@@ -2,10 +2,11 @@ require('module-alias/register');
 const { getExpiredScouts, deleteScout } = require('@root/services/scoutService.js');
 
 const gradeColors = {
-    common: "silver",
-    rare: "green",
-    epic: "gold",
-    mythic: "red"
+    common: "#C0C0C0", // Silver
+    rare: "#008000",   // Green
+    epic: "#800080",   // Purple
+    legendary: "#FFD700", // Gold
+    mythic: "#FF0000"  // Red
 };
 
 async function checkScouts(client) {
@@ -25,14 +26,17 @@ async function checkScouts(client) {
             try {
                 const user = await client.users.fetch(scout.user_id);
 
-                const gradeColor = gradeColors[scout.grade] || "gray";
+                // Choose the color based on grade
+                const gradeColor = gradeColors[scout.grade] || "#808080"; // Default to gray if not found
 
+                // Send a message with an embed that highlights the grade in color
                 await user.send({
-                    content: `**Your Pixel Heroes adventure [${scout.grade.toUpperCase()}](#) scout** has ended, go get those elementals!`,
-                    embeds: [{
-                        description: `Your Pixel Heroes adventure **${scout.grade.toUpperCase()}** scout has ended, go get those elementals!`,
-                        color: gradeColor === 'silver' ? 0xC0C0C0 : gradeColor === 'green' ? 0x008000 : gradeColor === 'gold' ? 0xFFD700 : 0xFF0000,
-                    }]
+                    embeds: [
+                        {
+                            color: gradeColor,  // Sidebar color of the embed
+                            description: `Your Pixel Heroes adventure **\`${scout.grade.toUpperCase()}\`** scout has ended, go get those elementals!`
+                        }
+                    ]
                 });
                 console.log(`📨 Scout DM sent to ${scout.user_id}`);
             } catch (err) {

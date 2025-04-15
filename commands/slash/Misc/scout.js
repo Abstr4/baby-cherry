@@ -7,7 +7,8 @@ const SCOUT_DURATIONS = {
     common: 2 * 60 * 60,       // 2 hour
     rare: 4 * 60 * 60,     // 4 hours
     epic: 8 * 60 * 60,     // 8 hours
-    legendary: 12 * 60 * 60 // 12 hours
+    legendary: 12 * 60 * 60, // 12 hours
+    mythic: 16 * 60 * 60 // 16 hours
 };
 
 module.exports = {
@@ -22,7 +23,9 @@ module.exports = {
                     { name: 'Common', value: 'common' },
                     { name: 'Rare', value: 'rare' },
                     { name: 'Epic', value: 'epic' },
-                    { name: 'Legendary', value: 'legendary' }
+                    { name: 'Legendary', value: 'legendary' },
+                    { name: 'Mythic', value: 'mythic' }
+
                 )
         ),
 
