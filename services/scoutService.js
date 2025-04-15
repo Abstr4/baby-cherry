@@ -1,4 +1,5 @@
 const connection = require('../database');
+const moment = require('moment');
 
 // Add a new scout timer
 async function insertScout(userId, grade, endsAt) {
