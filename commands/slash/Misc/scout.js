@@ -49,7 +49,7 @@ module.exports = {
                 flags: 64
             });
         } catch (err) {
-            console.error("❌ Error inserting scout:", err);
+            console.error("❌ Exception Raised: Error inserting scout:", err);
             return interaction.reply({
                 content: "❌ Failed to save scout timer.",
                 flags: 64
