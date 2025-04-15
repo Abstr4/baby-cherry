@@ -18,7 +18,16 @@ async function checkScouts(client) {
         for (const scout of expiredScouts) {
             try {
                 const user = await client.users.fetch(scout.user_id);
-                await user.send(`🕵️ Your **${scout.grade}** scout has ended.`);
+
+                const gradeColor = gradeColors[scout.grade] || "gray";
+
+                await user.send({
+                    content: `**Your Pixel Heroes adventure [${scout.grade.toUpperCase()}](#) scout** has ended, go get those elementals!`,
+                    embeds: [{
+                        description: `Your Pixel Heroes adventure **${scout.grade.toUpperCase()}** scout has ended, go get those elementals!`,
+                        color: gradeColor === 'silver' ? 0xC0C0C0 : gradeColor === 'green' ? 0x008000 : gradeColor === 'gold' ? 0xFFD700 : 0xFF0000,
+                    }]
+                });
                 console.log(`📨 Scout DM sent to ${scout.user_id}`);
             } catch (err) {
                 console.error(`❌ Failed to DM user ${scout.user_id}`, err);
