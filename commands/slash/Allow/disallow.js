@@ -1,7 +1,8 @@
 require('module-alias/register');
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
-const { allowList } = require('../../handlers/slashCommands.js'); 
+const { allowList } = require('../../handlers/slashCommands.js');
+const { sendNoPermissionMessage, isAdmin } = require('@helpers');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,11 +17,8 @@ module.exports = {
     async execute(interaction) {
         try {
             // Check if the user has Administrator permission
-            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({
-                    content: "❌ You do not have permission to use this command.",
-                    flags: 64,
-                });
+            if (!isAdmin(interaction)) {
+                return sendNoPermissionMessage(interaction);
             }
             const user = interaction.options.getUser('user');
 
