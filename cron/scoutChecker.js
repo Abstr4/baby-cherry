@@ -1,6 +1,12 @@
 require('module-alias/register');
 const { getExpiredScouts, deleteScout } = require('@root/services/scoutService.js');
 
+const gradeColors = {
+    common: "silver",
+    rare: "green",
+    epic: "gold",
+    mythic: "red"
+};
 
 async function checkScouts(client) {
     console.log("⏳ Checking for expired scouts...");
