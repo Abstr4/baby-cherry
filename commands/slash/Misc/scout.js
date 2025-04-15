@@ -4,10 +4,10 @@ const moment = require('moment');
 const { insertScout, countScoutsByUser } = require('@root/services/scoutService.js');
 
 const SCOUT_DURATIONS = {
-    common: 60 * 60,       // 1 hour
-    rare: 2 * 60 * 60,     // 2 hours
-    epic: 4 * 60 * 60,     // 4 hours
-    legendary: 8 * 60 * 60 // 8 hours
+    common: 2 * 60 * 60,       // 2 hour
+    rare: 4 * 60 * 60,     // 4 hours
+    epic: 8 * 60 * 60,     // 8 hours
+    legendary: 12 * 60 * 60 // 12 hours
 };
 
 module.exports = {
