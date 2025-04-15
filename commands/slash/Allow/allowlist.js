@@ -2,6 +2,7 @@ require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
 const { sendNoPermissionMessage, isAdmin } = require('@helpers');
+const { sendEphemeralMessage } = require('@messageService')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,15 +18,13 @@ module.exports = {
             const [rows] = await database.execute("SELECT user_id FROM Allowlist");
 
             if (rows.length === 0) {
-                return interaction.reply({ content: 'No users are in the allowlist.', flags: 64 });
+                return sendEphemeralMessage(interaction, 'No users are in the allowlist.');
             }
-
             const userList = rows.map(user => `• <@${user.user_id}>`).join('\n');
-
-            await interaction.reply({ content: `**Allowed Users:**\n${userList}`, flags: 64 });
+            return sendEphemeralMessage(interaction, `**Allowed Users:**\n${userList}`);
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'An error occurred while retrieving the allowlist.', flags: 64 });
+            return sendEphemeralMessage(interaction, 'An error occurred while retrieving the allowlist.');
         }
     }
 };

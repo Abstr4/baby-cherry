@@ -3,6 +3,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const database = require('@database');
 const { allowList } = require('@root/commands/handlers/slashCommands.js');
 const { sendNoPermissionMessage, isAdmin } = require('@helpers');
+const { sendEphemeralMessage } = require('@messageService')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,18 +26,16 @@ module.exports = {
             // Check if the user is in the allowlist
             const [rows] = await database.execute("SELECT 1 FROM Allowlist WHERE user_id = ?", [user.id]);
             if (rows.length === 0) {
-                return interaction.reply({ content: `${user} is not in the allowlist.`, flags: 64 });
+                return sendEphemeralMessage(interaction, `${user} is not in the allowlist.`);
             }
-
             // Delete it
             await database.execute("DELETE FROM Allowlist WHERE user_id = ?", [user.id]);
+            allowList.delete(user.id);
 
-            allowList.delete(user.id); // Ensure allowlist is updated
-
-            return interaction.reply({ content: `${user.username} is no longer allowed to use commands.`, flags: 64 });
+            return sendEphemeralMessage(interaction, `${user} is no longer allowed to use commands.`);
         } catch (error) {
             console.error(error);
-            return interaction.reply({ content: "An error occurred while disallowing the user.", flags: 64 });
+            return sendEphemeralMessage(interaction, "An error occurred while disallowing the user.");
         }
     }
 };

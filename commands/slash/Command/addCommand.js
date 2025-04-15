@@ -1,6 +1,7 @@
 require('module-alias/register');
 const database = require('@database');
 const { SlashCommandBuilder } = require('discord.js');
+const { sendEphemeralMessage } = require('@messageService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,7 +10,7 @@ module.exports = {
         .addStringOption(option =>
             option
                 .setName('command')
-                .setDescription('The exclamation command name (e.g., !hello)')
+                .setDescription('The exclamation command name (e.g., hello)')
                 .setRequired(true))
         .addStringOption(option =>
             option
@@ -18,12 +19,12 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
-        const commandName = interaction.options.getString("command");
+        let commandName = interaction.options.getString("command").trim().toLowerCase();
         const response = interaction.options.getString("response");
 
-        // Ensure command starts with "!"
+        // Automatically add "!" if not present
         if (!commandName.startsWith("!")) {
-            return interaction.reply({ content: "❌ Commands must start with `!`. Example: `!hello`", flags: 64 });
+            commandName = "!" + commandName;
         }
         try {
             // Check if the command already exists
