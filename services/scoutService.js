@@ -25,7 +25,7 @@ async function deleteScout(id) {
 // 🔢 Count scouts for a specific user
 async function countScoutsByUser(userId) {
     const [rows] = await connection.query(
-        "SELECT COUNT(*) as count FROM scouts WHERE user_id = ?",
+        "SELECT COUNT(*) as count FROM Scouts WHERE user_id = ?",
         [userId]
     );
     return rows[0].count;
