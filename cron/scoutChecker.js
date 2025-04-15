@@ -1,12 +1,12 @@
 require('module-alias/register');
-const { scoutService } = require('@root/services/scoutService.js');
+const { getExpiredScouts, deleteScout } = require('@root/services/scoutService.js');
 
 
 async function checkScouts() {
     console.log("⏳ Checking for expired scouts...");
 
     try {
-        const expiredScouts = await scoutService.getExpiredScouts();
+        const expiredScouts = await getExpiredScouts();
 
         if (!expiredScouts || expiredScouts.length === 0) {
             console.log("❌ No expired scouts found.");
@@ -24,7 +24,7 @@ async function checkScouts() {
                 console.error(`❌ Failed to DM user ${scout.user_id}`, err);
             }
 
-            await scoutService.deleteScout(scout.id);
+            await deleteScout(scout.id);
         }
     } catch (err) {
         console.error("❌ Error checking scouts:", err);

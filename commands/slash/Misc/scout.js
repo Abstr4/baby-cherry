@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { scoutService } = require("@root/services/scoutService.js");
+const { insertScout } = require("@root/services/scoutService.js");
 
 const gradeDurations = {
     common: 2,
@@ -39,7 +39,7 @@ module.exports = {
         const endTime = new Date(now.getTime() + duration * 60 * 60 * 1000);
 
         try {
-            await scoutService.insertScout(interaction.user.id, grade, endTime);
+            await insertScout(interaction.user.id, grade, endTime);
             await interaction.reply({
                 content: `🕵️ Scout of grade **${grade}** started. You’ll be notified in ${duration} hours.`,
                 flags: 64

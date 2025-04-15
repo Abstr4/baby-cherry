@@ -1,4 +1,4 @@
-const database = require("../database.js");
+const database = require("@database");
 
 async function sendReminderMessage(client, type, message, channelId, roleId, reminderTime, offsetMinutes) {
     try {
