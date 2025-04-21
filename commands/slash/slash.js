@@ -41,6 +41,7 @@ module.exports = [
     levelUp,
     clonethread,
     scout,
+    bosses,
 
     // Command
     addCommand,
