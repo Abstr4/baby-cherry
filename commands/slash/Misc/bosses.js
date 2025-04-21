@@ -17,15 +17,15 @@ const bossesByDifficulty = {
         { name: '💧 Blumens', interval: 12, start_time: '05:30' },
         { name: '🥕 Betalanse', interval: 12, start_time: '07:30' },
         { name: '🧊 Cryo', interval: 12, start_time: '09:30' },
-        { name: '🍄 Sporelex', interval: 12, start_time: '11:20' },
-        { name: '☣️ Toxspore', interval: 12, start_time: '13:20' },
-        { name: '🏜️ Bristol', interval: 12, start_time: '15:20' },
-        { name: '🦇 Veilian', interval: 12, start_time: '17:20' },
-        { name: '⚡ Arque', interval: 12, start_time: '19:20' },
-        { name: '🔥 Rootrus', interval: 12, start_time: '21:20' },
-        { name: '🔮 Sapphire', interval: 12, start_time: '23:20' },
-        { name: '🌊 Coralisk', interval: 12, start_time: '01:20' },
-        { name: '🍃 Breeze', interval: 12, start_time: '03:20' }
+        { name: '🍄 Sporelex', interval: 12, start_time: '11:30' },
+        { name: '☣️ Toxspore', interval: 12, start_time: '13:30' },
+        { name: '🏜️ Bristol', interval: 12, start_time: '15:30' },
+        { name: '🦇 Veilian', interval: 12, start_time: '17:30' },
+        { name: '⚡ Arque', interval: 12, start_time: '19:30' },
+        { name: '🔥 Rootrus', interval: 12, start_time: '21:30' },
+        { name: '🔮 Sapphire', interval: 12, start_time: '23:30' },
+        { name: '🌊 Coralisk', interval: 12, start_time: '01:30' },
+        { name: '🍃 Breeze', interval: 12, start_time: '03:30' }
     ],
 };
 
