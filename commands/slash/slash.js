@@ -2,7 +2,7 @@
 const levelUp = require('./Misc/levelUp.js');
 const clonethread = require('./Misc/clonethread.js')
 const scout = require('./Misc/scout.js');
-const scout = require('./Misc/bosses.js');
+const bosses = require('./Misc/bosses.js');
 
 // Command
 const addCommand = require('./Command/addCommand.js');
