@@ -16,6 +16,10 @@ module.exports = {
             option.setName("message")
                 .setDescription("Reminder message.")
                 .setRequired(true))
+        .addRoleOption(option =>
+            option.setName("role")
+                .setDescription("Role to mention when the reminder triggers (optional)")
+                .setRequired(true))
         .addIntegerOption(option =>
             option.setName("offsetminutes")
                 .setDescription("Offset in minutes for the timestamp (1-10). Optional.")
@@ -23,11 +27,7 @@ module.exports = {
         .addChannelOption(option =>
             option.setName("channel")
                 .setDescription("The channel to send the reminder (optional)")
-                .setRequired(false))
-        .addRoleOption(option =>
-            option.setName("role")
-                .setDescription("Role to mention when the reminder triggers (optional)")
-                .setRequired(true)),
+                .setRequired(false)),
 
     async execute(interaction) {
         const timeStr = interaction.options.getString("time");
