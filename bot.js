@@ -13,6 +13,7 @@ const slashCommands = require('./commands/slash/slash.js');
 const loadSlashCommands = require('./helpers/loadSlashCommands.js');
 const { handleSlashCommand, loadAllowList } = require('./commands/handlers/slashCommands');
 const { handleLandMessage } = require('./commands/handlers/landMessageHandler.js');
+const buttonInteractionHandler = require("./commands/handlers/buttonInteractionHandler");
 
 const client = new Client({
     intents: [
@@ -53,10 +54,14 @@ client.on('messageCreate', async (message) => {
         await handleExclamationCommand(message, connection);
     }
 });
+
 // Slash Command Handler
 client.on('interactionCreate', async (interaction) => {
     if (interaction.user.bot) return;
     await handleSlashCommand(interaction, client);
+    if (interaction.isButton()) {
+        await handleButtonInteraction(interaction);
+    }
 });
 
 // Web Server

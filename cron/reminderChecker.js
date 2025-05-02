@@ -1,3 +1,4 @@
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const database = require("@database");
 
 async function sendReminderMessage(client, type, message, channelId, roleId, reminderTime, offsetMinutes) {
@@ -17,11 +18,28 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
             timestamp = Math.floor(reminderDate.getTime() / 1000);
         }
 
-        const formattedMessage = roleId
-            ? `🔔 ${type}: <@&${roleId}>${timestamp ? ` <t:${timestamp}:R>` : ''} ${message}`
-            : `🔔 ${type}:${timestamp ? ` <t:${timestamp}:R>` : ''} ${message}`;
+        const embed = new EmbedBuilder()
+            .setTitle(`🔔 ${type}`)
+            .setDescription(`${timestamp ? `⏰ <t:${timestamp}:R>\n` : ""}${message}`)
+            .setColor(0x00AE86);
 
-        await channel.send(formattedMessage);
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(`subscribe_${roleId}`)
+                .setLabel("Subscribe")
+                .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+                .setCustomId(`unsubscribe_${roleId}`)
+                .setLabel("Unsubscribe")
+                .setStyle(ButtonStyle.Danger)
+        );
+
+        await channel.send({
+            content: roleId ? `<@&${roleId}>` : null,
+            embeds: [embed],
+            components: [row],
+        });
+
         console.log(`📨 Reminder sent to ${channelId}`);
     } catch (err) {
         console.error(`❌ Error sending ${type}:`, err);
