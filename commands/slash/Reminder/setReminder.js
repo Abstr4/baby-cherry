@@ -27,7 +27,7 @@ module.exports = {
         .addRoleOption(option =>
             option.setName("role")
                 .setDescription("Role to mention when the reminder triggers (optional)")
-                .setRequired(false)),
+                .setRequired(true)),
 
     async execute(interaction) {
         const timeStr = interaction.options.getString("time");
