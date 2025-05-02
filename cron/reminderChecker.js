@@ -1,7 +1,7 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const database = require("@database");
 
-async function sendReminderMessage(client, type, message, channelId, roleId, reminderTime, offsetMinutes) {
+async function sendReminderMessage(client, type, message, channelId, roleId, reminderTime, offsetMinutes, imageUrl) {
     try {
         const channel = await client.channels.fetch(channelId);
         if (!channel) {
@@ -22,6 +22,10 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
             .setTitle(`🔔 ${type}`)
             .setDescription(`${timestamp ? `⏰ <t:${timestamp}:R>\n` : ""}${message}`)
             .setColor(0x00AE86);
+
+        if (imageUrl) {
+            embed.setImage(imageUrl);
+        }
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
@@ -51,7 +55,7 @@ async function checkReminders(client) {
 
     try {
         const [results] = await database.query(`
-            SELECT ID, Message, ChannelId, RoleId, Time, OffsetMinutes
+            SELECT ID, Message, ChannelId, RoleId, Time, OffsetMinutes, ImageUrl
             FROM Reminder
             WHERE TIME_FORMAT(Time, '%H:%i') = TIME_FORMAT(UTC_TIME(), '%H:%i')
         `);
@@ -71,7 +75,8 @@ async function checkReminders(client) {
                 item.ChannelId,
                 item.RoleId,
                 item.Time,
-                item.OffsetMinutes
+                item.OffsetMinutes,
+                item.ImageUrl
             );
         }
     } catch (err) {
