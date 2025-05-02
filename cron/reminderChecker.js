@@ -19,7 +19,7 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
         }
 
         const embed = new EmbedBuilder()
-            .setTitle(`🔔 Reminder #${reminderId}: ${type}`)  // Added reminder ID to the title
+            .setTitle(`🔔 Reminder #${reminderId}`)  // Added reminder ID to the title
             .setDescription(`${timestamp ? `⏰ <t:${timestamp}:R>\n` : ""}${message}`)
             .setColor(0x00AE86);
 
