@@ -55,9 +55,10 @@ module.exports = {
         }
 
         // Optional: basic image URL validation
-        if (imageUrl && !/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(imageUrl)) {
-            return sendEphemeralMessage(interaction, "❌ Invalid image URL. Must be a direct link to an image.");
+        if (!imageUrl.match(/\.(jpeg|jpg|gif|png)(\?.*)?$/i)) {
+            return sendEphemeralMessage(interaction, "❌ Invalid image URL. Must be a direct link to an image (e.g. ending in .png, .jpg).");
         }
+
 
         try {
             const [result] = await database.execute(
