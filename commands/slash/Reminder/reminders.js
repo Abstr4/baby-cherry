@@ -20,7 +20,13 @@ module.exports = {
 
         for (let i = 0; i < reminders.length; i++) {
             const r = reminders[i];
-            const line = `ID: \`${r.ID}\` | ${r.Message}\n`;
+
+            const [hours, minutes] = r.Time.split(":").map(Number);
+            const now = new Date();
+            const scheduled = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), hours, minutes));
+            const timestamp = Math.floor(scheduled.getTime() / 1000);
+            const line = `ID: \`${r.ID}\` | ⏰ <t:${timestamp}:R> | ${r.Message}\n`;
+
 
             if (currentDescription.length + line.length > 4000) {
                 embeds.push(
