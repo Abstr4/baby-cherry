@@ -27,12 +27,17 @@ module.exports = {
         .addChannelOption(option =>
             option.setName("channel")
                 .setDescription("The channel to send the reminder (optional)")
+                .setRequired(false))
+        .addStringOption(option =>
+            option.setName("imageurl")
+                .setDescription("Optional image URL to display in the embed.")
                 .setRequired(false)),
 
     async execute(interaction) {
         const timeStr = interaction.options.getString("time");
         const message = interaction.options.getString("message");
         const offsetMinutes = interaction.options.getInteger("offsetminutes");
+        const imageUrl = interaction.options.getString("imageurl") || null;
         const channel = interaction.options.getChannel("channel") || interaction.channel;
         const channelId = channel.id;
         const role = interaction.options.getRole("role");
@@ -49,16 +54,21 @@ module.exports = {
             return sendEphemeralMessage(interaction, "❌ Offset must be between 1 and 10 minutes.");
         }
 
+        // Optional: basic image URL validation
+        if (imageUrl && !/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(imageUrl)) {
+            return sendEphemeralMessage(interaction, "❌ Invalid image URL. Must be a direct link to an image.");
+        }
+
         try {
             const [result] = await database.execute(
-                "INSERT INTO Reminder (Message, Time, OffsetMinutes, ChannelId, RoleId) VALUES (?, ?, ?, ?, ?)",
-                [message, remindAt.format("HH:mm"), offsetMinutes, channelId, roleId]
+                "INSERT INTO Reminder (Message, Time, OffsetMinutes, ChannelId, RoleId, ImageUrl) VALUES (?, ?, ?, ?, ?, ?)",
+                [message, remindAt.format("HH:mm"), offsetMinutes, channelId, roleId, imageUrl]
             );
 
             const reminderId = result.insertId;
 
             await interaction.reply({
-                content: `✅ Reminder **#${reminderId}**: **${message}** set for **${remindAt.format("HH:mm")} UTC** in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}${offsetMinutes ? ` with timestamp +${offsetMinutes}m` : ""}.`,
+                content: `✅ Reminder **#${reminderId}**: **${message}** set for **${remindAt.format("HH:mm")} UTC** in <#${channelId}>${role ? ` for <@&${roleId}>` : ""}${offsetMinutes ? ` with timestamp +${offsetMinutes}m` : ""}${imageUrl ? ` with image.` : ""}`,
                 flags: 64
             });
         } catch (err) {
