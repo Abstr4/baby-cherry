@@ -1,7 +1,7 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const database = require("@database");
 
-async function sendReminderMessage(client, type, message, channelId, roleId, reminderTime, offsetMinutes, imageUrl) {
+async function sendReminderMessage(client, type, message, channelId, roleId, reminderTime, offsetMinutes, imageUrl, reminderId) {
     try {
         const channel = await client.channels.fetch(channelId);
         if (!channel) {
@@ -19,7 +19,7 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
         }
 
         const embed = new EmbedBuilder()
-            .setTitle(`🔔 ${type}`)
+            .setTitle(`🔔 Reminder #${reminderId}: ${type}`)  // Added reminder ID to the title
             .setDescription(`${timestamp ? `⏰ <t:${timestamp}:R>\n` : ""}${message}`)
             .setColor(0x00AE86);
 
@@ -76,7 +76,8 @@ async function checkReminders(client) {
                 item.RoleId,
                 item.Time,
                 item.OffsetMinutes,
-                item.ImageUrl
+                item.ImageUrl,
+                item.ID  // Pass the reminder ID here
             );
         }
     } catch (err) {
