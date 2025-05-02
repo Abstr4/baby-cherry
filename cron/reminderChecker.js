@@ -22,6 +22,7 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
             .setTitle(`🔔 Reminder #${reminderId}`)  // Added reminder ID to the title
             .setDescription(`${timestamp ? `⏰ <t:${timestamp}:R>\n` : ""}${message}`)
             .setColor(0x00AE86);
+            embed.setFooter({ text: "📢 If you subscribe to one notification in this channel, you'll receive all of them." });
 
         if (imageUrl) {
             embed.setImage(imageUrl);
