@@ -22,7 +22,7 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
             .setTitle(`🔔 Reminder #${reminderId}`)  // Added reminder ID to the title
             .setDescription(`${timestamp ? `⏰ <t:${timestamp}:R>\n` : ""}${message}`)
             .setColor(0x00AE86);
-            embed.setFooter({ text: "📢 If you subscribe to one notification in this channel, you'll receive all of them." });
+        embed.setFooter({ text: "📢 If you subscribe to one notification in this channel, you'll receive all of them." });
 
         if (imageUrl) {
             embed.setImage(imageUrl);
@@ -46,6 +46,13 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
         });
 
         console.log(`📨 Reminder sent to ${channelId}`);
+        // 🕙 Delete the message after 10 minutes
+        setTimeout(() => {
+            sentMessage.delete().catch(err => {
+                console.error(`❌ Failed to delete reminder message (ID: ${sentMessage.id}):`, err);
+            });
+        }, 600000);
+
     } catch (err) {
         console.error(`❌ Error sending ${type}:`, err);
     }
