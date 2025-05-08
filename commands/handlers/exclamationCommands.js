@@ -11,7 +11,8 @@ const handleExclamationCommand = async (message, connection) => {
         console.log(`📝 Query result:`, results);
         if (results.length > 0) {
             // Send the command's response from the database
-            await message.channel.send(results[0].Response);
+            const responseWithNewlines = results[0].Response.replace(/\\n/g, '\n');
+            await message.channel.send(responseWithNewlines);
         } else {
             console.log(`⚠️ No response found for command: ${commandName}`);
         }
