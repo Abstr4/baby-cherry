@@ -48,10 +48,11 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
         console.log(`📨 Reminder sent to ${channelId}`);
         // 🕙 Delete the message after 10 minutes
         setTimeout(() => {
+            console.log(`🧹 Attempting to delete reminder message ID: ${sentMessage.id}`);
             sentMessage.delete().catch(err => {
                 console.error(`❌ Failed to delete reminder message (ID: ${sentMessage.id}):`, err);
             });
-        }, 600000);
+        }, 600000); // 10 minutes
 
     } catch (err) {
         console.error(`❌ Error sending ${type}:`, err);
