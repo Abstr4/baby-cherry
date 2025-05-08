@@ -39,14 +39,15 @@ async function sendReminderMessage(client, type, message, channelId, roleId, rem
                 .setStyle(ButtonStyle.Danger)
         );
 
-        await channel.send({
+        const sentMessage = await channel.send({
             content: roleId ? `<@&${roleId}>` : null,
             embeds: [embed],
             components: [row],
         });
 
         console.log(`📨 Reminder sent to ${channelId}`);
-        // 🕙 Delete the message after 10 minutes
+
+        // ✅ Schedule deletion after 10 minutes
         setTimeout(() => {
             console.log(`🧹 Attempting to delete reminder message ID: ${sentMessage.id}`);
             sentMessage.delete().catch(err => {
@@ -86,7 +87,7 @@ async function checkReminders(client) {
                 item.Time,
                 item.OffsetMinutes,
                 item.ImageUrl,
-                item.ID  // Pass the reminder ID here
+                item.ID
             );
         }
     } catch (err) {
